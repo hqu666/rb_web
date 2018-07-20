@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="jp">
+	<head>
+	  <meta charset="UTF-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>whiteboardサンプル</title>
+		<!--<title>Socket.IO から nodes直下; whiteboard</title>-->
+		<link rel="stylesheet" href="style.css">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+
+	</head>
+	<body style="overflow: hidden;">
+		<div id="container">
+			<span id="header">
+				<select id="typeSelect" size="1">
+					<option value="free">フリーハンド</option>
+					<option value="text">テキスト</option>
+					<option value="line">直線</option>
+					<option value="stamp">図形スタンプ</option>
+					<option value="erasre">消しゴム</option>
+				</select>
+				<input type="color" id="colorPalet">
+				<span id="graficOptions">
+					線の太さ
+					<select id="lineWidthSelect" size="1">
+						<option value="1"> 1pt</option>
+						<option value="5"> 5pt</option>
+						<option value="10">10pt</option>
+						<option value="20">20pt</option>
+						<option value="50">50pt</option>
+					</select>
+					先端
+					<select id="lineCapSelect" size="1">
+						<option value="round">丸</option>
+						<option value="square">四角</option>
+						<option value="butt">無し</option>
+					</select>
+				</span>
+				<span id="texeOptions">
+					文字サイズ
+					<select id="fontSizeSelect" size="1">
+						<option value="6"> 6pt</option>
+						<option value="12">12pt</option>
+						<option value="24">24pt</option>
+						<option value="48">48pt</option>
+					</select>
+				</span>
+				<input type="button" id="allclear" value="消去" style="width: 62px;height: 38px;border-radius: 4px;margin-left: 50px;">
+			</span>
+
+			<div id="contents">
+				<canvas class="whiteboard" id="hitarea"></canvas>
+			</div>
+
+			<span id="footer">
+				共有URL≫　<span id="infoAria" style="margin-left: 10px;"></span>
+							<span id="eventComent" style="text-align: right;margin-left:  50px;"></span>
+		</span>
+	</div>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="/w_board.js"></script>
+
+	</script>
+	<script type="text/javascript">
+		window.onload = function(){	// onload	;	ページ読み込み時に実行したい処理
+			var dbmsg = "[onload]";
+			var protocol = location.protocol
+			dbmsg += "　,protocol="+protocol;
+			var urlStr = location.href +"";
+			dbmsg += ",url=　"+urlStr;
+			var host = location.hostname ;
+			dbmsg += "　,host="+host;
+			var path = location.pathname ;
+			dbmsg += "　,path="+path;
+			var query = location.search ;
+			dbmsg += "　,query="+query;
+			// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
+			// dbmsg += "　,ipAddress="+ipAddress;
+
+			var	tframe = document.getElementById("tframe");
+			var	titolAncar = document.getElementById("titolAncar");
+
+			var targetUrl = urlStr.replace( path, ":3080" );
+			dbmsg += "　,targetUrl="+targetUrl;
+
+			console.log(dbmsg);
+			var infoAria = document.getElementById("infoAria");
+			infoAria.innerHTML = urlStr;
+		}
+	</script>
+	</body>
+</html>
+
+
+<!--
+https://github.com/socketio/socket.io/tree/master/examples/whiteboard
+-->

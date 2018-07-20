@@ -1,0 +1,231 @@
+アカウント ID:	388501962755
+アカウント名:	hiroshima_app
+パスワード:		CS03tuamasu
+E メール: 		hiroshima_app@coresoft-net.co.jp
+
+
+white-board
+インスタンス ID			i-084e0eab0d1f70959
+Elastic IP				52.197.173.40
+パブリック DNS (IPv4)	ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com
+プライベート IP			172.31.42.194
+IPv4 パブリック IP		13.230.221.2			<<13.115.171.185
+						26:ff:c5:4e:46:b9:01:23:44:7c:cf:58:b5:d5:37:a7:6e:bc:4a:86
+						cs-white-board
+参考		https://qiita.com/oishihiroaki/items/bc663eb1282d87c46e97
+
+EC２をSSHで操作
+	PowerShellなどで
+	①pem保存フォルダに移動
+		cd C:\work\web
+		cd C:\work\xampp\htdocs\wb\wb\memo
+
+		cd /d H:\
+		cd H:\develop\xampp\htdocs\wb\wb\memo
+
+	②設定ファイルの権限設定
+		cacls cs-white-board.pem /g hkuwayama:F
+				cacls cs-white-board.pem /g 博臣:F
+
+	③	でログイン
+		ssh -i "cs-white-board.pem" ec2-user@52.197.173.40
+
+	④作業フォルダに移動
+		$ cd wb
+	⑤該当スクリプト起動
+		nohup  node index.js &
+
+		☆node index.js  ではシェル終了、ログアウトで接続も切れる
+		☆シェルのログアウト後もプログラムの実行	;	nohup コマンド &　
+			☆"&"でバックグラウンド
+			※	nohup: ignoring input and appending output to ‘nohup.out’　と表示されるが起動
+				ログを表示せず同フォルダのnohup.outに書き出される
+		☆windowsローカルでは
+		Start-Job { & node index.js }
+
+		確認：デーモン化して起動
+				sudo forever start node index.js
+
+
+	成功したら
+		EC2>>> ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com:3080
+		と表示される
+
+	⑥webを2画面（もしくは別のPCで）開いて
+		ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com:3080
+
+xamppでのテスト
+①	cd C:\work\xampp\htdocs\wb\wb
+	cd /d H:\
+	cd H:\develop\xampp\htdocs\wb\wb
+
+②	node index.js
+
+
+web管理
+FileZillaで操作
+
+	備考；SSHでの操作
+	④	sudo service httpd start
+	⑤	sudo vi /var/www/html/index.html		//ページ編集	https://sil.hatenablog.com/entry/aws-ec2-free-webserver
+		sudo vi /var/www/html/app.js
+	⑥ 	$ sudo yum update									//yumのアップデート
+	⑦	$ sudo yum install git gcc-c++ make openssl-devel	//環境構築に必要なパッケージ
+	⑧	$ git clone git://github.com/creationix/nvm.git .nvm	//nvmをインストールする
+	・新規フォルダ作成
+				$ mkdir -m 777 wb
+
+node.jsのインストール
+	①.nvmの中のシェルスクリプトをrun
+		$ source ~/.nvm/nvm.sh
+	②インストールできるnodeのバージョンを確認
+		$ nvm ls-remote			//(入手可能なwindows用；4.9.1	6.14.1	8.11.1	10.1.0	)
+	③任意のバージョンのNodeをインストール
+		$ nvm install v8.11.1									//
+	④確認；インストールできたバージョンを表示
+		$ node -v											//指定したバージョンのNodeがインストールされたか確認
+	⑤nvmのデフォルトバージョンにインストールしたバージョンを指定
+		・	$ nvm alias default v6.9.1					//
+	⑥	$ npm install socket.io							//socket.io　インストール(5.0.0ok)
+
+
+socket.io実行環境の構築
+	①アプリケーションフォルダに移動
+		cd C:\work\nodejs\wb		//nodeのインストールフォルダ内
+		cd C:\work\web
+		cd C:\work\nodejs						//node.jsインストールフォルダ
+		cd C:\work\xampp\htdocs\wb\wb					//node.jsインストールフォルダ
+		cd /d h:
+		cd H:\develop\xampp\htdocs\wb\wb
+	②パーケージインストール
+		npm install socket.io express			//※socket.io　とexpressインストール
+
+		備考；個別には
+		・socket.io　インストール
+			npm install --save socket.io
+		・express　インストール
+			npm install -g express			//-g オプションを付けないと、現在のフォルダ配下のみにインストールされます。
+			npm install express-generator -g
+			express ?version										（OK;4.9.1）
+	インストール確認
+		node app.js
+
+実行開始
+	①アプリケーションフォルダに移動
+						cd C:\work\xampp\htdocs\wb\wb							//nodeのインストールフォルダ内
+	②実行
+		node index.js
+	③ブラウザで表示させる
+		wifiデバッグ
+		Buffalo-A-02FAもしくはBuffalo-g-02FAでイーサネット アダプター イーサネットの IPv4 アドレスから
+		　http://192.168.100.6:3080
+			http://192.168.3.10:3080
+
+	ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com
+		http://ec2-13-115-171-185.ap-northeast-1.compute.amazonaws.com/SamplePage.php
+	 	http://ec2-55-122-41-31.us-west-2.compute.amazonaws.com/SamplePage.php
+
+
+ソース編集の要点
+	①構成
+	　アプリケーションフォルダ	：	wb
+	　　　├index.js
+	　　　└サブフォルダ		；	public
+	　　　　　├w_board.js
+	　　　　　├index.html
+	　　　　　└style.css
+	②view（index.html）にトリガー追加
+		<div class="button" id="allclear">消去</div>
+	③スクリプトファイルに
+	　ⅰ；トリガーからのリスナー追加
+			document.getElementById("allclear").onclick = function() {
+				allClear();
+				socket.emit('allclear',{});					//送信コマンド
+			};
+	　ⅱ：実働部作成
+			function allClear() {
+				context.clearRect(0, 0,canvas.width,canvas.height);
+			}
+	　ⅲ；レシーバー作成
+		 socket.on('allclear', function (data) {
+			console.log("recive:all clear");
+			allClear();
+		});
+	④起動ファイル(index.js)のfunction onConnection(socket)にsocket.on追加
+		function onConnection(socket){
+		  socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
+		  socket.on('allclear', (data) => socket.broadcast.emit('allclear', data));				//追記
+		}
+
+		sudo viSamplePage.php
+
+
+SSHインストール
+https://www.eaton-daitron.jp/techblog/4627.html
+	①	cd 'C:\Program Files\OpenSSH-Win64'
+	②	Get-ExecutionPolicy									現在の設定を確認。
+															RemoteSigned　；スクリプトの実行が禁止
+	③	Set-ExecutionPolicy Unrestricted					実行ポリシーを「制限無し（Unrestricted）」に変更。
+		[Y] はい(Y)  [A] すべて続行(A)  [N] いいえ(N)  [L] すべて無視(L)  [S] 中断(S)  [?] ヘルプ (既定値は "N"): L
+
+	④	.\install-sshd.ps1									インストール
+
+	⑤	 .\ssh-keygen.exe -A
+
+	PS C:\Program Files\OpenSSH-Win64>
+
+
+[コントロールパネル] - [Windowsファイアウォール] から、[詳細設定]の[受信の規制]
+　open ssh 64 で追加
+
+ローカル環境
+	①	cd C:\work\nodejs						//node.jsインストールフォルダ
+		node -v									//インストールされたバージョンの確認
+	②	npm install --save socket.io							//socket.io　インストール
+	③	npm install -g express			//-g オプションを付けないと、現在のフォルダ配下のみにインストールされます。
+		npm install express-generator -g
+		express ?version										（OK;4.9.1）
+	②	npm install socket.io
+		npm install socket.io express
+
+		test		node app.js
+
+			cd C:\work\xampp\htdocs\wb					//コンテンツ
+		express C:\work\xampp\htdocs\wb					//exampleのひな型が置かれる
+		cd C:\work\xampp\htdocs\wb && npm install
+			set DEBUG=C:\work\xampp\htdocs\wb & node .\bin\www				//log書き出し開始
+
+
+			set DEBUG=C:\work\xampp\htdocs\wb & node sio.js				//log書き出し開始
+
+
+	システム環境変数　で　Path設定
+
+npm install express
+
+
+参照
+		http://irukanobox.blogspot.jp/2016/06/socketio.html
+	10分でできる！Node.jsのSocket.ioを使ったWebSocketによる双方向通信
+		http://webcake.no003.info/webdesign/node-js-socket-io.html
+		https://dev.classmethod.jp/server-side/language/node-socket-io/
+		https://ics.media/entry/4320
+		http://kazuki-room.com/how_to_install_socket-io_on_windows/
+		https://qiita.com/talefantasia/items/50bb4237b95dc46c014d
+		http://blog.tmyt.jp/entry/2017/01/07/175533
+		https://teratail.com/questions/52031
+	Node.js + Socket.IOのサーバの基本構成と、Android版のSocket.IOクライアントのサンプル
+		https://qiita.com/tomo_watanabe/items/78d5bc96904d9e48e4d2
+
+課題
+	①socketioはイベントの発生座標と種類、属性データをJSONObjectで送る
+	・データの跡切れが発生すれば相手側には欠けができる
+	＞＞データで一旦保存したcanvasのビットマップをbolbなどで送れないか
+	>>>S3S3に送ってURLで読み込ませるか？
+	②個別のセッション分離
+	・ポート番号3080で一つのボードをアクセスした全員が共有している
+	>>個別のポート番号を振る？
+	>>オプション（URL末尾の？）で個別URLにできるか？
+	>>>>その個別URLをどう取得してどう送るか
+	>>>>アプリから個別URLを発行できるか
+	
