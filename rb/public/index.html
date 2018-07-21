@@ -3,65 +3,89 @@
 	<head>
 	  <meta charset="UTF-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>RecoveryBrainサンプル</title>
+		<title>Recovery Brain web</title>
 		<!--<title>Socket.IO から nodes直下; whiteboard</title>-->
 		<link rel="stylesheet" href="style.css">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Cache-Control" content="no-cache">
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+	    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 	</head>
 	<body style="overflow: hidden;">
 		<div id="container">
-			<span id="header">
-				<select id="typeSelect" size="1">
-					<option value="free">フリーハンド</option>
-					<option value="text">テキスト</option>
-					<option value="line">直線</option>
-					<option value="stamp">図形スタンプ</option>
-					<option value="erasre">消しゴム</option>
-				</select>
-				<input type="color" id="colorPalet">
-				<span id="graficOptions">
-					線の太さ
-					<select id="lineWidthSelect" size="1">
-						<option value="1"> 1pt</option>
-						<option value="5"> 5pt</option>
-						<option value="10">10pt</option>
-						<option value="20">20pt</option>
-						<option value="50">50pt</option>
-					</select>
-					先端
-					<select id="lineCapSelect" size="1">
-						<option value="round">丸</option>
-						<option value="square">四角</option>
-						<option value="butt">無し</option>
-					</select>
-				</span>
-				<span id="texeOptions">
-					文字サイズ
-					<select id="fontSizeSelect" size="1">
-						<option value="6"> 6pt</option>
-						<option value="12">12pt</option>
-						<option value="24">24pt</option>
-						<option value="48">48pt</option>
-					</select>
-				</span>
-				<input type="button" id="allclear" value="消去" style="width: 62px;height: 38px;border-radius: 4px;margin-left: 50px;">
-			</span>
+			<div id="header">
+				<div class="row" id="urlInfoAria">
+					<div class="col-sm-10" id="urlDescriptionAria">
+						RECOVERY DOOR社のリカバリーブラインをアプリケーション化しました。<br>
+						こちら側の画面に表示される線や図形を、操作側の画面から消去します。<br>
+						操作側のブラウザにセットするURL≫  <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
+						<div id="scoreAria">
+							スコア
+							<span id="scoreTF">
+								100
+							</span>点  トレース元図形
+							<select id="jobSelect" size="1">
+								<option value="fileSel">ファイルから読み込み</option>
+								<option value="patranList">パターンリスト表示</option>
+								<option value="line">作成</option>
+							</select>
+							<select id="typeSelect" size="1">
+								<option value="free">フリーハンド</option>
+								<option value="text">テキスト</option>
+								<option value="line">直線</option>
+								<option value="stamp">図形スタンプ</option>
+								<option value="erasre">消しゴム</option>
+							</select>
+							<input type="color" id="colorPalet">
+							<span id="graficOptions">
+								線の太さ
+								<select id="lineWidthSelect" size="1">
+									<option value="1"> 1pt</option>
+									<option value="5"> 5pt</option>
+									<option value="10">10pt</option>
+									<option value="20">20pt</option>
+									<option value="50">50pt</option>
+								</select>
+								先端
+								<select id="lineCapSelect" size="1">
+									<option value="round">丸</option>
+									<option value="square">四角</option>
+									<option value="butt">無し</option>
+								</select>
+							</span>
+							<span id="texeOptions">
+								文字サイズ
+								<select id="fontSizeSelect" size="1">
+									<option value="6"> 6pt</option>
+									<option value="12">12pt</option>
+									<option value="24">24pt</option>
+									<option value="48">48pt</option>
+								</select>
+							</span>
+							<input type="button" id="allclear" value="消去" style="width: 62px;height: 38px;border-radius: 4px;margin-left: 50px;">
+						</div>
+					</div>
+					<div class="col-sm-2" class="img-responsive" id="urlQR" style="border-color: blue;border-bottom-color: aqua;color: crimson;">
+					</div>
+				</div>
+			</div>
 
 			<div id="contents">
 				<canvas class="whiteboard" id="hitarea"></canvas>
 			</div>
 
-			<span id="footer">
-				共有URL≫　<span id="infoAria" style="margin-left: 10px;"></span>
-							<span id="eventComent" style="text-align: right;margin-left:  50px;"></span>
-		</span>
+			<div id="footer">
+				<span id="eventComent" style="text-align: right;margin-left:  50px;"></span>
+			</div>
 	</div>
 	<script src="/socket.io/socket.io.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script src="/w_board.js"></script>
-
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
+	<script src="/repi_brain.js"></script>
+	<!-- <script src="jquery.min.js"></script> -->
+    <script src="jquery.qrcode.min.js"></script>
 	</script>
 	<script type="text/javascript">
 		window.onload = function(){	// onload	;	ページ読み込み時に実行したい処理
@@ -85,7 +109,11 @@
 			var targetUrl = urlStr.replace( path, ":3080" );
 			dbmsg += "　,targetUrl="+targetUrl;
 
-			console.log(dbmsg);
+			$("#urlQR").html("");
+        	$("#urlQR").qrcode({width:100,//横幅
+							    height:100,//高さ
+								text:targetUrl});
+   			console.log(dbmsg);
 			var infoAria = document.getElementById("infoAria");
 			infoAria.innerHTML = urlStr;
 		}

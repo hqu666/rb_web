@@ -4,35 +4,35 @@
 E メール: 		hiroshima_app@coresoft-net.co.jp
 
 
-RecoveryBrainWeb
+RecoveryBrainWeb		recovery_brain_web
 インスタンス ID			i-0d53efddae1bc34a6
-Elastic IP				
-パブリック DNS (IPv4)	ec2-54-248-53-184.ap-northeast-1.compute.amazonaws.com
-プライベート IP			172.31.33.178
-IPv4 パブリック IP		54.248.53.184
-						26:ff:c5:4e:46:b9:01:23:44:7c:cf:58:b5:d5:37:a7:6e:bc:4a:86
-						cs-white-board
+Elastic IP(固定)
+パブリック DNS (IPv4)	ec2-13-114-44-32.ap-northeast-1.compute.amazonaws.com
+プライベート IP			172.31.39.52
+IPv4 パブリック IP		13.114.44.32
+
 参考		https://qiita.com/oishihiroaki/items/bc663eb1282d87c46e97
 
-EC２をSSHで操作
+////////	EC２をSSHで操作	///////////
 	PowerShellなどで
 	①pem保存フォルダに移動
 		cd C:\work\xampp\htdocs\recoverry_brain\rb\memo
 
 	（	cd /d H:\
-		cd H:\develop\xampp\htdocs\wb\wb\memo
+		cd H:\develop\xampp\htdocs\repireBrain\rb\memo
 		）
 
 	②設定ファイルの権限設定
-		cacls recoveryBrain.pem /g hkuwayama:F
-		(	cacls recoveryBrain.pem /g 博臣:F
+		cacls recovery_brain_web.pem /g hkuwayama:F
+		(	cacls recovery_brain_web.pem /g 博臣:F
 		)
 
-	③	でログイン
-		ssh -i "recoveryBrain.pem" ec2-user@54.248.53.184
+	③.pemでログイン
+		ssh -i "recovery_brain_web.pem" ec2-user@13.114.44.32
 
 	④作業フォルダに移動
-		$ cd wb
+		$ cd rb
+
 	⑤該当スクリプト起動
 		nohup  node index.js &
 
@@ -55,7 +55,9 @@ EC２をSSHで操作
 	⑥webを2画面（もしくは別のPCで）開いて
 		ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com:3080
 
-xamppでのテスト
+		AWS アクセスできない
+
+/////////	xamppでのテスト	/////////////////
 ①	cd C:\work\xampp\htdocs\wb\wb
 	cd /d H:\
 	cd H:\develop\xampp\htdocs\wb\wb
@@ -81,13 +83,13 @@ FileZillaで操作
 	・新規フォルダ作成
 				$ mkdir -m 777 wb
 
-node.jsのインストール
+//////////node.jsのインストール////////////////////////////////////////////////
 	①.nvmの中のシェルスクリプトをrun
 		$ source ~/.nvm/nvm.sh
 	②インストールできるnodeのバージョンを確認
 		$ nvm ls-remote			//(入手可能なwindows用；4.9.1	6.14.1	8.11.1	10.1.0	)
 	③任意のバージョンのNodeをインストール
-		$ nvm install v8.11.1									//
+		$ nvm install v5.0.0									//
 	④確認；インストールできたバージョンを表示
 		$ node -v											//指定したバージョンのNodeがインストールされたか確認
 	⑤nvmのデフォルトバージョンにインストールしたバージョンを指定
@@ -248,8 +250,8 @@ AWS   インスタンス作成	https://qiita.com/oishihiroaki/items/bc663eb1282d
 	>>オプション（URL末尾の？）で個別URLにできるか？
 	>>>>その個別URLをどう取得してどう送るか
 	>>>>アプリから個別URLを発行できるか
-	
-	
+
+
 	# nvm
 if [[ -s ~/.nvm/nvm.sh ]] ; then
         source ~/.nvm/nvm.sh ;

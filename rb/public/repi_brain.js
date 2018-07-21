@@ -1,7 +1,7 @@
 'use strict';
 
 (function() {
-	var dbMsg = "index.js;"
+	var dbMsg = "repi_brain.js;"
 	var socket = io();
 	var canvas = document.getElementsByClassName('whiteboard')[0];				//描画領域
 	var typeSelect = document.getElementById('typeSelect');						//描画種別
