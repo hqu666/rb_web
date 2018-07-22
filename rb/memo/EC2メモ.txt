@@ -1,15 +1,19 @@
 アカウント ID:	388501962755
-アカウント名:	hiroshima_app
+アカウント名:		hiroshima_app
 パスワード:		CS03tuamasu
-E メール: 		hiroshima_app@coresoft-net.co.jp
+E メール: 			hiroshima_app@coresoft-net.co.jp
 
 
 RecoveryBrainWeb		recovery_brain_web
-インスタンス ID			i-0d53efddae1bc34a6
+インスタンス ID		i-03187b1a26afc6aad
 Elastic IP(固定)
 パブリック DNS (IPv4)	ec2-13-114-44-32.ap-northeast-1.compute.amazonaws.com
-プライベート IP			172.31.39.52
 IPv4 パブリック IP		13.114.44.32
+プライベート IP			172.31.39.52
+プライベート DNS			ip-172-31-39-52.ap-northeast-1.compute.internal
+キーペア名				recovery_brain_web
+
+
 
 参考		https://qiita.com/oishihiroaki/items/bc663eb1282d87c46e97
 
@@ -18,7 +22,8 @@ IPv4 パブリック IP		13.114.44.32
 	①pem保存フォルダに移動
 		cd C:\work\xampp\htdocs\recoverry_brain\rb\memo
 
-	（	cd /d H:\
+	（
+		cd /d H:\
 		cd H:\develop\xampp\htdocs\repireBrain\rb\memo
 		）
 
@@ -36,18 +41,16 @@ IPv4 パブリック IP		13.114.44.32
 	⑤該当スクリプト起動
 		nohup  node index.js &
 
-		☆node index.js  ではシェル終了、ログアウトで接続も切れる
-		☆シェルのログアウト後もプログラムの実行	;	nohup コマンド &　
-			☆"&"でバックグラウンド
-			※	nohup: ignoring input and appending output to ‘nohup.out’　と表示されるが起動
-				ログを表示せず同フォルダのnohup.outに書き出される
-		☆windowsローカルでは
-		Start-Job { & node index.js }
-
-		確認：デーモン化して起動
-				sudo forever start node index.js
-
-
+			☆node index.js  ではシェル終了、ログアウトで接続も切れる
+			☆シェルのログアウト後もプログラムの実行	;	nohup コマンド &　
+				☆"&"でバックグラウンド
+				※	nohup: ignoring input and appending output to ‘nohup.out’　と表示されるが起動
+					ログを表示せず同フォルダのnohup.outに書き出される
+			☆windowsローカルでは
+			Start-Job { & node index.js }
+			確認：デーモン化して起動
+					sudo forever start node index.js
+					node indexnde .js			//	node http-server-simple.js
 	成功したら
 		EC2>>> ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com:3080
 		と表示される
@@ -55,23 +58,28 @@ IPv4 パブリック IP		13.114.44.32
 	⑥webを2画面（もしくは別のPCで）開いて
 		ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com:3080
 
-		AWS アクセスできない
+	稼働までに時間が掛かる？
+
+ 	テスト
+		http://[your_ip_address]:3000/
 
 /////////	xamppでのテスト	/////////////////
-①	cd C:\work\xampp\htdocs\wb\wb
-	cd /d H:\
-	cd H:\develop\xampp\htdocs\wb\wb
+	①XAMMPで
 
-②	node index.js
+	①	シェルで
+		cd C:\work\xampp\htdocs\wb\wb
+		cd /d H:\
+		cd H:\develop\xampp\htdocs\repireBrain\rb
+	②　node index.js
+	③ブラウザで
 
 
-web管理
-FileZillaで操作
-	ホスト名	ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com
-	プロトコル	SFTP - SSH File Transfer Protocol
-	ログオン	通常
-	ユーザー名	ec2-user
-	パスワード	CS03tuamasu
+///	web管理	FileZillaで操作 ////////////////////////////////////////////
+	ホスト名		http://ec2-13-114-44-32.ap-northeast-1.compute.amazonaws.com
+	プロトコル		SFTP - SSH File Transfer Protocol
+	ログオン		通常
+	ユーザー名		ec2-user
+	パスワード		CS03tuamasu
 
 	備考；SSHでの操作
 	④	sudo service httpd start
@@ -97,7 +105,7 @@ FileZillaで操作
 	⑥	$ npm install socket.io							//socket.io　インストール(5.0.0ok)
 
 
-socket.io実行環境の構築
+//	socket.io実行環境の構築	//////////////////////////////////////////
 	①アプリケーションフォルダに移動
 		cd C:\work\nodejs\wb		//nodeのインストールフォルダ内
 		cd C:\work\web
@@ -108,19 +116,20 @@ socket.io実行環境の構築
 	②パーケージインストール
 		npm install socket.io express			//※socket.io　とexpressインストール
 
-		備考；個別には
-		・socket.io　インストール
-			npm install --save socket.io
-		・express　インストール
-			npm install -g express			//-g オプションを付けないと、現在のフォルダ配下のみにインストールされます。
-			npm install express-generator -g
-			express ?version										（OK;4.9.1）
+			備考；個別には
+			・socket.io　インストール
+				npm install --save socket.io
+			・express　インストール
+				npm install -g express			//-g オプションを付けないと、現在のフォルダ配下のみにインストールされます。
+				npm install express-generator -g
+				express ?version										（OK;4.9.1）
 	インストール確認
 		node app.js
 
-実行開始
+///	PCでの動作確認	shellで　/////
 	①アプリケーションフォルダに移動
-						cd C:\work\xampp\htdocs\wb\wb							//nodeのインストールフォルダ内
+		cd C:\work\xampp\htdocs\wb\wb							//nodeのインストールフォルダ内
+
 	②実行
 		node index.js
 	③ブラウザで表示させる
@@ -133,11 +142,7 @@ socket.io実行環境の構築
 		http://ec2-13-115-171-185.ap-northeast-1.compute.amazonaws.com/SamplePage.php
 	 	http://ec2-55-122-41-31.us-west-2.compute.amazonaws.com/SamplePage.php
 
-
-
-
-
-ソース編集の要点
+///	ソース編集の要点	/////////////////////////////////////////
 	①構成
 	　アプリケーションフォルダ	：	wb
 	　　　├index.js

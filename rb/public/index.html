@@ -91,32 +91,56 @@
 		window.onload = function(){	// onload	;	ページ読み込み時に実行したい処理
 			var dbmsg = "[onload]";
 			var protocol = location.protocol
-			dbmsg += "　,protocol="+protocol;
+			dbmsg += "　,protocol="+protocol;		//protocol=http:
 			var urlStr = location.href +"";
-			dbmsg += ",url=　"+urlStr;
+			dbmsg += ",urlStr=　"+urlStr;				//,url=　http://127.0.0.1:3080/
 			var host = location.hostname ;
-			dbmsg += "　,host="+host;
+			dbmsg += "　,host="+host;						//host=127.0.0.1
 			var path = location.pathname ;
-			dbmsg += "　,path="+path;
+			dbmsg += "　,path="+path;							//path=/　,query=
+			var port = ":3080/" ;
+			dbmsg += "　,path="+path;							//path=/　,query=
 			var query = location.search ;
 			dbmsg += "　,query="+query;
 			// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
 			// dbmsg += "　,ipAddress="+ipAddress;
-
 			var	tframe = document.getElementById("tframe");
 			var	titolAncar = document.getElementById("titolAncar");
 
 			var targetUrl = urlStr.replace( path, ":3080" );
-			dbmsg += "　,targetUrl="+targetUrl;
-
-			$("#urlQR").html("");
-        	$("#urlQR").qrcode({width:100,//横幅
-							    height:100,//高さ
-								text:targetUrl});
-   			console.log(dbmsg);
-			var infoAria = document.getElementById("infoAria");
-			infoAria.innerHTML = urlStr;
-		}
+			dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
+			var reciverPostion =urlStr.indexOf('reciver');
+			dbmsg += "　,reciverPostion="+reciverPostion + "/" + urlStr.length;
+			if(-1 == urlStr.indexOf('sesion')){
+				var now = new Date();
+				var UrlPparam =  "?sesion=" +  now.getYear() +(now.getMonth()+1)+now.getDate()+now.getHours()+now.getMinutes()+now.getSeconds();		// "?sesion="
+				dbmsg += "　,UrlPparam="+UrlPparam;			//,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10　//QR=http://http://192.168.3.10:3080/?sesion=11872218750?reciver="pad"
+				urlStr += UrlPparam;	//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
+				location.href=urlStr;
+			}
+			if(-1 <reciverPostion){
+				urlStr = urlStr.substring(0,reciverPostion-1);
+				dbmsg += ">urlStr>"+urlStr;
+				document.getElementById("urlInfoAria").style.display="none";				// $("#urlInfoAria").では使えない
+				//課題　；非表示にした分、描画範囲修正（上端）
+				current.color= '#FF0000';						//課題；Canvaceを取得してカラー設定
+			}else{
+				urlStr +='?reciver=pad';
+				var infoAria = document.getElementById("infoAria");
+					infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank">' + urlStr + '</a>';
+					var wifiURL = '192.168.3.10';		//http://										//課題；取得方法
+					dbmsg += "　,wifiURL="+wifiURL;
+					if(-1 < urlStr.indexOf('127.0.0.1')){
+						urlStr = urlStr.replace('127.0.0.1', wifiURL);				//'http://192.168.3.10:3080'
+					}
+					dbmsg += "　,QR="+urlStr;
+					$("#urlQR").html("");
+		        	$("#urlQR").qrcode({width:100,//横幅
+									    height:100,//高さ
+										text:urlStr});
+			}
+			console.log(dbmsg);
+	}
 	</script>
 	</body>
 </html>
