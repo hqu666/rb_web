@@ -20,52 +20,60 @@
 				<div class="row" id="urlInfoAria">
 					<div class="col-sm-10" id="urlDescriptionAria">
 						RECOVERY DOOR社のリカバリーブラインをアプリケーション化しました。<br>
-						こちら側の画面に表示される線や図形を、操作側の画面から消去します。<br>
+						こちら側の画面に表示される線や図形を、操作側の画面からなぞり、一致した度合いでスコアを表示します。<br>
 						操作側のブラウザにセットするURL≫  <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
+						 >>スマホはQRコードで接続して下さい。<br>
+						 トレース元図形を確定にするとスコアの評価が始まります。
 						<div id="scoreAria">
-							スコア
-							<span id="scoreTF">
-								100
-							</span>点  トレース元図形
+							  トレース元図形
 							<select id="jobSelect" size="1">
+								<option value="make">作成</option>
 								<option value="fileSel">ファイルから読み込み</option>
 								<option value="patranList">パターンリスト表示</option>
-								<option value="line">作成</option>
+								<option value="comp">確定</option>
 							</select>
-							<select id="typeSelect" size="1">
-								<option value="free">フリーハンド</option>
-								<option value="text">テキスト</option>
-								<option value="line">直線</option>
-								<option value="stamp">図形スタンプ</option>
-								<option value="erasre">消しゴム</option>
-							</select>
-							<input type="color" id="colorPalet">
-							<span id="graficOptions">
-								線の太さ
-								<select id="lineWidthSelect" size="1">
-									<option value="1"> 1pt</option>
-									<option value="5"> 5pt</option>
-									<option value="10">10pt</option>
-									<option value="20">20pt</option>
-									<option value="50">50pt</option>
+							<div id="scoreBrock" style="display: inline-block;margin-left: 50px;margin-right: 50px;font-size: x-large;">
+								スコア
+								<span id="scoreTF">
+									100
+								</span>点
+							</div>
+							<div id="editerAria">
+								<select id="typeSelect" size="1">
+									<option value="free">フリーハンド</option>
+									<option value="text">テキスト</option>
+									<option value="line">直線</option>
+									<option value="stamp">図形スタンプ</option>
+									<option value="erasre">消しゴム</option>
 								</select>
-								先端
-								<select id="lineCapSelect" size="1">
-									<option value="round">丸</option>
-									<option value="square">四角</option>
-									<option value="butt">無し</option>
-								</select>
-							</span>
-							<span id="texeOptions">
-								文字サイズ
-								<select id="fontSizeSelect" size="1">
-									<option value="6"> 6pt</option>
-									<option value="12">12pt</option>
-									<option value="24">24pt</option>
-									<option value="48">48pt</option>
-								</select>
-							</span>
-							<input type="button" id="allclear" value="消去" style="width: 62px;height: 38px;border-radius: 4px;margin-left: 50px;">
+								<input type="color" id="colorPalet">
+								<span id="graficOptions">
+									線の太さ
+									<select id="lineWidthSelect" size="1">
+										<option value="1"> 1pt</option>
+										<option value="5"> 5pt</option>
+										<option value="10">10pt</option>
+										<option value="20">20pt</option>
+										<option value="50">50pt</option>
+									</select>
+									先端
+									<select id="lineCapSelect" size="1">
+										<option value="round">丸</option>
+										<option value="square">四角</option>
+										<option value="butt">無し</option>
+									</select>
+								</span>
+								<span id="texeOptions">
+									文字サイズ
+									<select id="fontSizeSelect" size="1">
+										<option value="6"> 6pt</option>
+										<option value="12">12pt</option>
+										<option value="24">24pt</option>
+										<option value="48">48pt</option>
+									</select>
+								</span>
+								<input type="button" id="allclear" value="消去" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
+							</div>
 						</div>
 					</div>
 					<div class="col-sm-2" class="img-responsive" id="urlQR" style="border-color: blue;border-bottom-color: aqua;color: crimson;">
@@ -82,33 +90,35 @@
 			</div>
 	</div>
 	<script src="/socket.io/socket.io.js"></script>
-	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
 	<script src="/repi_brain.js"></script>
-	<!-- <script src="jquery.min.js"></script> -->
     <script src="jquery.qrcode.min.js"></script>
-	</script>
+
 	<script type="text/javascript">
 		window.onload = function(){	// onload	;	ページ読み込み時に実行したい処理
 			var dbmsg = "[onload]";
 			var protocol = location.protocol
 			dbmsg += "　,protocol="+protocol;		//protocol=http:
 			var urlStr = location.href +"";
-			dbmsg += ",urlStr=　"+urlStr;				//,url=　http://127.0.0.1:3080/
-			var host = location.hostname ;
+			dbmsg += ",urlStr=　"+urlStr;				//protocol + hostname + port + hash をまとめて首都kぅ
+			var host = location.hostname ;			//プロトコル情報を除外したURLを取得する(port情報なし)>>
 			dbmsg += "　,host="+host;						//host=127.0.0.1
-			var path = location.pathname ;
+			var path = location.pathname ;				//URLでパスの部分を取得・設定する
 			dbmsg += "　,path="+path;							//path=/　,query=
-			var port = ":3080/" ;
-			dbmsg += "　,path="+path;							//path=/　,query=
-			var query = location.search ;
+			var port = location.port;					//":3080/" ;
+			dbmsg += "　,port="+port;							//path=/　,query=
+			var search = location.search ;
+			dbmsg += "　,search="+search;
+			var query = location.query ;
 			dbmsg += "　,query="+query;
+			var hash = location.hash ;					//location.hash	URL内のハッシュ情報を抽出して取得する
+			dbmsg += "　,hash="+hash;
 			// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
 			// dbmsg += "　,ipAddress="+ipAddress;
 			var	tframe = document.getElementById("tframe");
 			var	titolAncar = document.getElementById("titolAncar");
 
-			var targetUrl = urlStr.replace( path, ":3080" );
-			dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
+			// var targetUrl = urlStr.replace( path, ":3080" );
+			// dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
 			var reciverPostion =urlStr.indexOf('reciver');
 			dbmsg += "　,reciverPostion="+reciverPostion + "/" + urlStr.length;
 			if(-1 == urlStr.indexOf('sesion')){
@@ -123,12 +133,17 @@
 				dbmsg += ">urlStr>"+urlStr;
 				document.getElementById("urlInfoAria").style.display="none";				// $("#urlInfoAria").では使えない
 				//課題　；非表示にした分、描画範囲修正（上端）
-				current.color= '#FF0000';						//課題；Canvaceを取得してカラー設定
+				// current.color= '#FF0000';						//課題；Canvaceを取得してカラー設定
 			}else{
 				urlStr +='?reciver=pad';
 				var infoAria = document.getElementById("infoAria");
 					infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank">' + urlStr + '</a>';
-					var wifiURL = '192.168.3.10';		//http://										//課題；取得方法
+
+					// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
+					// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
+					// dbmsg += "　,ipAddress="+ipAddress;
+					var wifiURL = '192.168.100.6';		//課題；取得方法
+					// var wifiURL = '192.168.3.10';		//自宅
 					dbmsg += "　,wifiURL="+wifiURL;
 					if(-1 < urlStr.indexOf('127.0.0.1')){
 						urlStr = urlStr.replace('127.0.0.1', wifiURL);				//'http://192.168.3.10:3080'
@@ -139,8 +154,13 @@
 									    height:100,//高さ
 										text:urlStr});
 			}
+			document.getElementById("scoreBrock").style.display="none";
+			document.getElementById("editerAria").style.display="inline-block";			 // 編集ツール表示
 			console.log(dbmsg);
-	}
+		}
+
+
+
 	</script>
 	</body>
 </html>

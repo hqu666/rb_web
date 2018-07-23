@@ -21,7 +21,6 @@ IPv4 パブリック IP		13.114.44.32
 	PowerShellなどで
 	①pem保存フォルダに移動
 		cd C:\work\xampp\htdocs\recoverry_brain\rb\memo
-
 	（
 		cd /d H:\
 		cd H:\develop\xampp\htdocs\repireBrain\rb\memo
@@ -38,7 +37,7 @@ IPv4 パブリック IP		13.114.44.32
 	④作業フォルダに移動
 		$ cd rb
 
-	⑤該当スクリプト起動
+	⑤該当スクリプト起動(SSHログアウト後も動作が続く)
 		nohup  node index.js &
 
 			☆node index.js  ではシェル終了、ログアウトで接続も切れる
@@ -128,12 +127,15 @@ IPv4 パブリック IP		13.114.44.32
 
 ///	PCでの動作確認	shellで　/////
 	①アプリケーションフォルダに移動
-		cd C:\work\xampp\htdocs\wb\wb							//nodeのインストールフォルダ内
+		cd C:\work\xampp\htdocs\recoverry_brain\rb						//nodeのインストールフォルダ内
 
 	②実行
 		node index.js
+
+////	wifiデバッグ	///////////
+①コンソールで　ipconfig
+②表示される	IPv4 アドレス　で
 	③ブラウザで表示させる
-		wifiデバッグ
 		Buffalo-A-02FAもしくはBuffalo-g-02FAでイーサネット アダプター イーサネットの IPv4 アドレスから
 		　http://192.168.100.6:3080
 			http://192.168.3.10:3080

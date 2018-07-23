@@ -6,6 +6,9 @@
 	var canvas = document.getElementsByClassName('whiteboard')[0];				//描画領域
 	var typeSelect = document.getElementById('typeSelect');						//描画種別
 	var colorPalet = document.getElementById('colorPalet');						//カラーパレット
+	var editerAria = document.getElementById('editerAria');						//上記の編集パーツ
+	var scoreBrock = document.getElementById('scoreBrock');						//スコア表示
+	var jobSelect = document.getElementById('jobSelect');						//元データの作り方
 
 	var graficOptions = document.getElementById('graficOptions');				//グラフィック設定
 	var lineWidthSelect = document.getElementById('lineWidthSelect');			//線の太さ
@@ -22,8 +25,13 @@
 		color:'#00FF00'
 		// ,width:'5'
 	};
-	colorPalet.value=current.color;
-	lineWidthSelect.value= 5;				//current.width;
+	var isComp=false;				//比較中
+	var orgCount=0;
+	var compCount=0;
+	var orgColor='#00FF00';
+	var compColor='#FFFFFF';
+	colorPalet.value=orgColor;
+	lineWidthSelect.value= 10;				//current.width;
 	current.width =  lineWidthSelect.value;
 	current.lineCap =  "round";
 
@@ -36,6 +44,30 @@
 	canvas.addEventListener('mouseout', onMouseUp, false);
 	canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
   /////////////////////////////////////////////////////////////////////////////
+	jobSelect.onchange = function () {					 //描画する種類を変更
+		dbMsg = "jobSelect;";
+		var currentjob =this.value;			 // current.color = e.target.className.split(' ')[1];
+		dbMsg += ",currentjob="+ currentjob;
+		scoreBrock.style.display="none";
+		editerAria.style.display="none";
+		if(currentjob == "fileSel"){			//ファイルから読み込み</option>
+			alert( '作成中です。');  //数値と文字の結合
+		}else if(currentjob == "patranList"){			//パターンリスト表示</option>
+			alert( '作成中です。');  //数値と文字の結合
+		}else if(currentjob == "make"){			//">作成</option>
+		 	isComp=false;				//比較中
+			document.getElementById("allclear").click();
+			editerAria.style.display="inline-block";
+			current.color =orgColor;			 // current.color = e.target.className.split(' ')[1];
+		}else if(currentjob == "comp"){			//確定</option>
+			editerAria.style.display="none";
+			scoreStart();
+		}else{			// <option value="line">作成</option>
+			alert( '作成中です。');  //数値と文字の結合
+		}
+		  myLog(dbMsg);
+	}
+
 	typeSelect.onchange = function () {					 //描画する種類を変更
 		dbMsg = "typeSelect;";
 		var currenttype =this.value;			 // current.color = e.target.className.split(' ')[1];
@@ -211,7 +243,8 @@
 			current.y = toucheY;
 			dbMsg += ",color=" + current.color+ ",width=" + current.width;
 			drawLine(currentX, currentY, current.x, current.y, current.color,current.width , current.lineCap ,1, true);
-		}
+			// scoreDrow();
+	}
 		myLog(dbMsg);
 	};
 
@@ -259,13 +292,38 @@
 
 //自画面のcanvaseに書き込み、指定が有れば送信
 	function drawLine(x0, y0, x1, y1, _color ,_width ,_lineCap,action, emit) {
-		var dbMsg = "drawLine(" + x0 + " , " + y0 + ")";
+		var dbMsg = "[drawLine](" + x0 + " , " + y0 + ")"+_color;
 		dbMsg += "～(" + x1 + " , " + y1 + ")";
 		if ( x0 != x1 ) {
 			dbMsg += "変位(" + (x0 - x1);
 		}
 		if ( y0 != y1 ) {
 			dbMsg += "," + (y0 - y1) + ")";
+		}
+		dbMsg += ",isComp="+ isComp;
+		if(isComp){			//比較中
+			_color = compColor;
+			var imagedata = context.getImageData(x0, y0,  x1, y1,);				//  指定座標のImageDataオブジェクトの取得
+			//  RGBAの取得
+			var cRed = imagedata.data[0];
+			var cGreen = imagedata.data[1];
+			var cBule = imagedata.data[2];
+			var cAlpha = imagedata.data[3];
+			dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
+			if(oRed == cRed && oGreen == cGreen && oBule == cBule){
+				compCount--;
+				dbMsg +=",compCount=" + compCount+"/" + orgCount;
+				var score =100;
+				if(0<compCount){
+					 score =  Math.round((orgCount-compCount)/orgCount*100);
+				}
+				dbMsg +="；score=" + score;
+				document.getElementById('scoreTF').innerHTML = score+"";
+			}
+		}else{
+			orgCount++;
+			dbMsg +="；orgCount=" + orgCount;
+
 		}
 		context.beginPath();
 		context.moveTo(x0, y0); //サブパスの開始点
@@ -301,13 +359,111 @@
 				action:action
 			});
 		}
+
 		myLog(dbMsg);
 	}
 
 	function allClear() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		dbMsg = "allClear";
+		orgCount=0;
 		myLog(dbMsg);
+	}
+
+	var oRed;
+	var oGreen;
+	var oBule;
+	function scoreStart() {
+		dbMsg = "[scoreStart]";
+		isComp=true;				//比較中
+		scoreBrock.style.display="inline-block";
+		// orgCount=0;
+		document.getElementById('scoreTF').innerHTML = 0+"";
+		orgColor = current.color;
+		dbMsg += ",selectColor="+ orgColor;
+		 oRed =parseInt(orgColor.slice(1, 3),16);
+		 oGreen =parseInt(orgColor.slice(3,5),16);
+		 oBule =parseInt(orgColor.slice(5,7),16);
+		dbMsg += ",r="+ oRed+",g="+ oGreen+",b="+ oBule;
+		var retRGB =complementary_color(oRed, oGreen, oBule);			 // current.color = e.target.className.split(' ')[1];
+		dbMsg += ">retRGB>"+ retRGB;		//rgb(255, 0, 255)
+		compColor =rgb2hex(retRGB);
+		current.color=compColor;
+		dbMsg += ">>"+ current.color;
+		orgCount=scoreCount();
+		dbMsg += ",orgCount="+ orgCount;
+		compCount = orgCount;
+		myLog(dbMsg);
+	}
+
+/**
+* Illustrator の計算方法		https://q-az.net/complementary-color-javascript/
+*/
+	function complementary_color(R, G, B) {
+	    //各値全てが数値かつ0以上255以下
+	    if(!isNaN(R + G + B) && 0 <= R && R <=255 && 0 <= G && G <=255 && 0 <= B && B <=255) {
+			//最大値、最小値を得る
+	        var max = Math.max(R, Math.max(G, B));
+	        var min = Math.min(R, Math.min(G, B));
+	        var sum = max + min;	        //最大値と最小値を足す
+	        //R、G、B 値を和から引く
+	        var newR = sum - R;
+	        var newG = sum - G;
+	        var newB = sum - B;
+	        var comColor = "rgb("+ newR + ", " + newG + ", " + newB +")";
+
+	        //文字列を返す
+	        return comColor;
+	    } else {
+
+	        //if 条件から外れた場合は null を返す
+	        return null;
+	    }
+	}
+
+	function rgb2hex ( col ) {
+		return "#" + col.match(/\d+/g).map(function(a){return ("0" + parseInt(a).toString(16)).slice(-2)}).join("");
+	}
+
+	function scoreDrow() {
+		dbMsg = "[scoreDrow]";
+		dbMsg += "orgCount="+orgCount;
+		var compCount=scoreCount();
+		var score =100;
+		if(0<compCount){
+			 score =  Math.round((orgCount-compCount)/orgCount*100);
+		}
+		dbMsg +="；score=" + score;
+		myLog(dbMsg);
+	}
+
+	function scoreCount() {
+		dbMsg = "[scoreCount]";
+		var dCount =0;
+		var lWidth=context.lineWidth;
+		dbMsg += "lineWidth=" + lWidth;
+		dbMsg += ",orgColo="+ orgColor;
+		var cWidth = canvas.width;
+		var cHeight = canvas.height;
+		dbMsg += "["+ cWidth + "×"+ cHeight + "]";
+		for(var x = 0; x<cWidth; x+=lWidth  ){
+			for(var y = 0; y<cHeight ;y+=lWidth  ){
+				var imagedata = context.getImageData(x, y, lWidth, lWidth);				//  指定座標のImageDataオブジェクトの取得
+				//  RGBAの取得
+				var cRed = imagedata.data[0];
+				var cGreen = imagedata.data[1];
+				var cBule = imagedata.data[2];
+				var cAlpha = imagedata.data[3];
+				if(oRed == cRed && oGreen == cGreen && oBule == cBule){
+					dbMsg += "("+ x + ","+ y + ")";
+					dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
+					dCount++;
+				}
+			}
+		}
+		dbMsg += ">>>dCount=" + dCount;
+		myLog(dbMsg);
+		return dCount;
 	}
 
 	myLog(dbMsg);
