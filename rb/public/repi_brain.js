@@ -446,7 +446,12 @@
 		var cWidth = canvas.width;
 		var cHeight = canvas.height;
 		dbMsg += "["+ cWidth + "×"+ cHeight + "]";
+	dispLoading("元データを確認しています");
+		// showProg();
+		// document.getElementById("progressBs").style.display="block";
 		for(var x = 0; x<cWidth; x+=lWidth  ){
+			var pVar =Math.round(x/cWidth*100);
+			// document.getElementById("progressBs").style.width=pVar;
 			for(var y = 0; y<cHeight ;y+=lWidth  ){
 				var imagedata = context.getImageData(x, y, lWidth, lWidth);				//  指定座標のImageDataオブジェクトの取得
 				//  RGBAの取得
@@ -461,11 +466,66 @@
 				}
 			}
 		}
+		// document.getElementById("progressBs").style.display="none";
+		removeLoading();
+
 		dbMsg += ">>>dCount=" + dCount;
 		myLog(dbMsg);
 		return dCount;
 	}
 
+	/* ------------------------------
+	 Loading イメージ表示関数
+	 引数： msg 画面に表示する文言
+	 https://webllica.com/jquery-now-loading/
+	 ------------------------------ */
+	function dispLoading(msg){
+	  // 引数なし（メッセージなし）を許容
+	  if( msg == undefined ){
+	    msg = "";
+	  }
+	  // 画面表示メッセージ
+	  var dispMsg = "<div class='loadingMsg'>" + msg + "</div>";
+	  // ローディング画像が表示されていない場合のみ出力
+	  if($("#loading").length == 0){
+	    $("body").append("<div id='loading'>" + dispMsg + "</div>");
+	  }
+	}
+
+	/* ------------------------------
+	 Loading イメージ削除関数
+	 ------------------------------ */
+	function removeLoading(){
+	  $("#loading").remove();
+	}
+	//
+	// /* ------------------------------
+	//  非同期処理の組み込みイメージ
+	//  ------------------------------ */
+	// // // $(function () {
+		function showProg() {
+		  dispLoading("処理中...");	  // 処理前に Loading 画像を表示
+		  // 非同期処理
+		  $.ajax({
+			url : "サーバーサイドの処理を行うURL",
+			type:"GET",
+			dataType:"json"
+		  })
+		  // 通信成功時
+		  .done( function(data) {
+			showMsg("成功しました");
+		  })
+		  // 通信失敗時
+		  .fail( function(data) {
+			showMsg("失敗しました");
+		  })
+		  // 処理終了時
+		  .always( function(data) {
+			// Lading 画像を消す
+			removeLoading();
+		  });
+		});
+	// // // });
 	myLog(dbMsg);
 
 	var isDebug =true;
@@ -477,5 +537,4 @@
 	}
 
  }
-
 )();
