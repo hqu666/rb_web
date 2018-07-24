@@ -61,16 +61,31 @@
 			editerAria.style.display="inline-block";
 			current.color =orgColor;			 // current.color = e.target.className.split(' ')[1];
 		}else if(currentjob == "comp"){			//確定</option>
-			editerAria.style.display="none";
-			scoreStart();
+			orgComp.click();
+			// editerAria.style.display="none";
+			// this.close();
+			// scoreStart();
 		}else{			// <option value="line">作成</option>
 			alert( '作成中です。');  //数値と文字の結合
 		}
 	}
 
 	orgComp.onclick = function () {
+		var dbMsg = "[orgComp]";
 		editerAria.style.display="none";
+		$('#modalTitol').innerHTML = "元データを確認しています";
+		var cWidth = canvas.width;
+		var cHeight = canvas.height;
+		dbMsg += "["+ cWidth + "×"+ cHeight + "]";
+		var lWidth=context.lineWidth;
+		dbMsg += "lineWidth=" + lWidth;
+		dbMsg += ",orgColo="+ orgColor;
+		$('#modalComent').innerHTML = "["+ cWidth + "×"+ cHeight + "]を線幅" +lWidth+"で分割\n" ;
+		$('#modal_box').modal();
 		scoreStart();
+		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+
+		jobSelect.value = 'comp';
 	}
 
 
@@ -279,7 +294,6 @@
 		myLog(dbMsg);
 	}
 
-
   // make the canvas fill its parent
 	function onResize() {
 		var dbMsg = "onResize;";
@@ -405,6 +419,7 @@
 		dbMsg += ">>"+ current.color;
 		// orgCount =setTimeout(scoreCount,1000);
 		orgCount =scoreCount();
+		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 		dbMsg += ",orgCount="+ orgCount;
 		compCount = orgCount;
 		document.getElementById('compTF').innerHTML = orgCount+"";
@@ -453,6 +468,15 @@
 	function scoreDrow() {
 		var dbMsg = "[scoreDrow]";
 		var score =100;
+		$('#modalTitol').innerHTML = "トレースの確認";
+		var cWidth = canvas.width;
+		var cHeight = canvas.height;
+		dbMsg += "["+ cWidth + "×"+ cHeight + "]";
+		var lWidth=context.lineWidth;
+		dbMsg += "lineWidth=" + lWidth;
+		dbMsg += ",orgColo="+ orgColor;
+		$('#modalComent').innerHTML =  "を線幅" +lWidth+"で分割\n" ;
+		$('#modal_box').modal();
 		// compCount =setTimeout(scoreCount,1000);
 		compCount =scoreCount();
 		dbMsg += "compCount"+ compCount;
@@ -491,12 +515,12 @@
 			var cHeight = canvas.height;
 			dbMsg += "["+ cWidth + "×"+ cHeight + "]";
 			// $('body').addClass('modal-open');
-
-			document.getElementById("progressFleam").style.display="block";
+			// $("#progressFleam").css("display", "block");
+			// document.getElementById("progressFleam").style.display="block";
 			// $('#modal_box').modal();
-			// // $('#dlog_bt').click();			// $('#modal_box').modal(); が効かない
 			// $('#modalTitol').innerHTML = "元データを確認しています";
 			// $('#modalComent').innerHTML = "描画領域[" +cWidth+"×"+lWidth+ "]を線幅" +lWidth+"で分割\n" ;
+			// $('#dlog_bt').click();			// $('#modal_box').modal(); が効かない
 
 		// dispLoading("元データを確認しています");
 			// showProg();
@@ -516,8 +540,6 @@
 				document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
 				// $(".progress-bar").css("width", String(pVar) + "%");		// $('.progressBs').css("width", String(pVar) + "%")では反映されない
 				document.getElementById("progressBs").style.width =  String(pVar) + "%";
-
-				// document.getElementById("progressBs").style.width=pVar+'%';
 				for(var y = 0; y<cHeight ;y+=lWidth  ){
 					var imagedata = context.getImageData(x, y, lWidth, lWidth);				//  指定座標のImageDataオブジェクトの取得
 					//  RGBAの取得
@@ -537,7 +559,7 @@
 			// $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 			// document.getElementById("progressBs").style.display="none";
 			// removeLoading();
-			document.getElementById("progressFleam").style.display="none";			 // 編集ツール表示
+//			document.getElementById("progressFleam").style.display="none";			 // ここでstyleは無効
 			dbMsg += ">>>dCount=" + dCount;
 			myLog(dbMsg);
 			return dCount;
