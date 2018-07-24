@@ -1,7 +1,6 @@
 'use strict';
 
 (function() {
-	var dbMsg = "repi_brain.js;"
 	var socket = io();
 	var canvas = document.getElementsByClassName('whiteboard')[0];				//描画領域
 	var typeSelect = document.getElementById('typeSelect');						//描画種別
@@ -9,6 +8,7 @@
 	var editerAria = document.getElementById('editerAria');						//上記の編集パーツ
 	var scoreBrock = document.getElementById('scoreBrock');						//スコア表示
 	var jobSelect = document.getElementById('jobSelect');						//元データの作り方
+	var orgComp = document.getElementById('orgComp');						//元データの作り方
 
 	var graficOptions = document.getElementById('graficOptions');				//グラフィック設定
 	var lineWidthSelect = document.getElementById('lineWidthSelect');			//線の太さ
@@ -45,11 +45,12 @@
 	canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
   /////////////////////////////////////////////////////////////////////////////
 	jobSelect.onchange = function () {					 //描画する種類を変更
-		dbMsg = "jobSelect;";
+		var dbMsg = "[jobSelect]";
 		var currentjob =this.value;			 // current.color = e.target.className.split(' ')[1];
 		dbMsg += ",currentjob="+ currentjob;
 		scoreBrock.style.display="none";
 		editerAria.style.display="none";
+		myLog(dbMsg);
 		if(currentjob == "fileSel"){			//ファイルから読み込み</option>
 			alert( '作成中です。');  //数値と文字の結合
 		}else if(currentjob == "patranList"){			//パターンリスト表示</option>
@@ -65,11 +66,16 @@
 		}else{			// <option value="line">作成</option>
 			alert( '作成中です。');  //数値と文字の結合
 		}
-		  myLog(dbMsg);
 	}
 
+	orgComp.onclick = function () {
+		editerAria.style.display="none";
+		scoreStart();
+	}
+
+
 	typeSelect.onchange = function () {					 //描画する種類を変更
-		dbMsg = "typeSelect;";
+		var dbMsg = "typeSelect;";
 		var currenttype =this.value;			 // current.color = e.target.className.split(' ')[1];
 		dbMsg += ",typeSelect="+ currenttype;
 		if(currenttype == "free"){
@@ -92,7 +98,7 @@
 	}
 
 	colorPalet.onchange = function () {					 // カラーパレットからの移し替え
-		dbMsg = "colorPalet;";
+		var dbMsg = "colorPalet;";
 		current.color =this.value;			 // current.color = e.target.className.split(' ')[1];
 		dbMsg += ",selectColor="+ current.color;
 		// socket.emit('changeColor', current.color);
@@ -100,7 +106,7 @@
 	}
 
 	lineWidthSelect.onchange = function () {
-		dbMsg = "lineWidthSelect;";
+		var dbMsg = "lineWidthSelect;";
 		var selectWidth = this.value
 		current.width =  selectWidth;
 		dbMsg += ",selectWidth="+ current.width;
@@ -124,7 +130,7 @@
 
 //イベント受信////////////////////////////////////////////////////////////////////////////
 	socket.on('drawing', function(data) {
-		dbMsg += "recive:drawing";
+		var dbMsg = "recive:drawing";
 		onDrawingEvent(data);
 		myLog(dbMsg);
 	});
@@ -153,7 +159,7 @@
 	// });
 
 	socket.on('allclear', function(data) {
-		dbMsg += "recive:all clear";
+		var dbMsg = "recive:all clear";
 		myLog(dbMsg);
 		allClear();
 	});
@@ -175,7 +181,7 @@
 	}
 
 	function onMouseUp(e) {
-		var dbMsg = "onMouseUp;drawing=" + drawing;
+		var dbMsg = "[onMouseUp]drawing=" + drawing;
 		if (drawing) {
 			drawing = false;
 			var currentX = current.x;
@@ -185,6 +191,10 @@
 			current.y = e.clientY;
 			dbMsg += ",color=" + current.color+ ",width=" + current.width;
 			drawLine(currentX, currentY, current.x, current.y, current.color , current.width , current.lineCap , 2 , true);
+			dbMsg += ",isComp=" + isComp;
+			if(isComp){			//比較中
+				scoreDrow()
+			}
 		}
 		myLog(dbMsg);
 	}
@@ -215,7 +225,7 @@
 	};
 
 	canvas.ontouchmove = function(event) { //画面に指を触れたまま動かした
-		dbMsg = "ontouchmove;drawing=" + drawing;
+		var dbMsg = "[ontouchmove]drawing=" + drawing;
 		if (drawing) {
 			event.preventDefault(); // 画面のスクロールを防止する
 			var toucheX = event.touches[0].pageX;
@@ -230,7 +240,7 @@
 	};
 
 	canvas.ontouchend = function(event) { //画面から指を離した
-		dbMsg = "ontouchend;drawing=" + drawing;
+		var dbMsg = "ontouchend;drawing=" + drawing;
 		if (drawing) {
 			drawing = false;
 			var currentX = current.x;
@@ -244,7 +254,11 @@
 			dbMsg += ",color=" + current.color+ ",width=" + current.width;
 			drawLine(currentX, currentY, current.x, current.y, current.color,current.width , current.lineCap ,1, true);
 			// scoreDrow();
-	}
+		}
+		dbMsg = "[ontouchend]isComp=" + isComp;
+		// if(isComp){			//比較中
+		// 	scoreDrow();
+		// }
 		myLog(dbMsg);
 	};
 
@@ -252,7 +266,7 @@
 	function onDrawingEvent(data) {
 		var w = canvas.width;
 		var h = canvas.height;
-		dbMsg = "onDrawingEvent；受信(" + data.x0 + " , " + data.y0 + ")";
+		var dbMsg = "onDrawingEvent；受信(" + data.x0 + " , " + data.y0 + ")";
 		dbMsg += "～(" + data.x1 + " , " + data.y1 + ")";
 		if ( data.x0 != data.x1 ) {
 			dbMsg += "変位(" + (data.x0 - data.x1);
@@ -268,7 +282,7 @@
 
   // make the canvas fill its parent
 	function onResize() {
-		dbMsg = "onResize;";
+		var dbMsg = "onResize;";
 		canvas.width = window.innerWidth;
 		dbMsg = "[" + canvas.width;
 		var setHight = canvas.width*1080/1920;
@@ -303,27 +317,26 @@
 		dbMsg += ",isComp="+ isComp;
 		if(isComp){			//比較中
 			_color = compColor;
-			var imagedata = context.getImageData(x0, y0,  x1, y1,);				//  指定座標のImageDataオブジェクトの取得
-			//  RGBAの取得
-			var cRed = imagedata.data[0];
-			var cGreen = imagedata.data[1];
-			var cBule = imagedata.data[2];
-			var cAlpha = imagedata.data[3];
-			dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
-			if(oRed == cRed && oGreen == cGreen && oBule == cBule){
-				compCount--;
-				dbMsg +=",compCount=" + compCount+"/" + orgCount;
-				var score =100;
-				if(0<compCount){
-					 score =  Math.round((orgCount-compCount)/orgCount*100);
-				}
-				dbMsg +="；score=" + score;
-				document.getElementById('scoreTF').innerHTML = score+"";
-			}
+			// var imagedata = context.getImageData(x0, y0,  x1, y1,);				//  指定座標のImageDataオブジェクトの取得
+			// //  RGBAの取得
+			// var cRed = imagedata.data[0];
+			// var cGreen = imagedata.data[1];
+			// var cBule = imagedata.data[2];
+			// var cAlpha = imagedata.data[3];
+			// dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
+			// if(oRed == cRed && oGreen == cGreen && oBule == cBule){
+			// 	compCount--;
+			// 	dbMsg +=",compCount=" + compCount+"/" + orgCount;
+			// 	var score =100;
+			// 	if(0<compCount){
+			// 		 score =  Math.round((orgCount-compCount)/orgCount*100);
+			// 	}
+			// 	dbMsg +="；score=" + score;
+			// 	document.getElementById('scoreTF').innerHTML = score+"";
+			// }
 		}else{
-			orgCount++;
-			dbMsg +="；orgCount=" + orgCount;
-
+			// orgCount++;
+			// dbMsg +="；orgCount=" + orgCount;
 		}
 		context.beginPath();
 		context.moveTo(x0, y0); //サブパスの開始点
@@ -365,7 +378,7 @@
 
 	function allClear() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		dbMsg = "allClear";
+		var dbMsg = "allClear";
 		orgCount=0;
 		myLog(dbMsg);
 	}
@@ -374,7 +387,7 @@
 	var oGreen;
 	var oBule;
 	function scoreStart() {
-		dbMsg = "[scoreStart]";
+		var dbMsg = "[scoreStart]";
 		isComp=true;				//比較中
 		scoreBrock.style.display="inline-block";
 		// orgCount=0;
@@ -390,9 +403,21 @@
 		compColor =rgb2hex(retRGB);
 		current.color=compColor;
 		dbMsg += ">>"+ current.color;
-		orgCount=scoreCount();
+		// orgCount =setTimeout(scoreCount,1000);
+		orgCount =scoreCount();
 		dbMsg += ",orgCount="+ orgCount;
 		compCount = orgCount;
+		document.getElementById('compTF').innerHTML = orgCount+"";
+		document.getElementById('orgTF').innerHTML = orgCount+"";
+		// const prom =scoreCount();
+		// prom.then((orgCount) => {
+		// 	dbMsg += ",orgCount="+ orgCount;
+		// 	compCount = orgCount;
+		// 	document.getElementById('compTF').innerHTML = orgCount+"";
+		// 	document.getElementById('orgTF').innerHTML = orgCount+"";
+		// }).catch((err) => {
+		// 	dbMsg += "カウント失敗";
+		// });
 		myLog(dbMsg);
 	}
 
@@ -426,107 +451,158 @@
 	}
 
 	function scoreDrow() {
-		dbMsg = "[scoreDrow]";
-		dbMsg += "orgCount="+orgCount;
-		var compCount=scoreCount();
+		var dbMsg = "[scoreDrow]";
 		var score =100;
-		if(0<compCount){
-			 score =  Math.round((orgCount-compCount)/orgCount*100);
-		}
-		dbMsg +="；score=" + score;
+		// compCount =setTimeout(scoreCount,1000);
+		compCount =scoreCount();
+		dbMsg += "compCount"+ compCount;
+		orgCount=document.getElementById('orgTF').innerHTML;
+		dbMsg += "/"+ orgCount;
+		 score =  Math.round((orgCount-compCount)/orgCount*100);
+		 dbMsg +="；score=" + score;
+		 document.getElementById('scoreTF').innerHTML = score+"";
+		document.getElementById('compTF').innerHTML = compCount+"";
+		// const prom =scoreCount();
+		// prom.then((compCount) => {
+		// 	dbMsg += ",compCount="+ compCount;
+		// 	if(0<compCount){
+		// 		orgCount=document.getElementById('orgTF').innerHTML;
+		// 		dbMsg += "/"+ orgCount;
+		// 		 score =  Math.round((orgCount-compCount)/orgCount*100);
+		// 		 dbMsg +="；score=" + score;
+		// 		 document.getElementById('scoreTF').innerHTML = score+"";
+		// 		document.getElementById('compTF').innerHTML = compCount+"";
+		// 		myLog(dbMsg);
+		// }
+		// }).catch((err) => {
+		// 	dbMsg += "カウント失敗";
+		// });
 		myLog(dbMsg);
 	}
 
 	function scoreCount() {
-		dbMsg = "[scoreCount]";
-		var dCount =0;
-		var lWidth=context.lineWidth;
-		dbMsg += "lineWidth=" + lWidth;
-		dbMsg += ",orgColo="+ orgColor;
-		var cWidth = canvas.width;
-		var cHeight = canvas.height;
-		dbMsg += "["+ cWidth + "×"+ cHeight + "]";
-	dispLoading("元データを確認しています");
-		// showProg();
-		// document.getElementById("progressBs").style.display="block";
-		for(var x = 0; x<cWidth; x+=lWidth  ){
-			var pVar =Math.round(x/cWidth*100);
-			// document.getElementById("progressBs").style.width=pVar;
-			for(var y = 0; y<cHeight ;y+=lWidth  ){
-				var imagedata = context.getImageData(x, y, lWidth, lWidth);				//  指定座標のImageDataオブジェクトの取得
-				//  RGBAの取得
-				var cRed = imagedata.data[0];
-				var cGreen = imagedata.data[1];
-				var cBule = imagedata.data[2];
-				var cAlpha = imagedata.data[3];
-				if(oRed == cRed && oGreen == cGreen && oBule == cBule){
-					dbMsg += "("+ x + ","+ y + ")";
-					dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
-					dCount++;
+		// return new Promise((onSuccess, onFailed) => {
+			var dbMsg = "[scoreCount]";
+			var dCount =0;
+			var lWidth=context.lineWidth;
+			dbMsg += "lineWidth=" + lWidth;
+			dbMsg += ",orgColo="+ orgColor;
+			var cWidth = canvas.width;
+			var cHeight = canvas.height;
+			dbMsg += "["+ cWidth + "×"+ cHeight + "]";
+			// $('body').addClass('modal-open');
+
+			document.getElementById("progressFleam").style.display="block";
+			// $('#modal_box').modal();
+			// // $('#dlog_bt').click();			// $('#modal_box').modal(); が効かない
+			// $('#modalTitol').innerHTML = "元データを確認しています";
+			// $('#modalComent').innerHTML = "描画領域[" +cWidth+"×"+lWidth+ "]を線幅" +lWidth+"で分割\n" ;
+
+		// dispLoading("元データを確認しています");
+			// showProg();
+			// document.getElementById("modal_box").modal();//modal is not a function
+			// document.getElementById("progress").style.display="block";
+			// $('#progress').progressbar({
+			//    value: 0,
+			//    max: cWidth,
+			//    disabled: false
+			//  });
+			for(var x = 0; x<cWidth; x+=lWidth  ){
+				var pVar =Math.round(x/cWidth*100)+1;
+				// $('#progress').progressbar({
+				//    value: x,
+				//  });
+				//  $('#loading').text(pVar + '％');
+				document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
+				// $(".progress-bar").css("width", String(pVar) + "%");		// $('.progressBs').css("width", String(pVar) + "%")では反映されない
+				document.getElementById("progressBs").style.width =  String(pVar) + "%";
+
+				// document.getElementById("progressBs").style.width=pVar+'%';
+				for(var y = 0; y<cHeight ;y+=lWidth  ){
+					var imagedata = context.getImageData(x, y, lWidth, lWidth);				//  指定座標のImageDataオブジェクトの取得
+					//  RGBAの取得
+					var cRed = imagedata.data[0];
+					var cGreen = imagedata.data[1];
+					var cBule = imagedata.data[2];
+					var cAlpha = imagedata.data[3];
+					if(oRed == cRed && oGreen == cGreen && oBule == cBule){
+						dbMsg += "("+ x + ","+ y + ")";
+						dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
+						dCount++;
+					}
 				}
 			}
-		}
-		// document.getElementById("progressBs").style.display="none";
-		removeLoading();
-
-		dbMsg += ">>>dCount=" + dCount;
-		myLog(dbMsg);
-		return dCount;
+			// $('body').removeClass('modal-open'); // 1； body に自動的に付与されるクラスを削除する。このクラスがついたままだと、 画面スクロールが効かなくなる
+			// $('.modal-backdrop').remove();       // 2；モーダルの背景（黒い部分）を削除する処理。この処理を行わないとモーダルは消えても、背景が残ったままになり、 クリックが効かないままになる
+			// $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+			// document.getElementById("progressBs").style.display="none";
+			// removeLoading();
+			document.getElementById("progressFleam").style.display="none";			 // 編集ツール表示
+			dbMsg += ">>>dCount=" + dCount;
+			myLog(dbMsg);
+			return dCount;
+			// return onSuccess(dCount);
+	    // });
 	}
 
+
+	$('.click_btn').on('click', function(){
+	  $('#modal_box').modal('show');
+
+	});
 	/* ------------------------------
 	 Loading イメージ表示関数
 	 引数： msg 画面に表示する文言
 	 https://webllica.com/jquery-now-loading/
 	 ------------------------------ */
-	function dispLoading(msg){
-	  // 引数なし（メッセージなし）を許容
-	  if( msg == undefined ){
-	    msg = "";
-	  }
-	  // 画面表示メッセージ
-	  var dispMsg = "<div class='loadingMsg'>" + msg + "</div>";
-	  // ローディング画像が表示されていない場合のみ出力
-	  if($("#loading").length == 0){
-	    $("body").append("<div id='loading'>" + dispMsg + "</div>");
-	  }
-	}
-
-	/* ------------------------------
-	 Loading イメージ削除関数
-	 ------------------------------ */
-	function removeLoading(){
-	  $("#loading").remove();
-	}
+	// function dispLoading(msg){
+	//   // 引数なし（メッセージなし）を許容
+	//   if( msg == undefined ){
+	//     msg = "";
+	//   }
+	//   // 画面表示メッセージ
+	//   var dispMsg = "<div class='loadingMsg'>" + msg + "</div>";
+	//   // ローディング画像が表示されていない場合のみ出力
+	//   if($("#loading").length == 0){
+	//     $("body").append("<div id='loading'>" + dispMsg + "</div>");
+	//   }
+	// }
 	//
 	// /* ------------------------------
-	//  非同期処理の組み込みイメージ
+	//  Loading イメージ削除関数
 	//  ------------------------------ */
-	// // // $(function () {
-		function showProg() {
-		  dispLoading("処理中...");	  // 処理前に Loading 画像を表示
-		  // 非同期処理
-		  $.ajax({
-			url : "サーバーサイドの処理を行うURL",
-			type:"GET",
-			dataType:"json"
-		  })
-		  // 通信成功時
-		  .done( function(data) {
-			showMsg("成功しました");
-		  })
-		  // 通信失敗時
-		  .fail( function(data) {
-			showMsg("失敗しました");
-		  })
-		  // 処理終了時
-		  .always( function(data) {
-			// Lading 画像を消す
-			removeLoading();
-		  });
-		});
-	// // // });
-	myLog(dbMsg);
+	// function removeLoading(){
+	//   $("#loading").remove();
+	// }
+	// //
+	// // /* ------------------------------
+	// //  非同期処理の組み込みイメージ
+	// //  ------------------------------ */
+	// // // // $(function () {
+	// 	function showProg() {
+	// 	  dispLoading("処理中...");	  // 処理前に Loading 画像を表示
+	// 	  // 非同期処理
+	// 	  $.ajax({
+	// 		url : "サーバーサイドの処理を行うURL",
+	// 		type:"GET",
+	// 		dataType:"json"
+	// 	  })
+	// 	  // 通信成功時
+	// 	  .done( function(data) {
+	// 		showMsg("成功しました");
+	// 	  })
+	// 	  // 通信失敗時
+	// 	  .fail( function(data) {
+	// 		showMsg("失敗しました");
+	// 	  })
+	// 	  // 処理終了時
+	// 	  .always( function(data) {
+	// 		// Lading 画像を消す
+	// 		removeLoading();
+	// 	  });
+	// 	});
+	// // // // });
+	// myLog(dbMsg);
 
 	var isDebug =true;
 	function myLog(dbMsg) {

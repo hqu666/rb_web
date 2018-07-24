@@ -22,8 +22,8 @@ IPv4 パブリック IP		13.114.44.32
 	①pem保存フォルダに移動
 		cd C:\work\xampp\htdocs\recoverry_brain\rb\memo
 	（
-		cd /d H:\
-		cd H:\develop\xampp\htdocs\repireBrain\rb\memo
+			cd /d H:\
+			cd H:\develop\xampp\htdocs\repireBrain\rb\memo
 		）
 
 	②設定ファイルの権限設定
@@ -37,11 +37,11 @@ IPv4 パブリック IP		13.114.44.32
 	④作業フォルダに移動
 		$ cd rb
 
-	⑤該当スクリプト起動(SSHログアウト後も動作が続く)
+	⑤ハングアップ シグナル( HUP )を出さずに該当スクリプト起動；SSHログアウト後も動作が続く)
 		nohup  node index.js &
 
 			☆node index.js  ではシェル終了、ログアウトで接続も切れる
-			☆シェルのログアウト後もプログラムの実行	;	nohup コマンド &　
+			☆nohup コマンド &　
 				☆"&"でバックグラウンド
 				※	nohup: ignoring input and appending output to ‘nohup.out’　と表示されるが起動
 					ログを表示せず同フォルダのnohup.outに書き出される
@@ -62,13 +62,21 @@ IPv4 パブリック IP		13.114.44.32
  	テスト
 		http://[your_ip_address]:3000/
 
+	⑦止め方
+	1)起動している処理のプロセスIDを検索
+		$ ps aux | grep node
+			ec2-user 25033  0.0  3.5 1202728 35528 pts/0   Sl+  00:46   0:00 node index.js
+			と、ユーザー名の次のカラムに表示される
+	2)終了
+		$ kill 25033
+
 /////////	xamppでのテスト	/////////////////
 	①XAMMPで
 
 	①	シェルで
-		cd C:\work\xampp\htdocs\wb\wb
-		cd /d H:\
-		cd H:\develop\xampp\htdocs\repireBrain\rb
+		cd C:\work\xampp\htdocs\recoverry_brain\rb
+			cd /d H:\
+			cd H:\develop\xampp\htdocs\repireBrain\rb
 	②　node index.js
 	③ブラウザで
 

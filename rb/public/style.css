@@ -71,7 +71,11 @@ html, body {
         height: 24px;
     }
 
- #loading {
+    #loading {
+      position: absolute;
+      left: 50%;
+    }
+ /* #loading {
   display: table;
   width: 100%;
   height: 100%;
@@ -80,12 +84,12 @@ html, body {
   left: 0;
   background-color: #fff;
   opacity: 0.8;
-}
+} */
 
-#loading .loadingMsg {
+/* #loading .loadingMsg {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
   padding-top: 140px;
   background: url("img/loader _cycle_r.gif") center center no-repeat;
-}
+} */
