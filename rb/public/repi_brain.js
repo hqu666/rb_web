@@ -56,7 +56,7 @@
 		}else if(currentjob == "patranList"){			//パターンリスト表示</option>
 			isComp=false;				//比較中
 			document.getElementById("allclear").click();
-			stereoTypeSelect();
+			stereoTypeStart();
 		}else if(currentjob == "make"){			//">作成</option>
 		 	isComp=false;				//比較中
 			document.getElementById("allclear").click();
@@ -421,18 +421,34 @@
 /**
 * 定型パターンを画像で読込む（選択機構）
 */
-function stereoTypeSelect() {
-    var tag = "[stereoTypeSelect]";
-	document.getElementById("allclear").click();
-	editerAria.style.display="inline-block";
+	function stereoTypeStart() {
+	    var tag = "[stereoTypeStart]";
+		var dbMsg = tag ;
+		document.getElementById("allclear").click();
+		editerAria.style.display="inline-block";
+		document.getElementById("modalTitol").innerHTML = "定型パターン選択";
+		document.getElementById("modalComent").innerHTML = "クリックして選択";
+		document.getElementById("modalImgList").style.display="inline-block";			 // 編集ツール表示
+		document.getElementById("progressBase").style.display="none";
+		$('#modal_box').modal('show');
 
-///画像リスト
+		myLog(dbMsg);
+	}
 
-	var srcName = '/stereotype/st001.png';
-    var dbMsg = tag + ",src=" + srcName;
-	myLog(dbMsg);
-	stereoTypeRead(srcName);
-}
+	document.getElementById("modalImgList").onclick = function (event) {					 // カラーパレットからの移し替え
+	// function stereoTypeSelect() {
+		 var tag = "[modalImgList]";
+		 var $getListAItems = document.getElementById( "modalImgList" ).children;
+	     for( var $i = 0; $i < $getListAItems.length; $i++ ){
+	         $getListAItems[$i].onclick =function(){
+					 var srcName =this.src;			 // current.color = e.target.className.split(' ')[1];
+				 	var dbMsg = tag + ",src=" + srcName;
+				 	myLog(dbMsg);
+					$('#modal_box').modal('hide');
+				 	stereoTypeRead(srcName);
+	             };
+	     }
+	}
 
 	/**
 	 * 定型静止画を読み込む
@@ -537,6 +553,10 @@ function stereoTypeSelect() {
 			context.lineWidth = lineWidthMax;
 			 // stereoTypeCheck(canvas)
 			myLog(dbMsg);
+			jobSelect.value = 'comp';
+			editerAria.style.display="none";
+			scoreBrock.style.display="inline-block";
+
 	    }
 	} //型になる静止画を読み//
 
