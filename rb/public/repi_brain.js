@@ -8,14 +8,14 @@
 	var editerAria = document.getElementById('editerAria');						//上記の編集パーツ
 	var scoreBrock = document.getElementById('scoreBrock');						//スコア表示
 	var jobSelect = document.getElementById('jobSelect');						//元データの作り方
-	var orgComp = document.getElementById('orgComp');						//元データの作り方
+	var orgComp = document.getElementById('orgComp');							//元データの描画結果
+	var useComp = document.getElementById('useComp');							//トレース後の描画結果
 
 	var graficOptions = document.getElementById('graficOptions');				//グラフィック設定
 	var lineWidthSelect = document.getElementById('lineWidthSelect');			//線の太さ
 	var lineCapSelect = document.getElementById('lineCapSelect');				//先端形状
 
 	var texeOptions = document.getElementById('texeOptions');					//テキスト設定
-
 	var eventComent = document.getElementById("eventComent");
 	eventComent.innerHTML = "Drow OK";
 	var $document = $(document);
@@ -54,7 +54,9 @@
 		if(currentjob == "fileSel"){			//ファイルから読み込み</option>
 			alert( '作成中です。');  //数値と文字の結合
 		}else if(currentjob == "patranList"){			//パターンリスト表示</option>
-			alert( '作成中です。');  //数値と文字の結合
+			isComp=false;				//比較中
+			document.getElementById("allclear").click();
+			stereoTypeSelect();
 		}else if(currentjob == "make"){			//">作成</option>
 		 	isComp=false;				//比較中
 			document.getElementById("allclear").click();
@@ -70,7 +72,7 @@
 		}
 	}
 
-	orgComp.onclick = function () {
+	orgComp.onclick = function () {											//元データの描画結果
 		var dbMsg = "[orgComp]";
 		editerAria.style.display="none";
 		$('#modalTitol').innerHTML = "元データを確認しています";
@@ -81,14 +83,31 @@
 		dbMsg += "lineWidth=" + lWidth;
 		dbMsg += ",orgColo="+ orgColor;
 		$('#modalComent').innerHTML = "["+ cWidth + "×"+ cHeight + "]を線幅" +lWidth+"で分割\n" ;
-		$('#modal_box').modal();
+		$('#modal_box').modal('show');
 		scoreStart();
 		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 
 		jobSelect.value = 'comp';
 	}
 
+		useComp.onclick = function () {											//トレース後の描画結果
+			var dbMsg = "[useComp]";
+			$('#modalTitol').innerHTML = "トレースの確認";
+			var cWidth = canvas.width;
+			var cHeight = canvas.height;
+			dbMsg += "["+ cWidth + "×"+ cHeight + "]";
+			var lWidth=context.lineWidth;
+			dbMsg += "lineWidth=" + lWidth;
+			dbMsg += ",orgColo="+ orgColor;
+			$('#modalComent').innerHTML =  "を線幅" +lWidth+"で分割\n" ;
+			$('#modal_box').modal('show');
+			scoreDrow();
+			$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 
+			jobSelect.value = 'comp';
+		}
+
+//変種ツール//////////////////////////////////////////////////////////////////
 	typeSelect.onchange = function () {					 //描画する種類を変更
 		var dbMsg = "typeSelect;";
 		var currenttype =this.value;			 // current.color = e.target.className.split(' ')[1];
@@ -208,7 +227,7 @@
 			drawLine(currentX, currentY, current.x, current.y, current.color , current.width , current.lineCap , 2 , true);
 			dbMsg += ",isComp=" + isComp;
 			if(isComp){			//比較中
-				scoreDrow()
+				useComp.click();
 			}
 		}
 		myLog(dbMsg);
@@ -397,6 +416,180 @@
 		myLog(dbMsg);
 	}
 
+
+//ファイル操作//////////////////////////////////////////
+/**
+* 定型パターンを画像で読込む（選択機構）
+*/
+function stereoTypeSelect() {
+    var tag = "[stereoTypeSelect]";
+	document.getElementById("allclear").click();
+	editerAria.style.display="inline-block";
+
+///画像リスト
+
+	var srcName = '/stereotype/st001.png';
+    var dbMsg = tag + ",src=" + srcName;
+	myLog(dbMsg);
+	stereoTypeRead(srcName);
+}
+
+	/**
+	 * 定型静止画を読み込む
+	 * @param {*} srcName 型の画像ファイル名
+	 */
+	function stereoTypeRead(srcName) {
+	    var tag = "[stereoTypeRead]";
+	    var img = new Image();
+	    img.src = srcName;
+	    var dbMsg = tag + ",src=" + img.src;
+	    img.crossOrigin = "Anonymous"; //XAMPP必要；file;//ではcrossdomeinエラー発生
+	    img.onload = function(event) {
+	        var dbMsg = tag + "[stereoTypeRead.onload]";
+	        var dstWidth = this.width;
+	        var dstHeight = this.height;
+	        dbMsg = dbMsg + ",読み込んだ画像[" + dstWidth + "×" + dstHeight + "]Aspect=" + (dstWidth / dstHeight);
+			var rectHead = document.getElementById('header').getBoundingClientRect();				//canvasの上にある要素
+			var rect = document.getElementById('hitarea').getBoundingClientRect();
+			var canvasX =rect.left + window.pageXOffset;
+			var canvasY = rectHead.height			//rect.top + window.pageYOffset;は0しか取得できない
+			dbMsg = dbMsg + ",tbCanvas(" + canvasX + " , " + canvasY + ")[" + rect.width + "×" + rect.height +"]";
+	        var tbCanvasWidth = canvas.width;
+	        var tbCanvasHeight = canvas.height;
+	        dbMsg = dbMsg + "[" + tbCanvasWidth + "×" + tbCanvasHeight + "]";
+	        var scaleWidth =  tbCanvasWidth/dstWidth*0.9;		//dstWidth / tbCanvasWidth;
+	        var scaleHeight = tbCanvasHeight/dstHeight*0.9;	//dstHeight / tbCanvasHeight;
+	        dbMsg = dbMsg + ",scale[" + scaleWidth + "×" + scaleHeight + "%]";	//"更に" + tileBaceSize + "%";
+	        var biScale = scaleWidth;
+	        if (scaleHeight < scaleWidth) {
+	            biScale = scaleHeight;
+	        }
+	        dbMsg = dbMsg + ",拡大；" + biScale + "%";
+	        dstWidth = dstWidth * biScale;
+	        dstHeight = dstHeight * biScale;
+	        dbMsg = dbMsg + ",表示[" + dstWidth + "×" + dstHeight + "]=" + (dstWidth / dstHeight);
+	        var shiftX =( canvasX+tbCanvasWidth - dstWidth) / 2;				// (winW - dstWidth) / 2;
+	        var shiftY = (canvasY+tbCanvasHeight - dstHeight) / 2;				//(winH - dstHeight) / 2;
+	        dbMsg = dbMsg + ",(" + shiftX + "," + shiftY + ")";
+	        context.drawImage(this, shiftX, shiftY, dstWidth, dstHeight);
+
+			var canvasImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+			var canvasRGBA = canvasImageData.data;
+			var newImageData = context.createImageData(canvas.width, canvas.height);
+			var newRGBA = newImageData.data;
+			oRed = 255;
+			oGreen = 255;
+			oBule = 255;
+			context.lineWidth=0;
+			var lineWidthMax = 0
+			for (var yPos = 0;yPos < canvas.height;yPos++) {
+				for (var xPos = 0;xPos < canvas.width;xPos++) {
+					var carentPos =(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4)
+					newRGBA[carentPos] = canvasRGBA[carentPos];
+					newRGBA[1 + carentPos] = canvasRGBA[1 + carentPos];
+					newRGBA[2 + carentPos] = canvasRGBA[2 + carentPos];
+					newRGBA[3 + carentPos] = canvasRGBA[3 + carentPos];
+
+					// var imagedata = context.getImageData(x, y, 1, 1);				//  指定座標のImageDataオブジェクトの取得
+					var cRed = newRGBA[carentPos];
+					var cGreen = newRGBA[1 + carentPos];
+					var cBule = newRGBA[2 + carentPos];
+					if(255 != cRed && 255 != cGreen && 255 != cBule && 0 != cRed && 0 != cGreen && 0 != cBule){
+						if(oRed != cRed && oGreen != cGreen && oBule != cBule){
+							if(cRed < oRed){
+								oRed = cRed;
+							}
+							if(cGreen<oGreen){
+								oGreen = cGreen;
+							}
+							if(cBule<oBule){
+								oBule = cBule;
+							}
+							 // oAlpha = imagedata.data[3];
+						 }else{
+							//  dbMsg += "("+ xPos + ","+ yPos + ")carentPos=" + carentPos;
+ 							// dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule;
+							context.lineWidth++;
+						}
+					}else{														//白に戻った時
+						if(255 != oRed && 255 != oGreen && 255 != oBule){		//色が拾えていて
+							if(lineWidthMax < context.lineWidth){				//
+								lineWidthMax = context.lineWidth;
+							}
+						}
+						context.lineWidth=0;
+					}
+	// 上下反転		http://www.programmingmat.jp/webhtml_lab/canvas_image.html
+	// newRGBA[(j * 4) + ((canvas.height - 1 - i) * canvas.width * 4)] = canvasRGBA[(j * 4) + (i * canvas.width * 4)];
+	// newRGBA[1 + (j * 4) + ((canvas.height - 1 - i) * canvas.width * 4)] = canvasRGBA[1 + (j * 4) + (i * canvas.width * 4)];
+	// newRGBA[2 + (j * 4) + ((canvas.height - 1 - i) * canvas.width * 4)] = canvasRGBA[2 + (j * 4) + (i * canvas.width * 4)];
+	// newRGBA[3 + (j * 4) + ((canvas.height - 1 - i) * canvas.width * 4)] = canvasRGBA[3 + (j * 4) + (i * canvas.width * 4)];
+				}
+			}
+			context.putImageData(newImageData, 0, 0);					// コピーしたピクセル情報をCanvasに転送
+
+			dbMsg += ",r="+ oRed+",g="+ oGreen+",b="+ oGreen;						//r=63,g=72,b=72
+			orgColor = rgb2hex("rgb("+ oRed + ", " + oGreen + ", " + oGreen +")");
+			dbMsg += ">current.color>"+ orgColor;
+			colorPalet.value=orgColor;												//r=63,g=72,b=204
+			current.color=orgColor;
+			dbMsg += ">lineWidthMax>"+lineWidthMax;
+			context.lineWidth = lineWidthMax;
+			 // stereoTypeCheck(canvas)
+			myLog(dbMsg);
+	    }
+	} //型になる静止画を読み//
+
+	function stereoTypeCheck(canvas) {
+	    var tag = "[stereoTypeCheck]";
+		var cWidth = canvas.width;
+		var cHeight = canvas.height;
+		var dbMsg = tag+"["+ cWidth + "×"+ cHeight + "]";
+		oRed = 0;
+		oGreen = 0;
+		oBule = 0;
+		// var dCount =0;
+		context.lineWidth=0;
+		for(var x = 0; x<cWidth; x+=10  ){
+			var pVar =Math.round(x/cWidth*100)+1;
+			document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
+			document.getElementById("progressBs").style.width =  String(pVar) + "%";
+			for(var y = 0; y<cHeight ;y++  ){
+				var imagedata = context.getImageData(x, y, 1, 1);				//  指定座標のImageDataオブジェクトの取得
+				var cRed = imagedata.data[0];
+				var cGreen = imagedata.data[1];
+				var cBule = imagedata.data[2];
+				// var cAlpha = imagedata.data[3];
+				if(oRed != cRed && oGreen != cGreen && oBule != cBule){
+					dbMsg += "("+ x + ","+ y + ")";
+					dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule;
+					 oRed = cRed;
+					 oGreen = cGreen;
+					 oBule = cBule;
+					 // oAlpha = imagedata.data[3];
+				 }else{
+					 if(0 != cRed && 0 != cGreen && 0 != cBule){
+						 context.lineWidth++;
+					 }else{
+						 if(0 != oRed && 0 != oGreen && 0 != oBule){
+							 dbMsg += ",lineWidth="+ context.lineWidth;
+							 if(1<context.lineWidth  ){
+								 dbMsg += "、終了("+ x + ","+ y + ")";
+								 colorPalet.value=rgb2hex("rgb("+ oRed + ", " + oGreen + ", " + oBule +")");　
+								 lineWidthSelect.value=context.lineWidth;
+								 myLog(dbMsg);
+								 return;
+							 }
+						 }else{
+							 context.lineWidth=0;
+						 }
+					 }
+				 }
+			}
+		}
+		myLog(dbMsg);
+	}
+
 	var oRed;
 	var oGreen;
 	var oBule;
@@ -408,7 +601,7 @@
 		document.getElementById('scoreTF').innerHTML = 0+"";
 		orgColor = current.color;
 		dbMsg += ",selectColor="+ orgColor;
-		 oRed =parseInt(orgColor.slice(1, 3),16);
+		 oRed =parseInt(orgColor.slice(1, 3),16);			//16新数；FFを10進数；255に
 		 oGreen =parseInt(orgColor.slice(3,5),16);
 		 oBule =parseInt(orgColor.slice(5,7),16);
 		dbMsg += ",r="+ oRed+",g="+ oGreen+",b="+ oBule;
@@ -418,7 +611,7 @@
 		current.color=compColor;
 		dbMsg += ">>"+ current.color;
 		// orgCount =setTimeout(scoreCount,1000);
-		orgCount =scoreCount();
+		orgCount =scoreCount(canvas , context.lineWidth , orgColor);
 		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 		dbMsg += ",orgCount="+ orgCount;
 		compCount = orgCount;
@@ -468,17 +661,17 @@
 	function scoreDrow() {
 		var dbMsg = "[scoreDrow]";
 		var score =100;
-		$('#modalTitol').innerHTML = "トレースの確認";
-		var cWidth = canvas.width;
-		var cHeight = canvas.height;
-		dbMsg += "["+ cWidth + "×"+ cHeight + "]";
-		var lWidth=context.lineWidth;
-		dbMsg += "lineWidth=" + lWidth;
-		dbMsg += ",orgColo="+ orgColor;
-		$('#modalComent').innerHTML =  "を線幅" +lWidth+"で分割\n" ;
-		$('#modal_box').modal();
+		// $('#modalTitol').innerHTML = "トレースの確認";
+		// var cWidth = canvas.width;
+		// var cHeight = canvas.height;
+		// dbMsg += "["+ cWidth + "×"+ cHeight + "]";
+		// var lWidth=context.lineWidth;
+		// dbMsg += "lineWidth=" + lWidth;
+		// dbMsg += ",orgColo="+ orgColor;
+		// $('#modalComent').innerHTML =  "を線幅" +lWidth+"で分割\n" ;
+		// $('#modal_box').modal();
 		// compCount =setTimeout(scoreCount,1000);
-		compCount =scoreCount();
+		compCount =scoreCount(canvas , context.lineWidth , orgColor);
 		dbMsg += "compCount"+ compCount;
 		orgCount=document.getElementById('orgTF').innerHTML;
 		dbMsg += "/"+ orgCount;
@@ -504,11 +697,11 @@
 		myLog(dbMsg);
 	}
 
-	function scoreCount() {
+	function scoreCount(canvas , lWidth , orgColor) {
 		// return new Promise((onSuccess, onFailed) => {
 			var dbMsg = "[scoreCount]";
 			var dCount =0;
-			var lWidth=context.lineWidth;
+			// var lWidth=context.lineWidth;
 			dbMsg += "lineWidth=" + lWidth;
 			dbMsg += ",orgColo="+ orgColor;
 			var cWidth = canvas.width;
@@ -567,8 +760,8 @@
 	    // });
 	}
 
-
-	$('.click_btn').on('click', function(){
+ 	$('#dlog_bt').on('click', function(){
+	// $('.click_btn').on('click', function(){
 	  $('#modal_box').modal('show');
 
 	});
@@ -636,3 +829,9 @@
 
  }
 )();
+
+
+
+
+
+//上下反転	http://www.programmingmat.jp/webhtml_lab/canvas_image.html

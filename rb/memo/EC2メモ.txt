@@ -5,11 +5,12 @@ E メール: 			hiroshima_app@coresoft-net.co.jp
 
 
 RecoveryBrainWeb		recovery_brain_web
-インスタンス ID		i-03187b1a26afc6aad
-Elastic IP(固定)
-パブリック DNS (IPv4)	ec2-13-114-44-32.ap-northeast-1.compute.amazonaws.com
-IPv4 パブリック IP		13.114.44.32
+インスタンス ID			i-03187b1a26afc6aad
+Elastic IP(固定)			18.182.237.90*
+パブリック DNS (IPv4)	ec2-18-182-237-90.ap-northeast-1.compute.amazonaws.com
+IPv4 パブリック IP		18.182.237.90
 プライベート IP			172.31.39.52
+セカンダリプライベート IP	172.31.38.166
 プライベート DNS			ip-172-31-39-52.ap-northeast-1.compute.internal
 キーペア名				recovery_brain_web
 
@@ -32,7 +33,7 @@ IPv4 パブリック IP		13.114.44.32
 		)
 
 	③.pemでログイン
-		ssh -i "recovery_brain_web.pem" ec2-user@13.114.44.32
+	ssh -i "recovery_brain_web.pem" ec2-user@18.182.237.90
 
 	④作業フォルダに移動
 		$ cd rb
@@ -55,9 +56,11 @@ IPv4 パブリック IP		13.114.44.32
 		と表示される
 
 	⑥webを2画面（もしくは別のPCで）開いて
-		ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com:3080
+		http://ec2-18-182-237-90.ap-northeast-1.compute.amazonaws.com:3080
 
-	稼働までに時間が掛かる？
+	⑨動作しない時の確認
+		・
+		・稼働までに時間が掛かる？
 
  	テスト
 		http://[your_ip_address]:3000/
