@@ -22,15 +22,12 @@ IPv4 パブリック IP		18.182.237.90
 	PowerShellなどで
 	①pem保存フォルダに移動
 		cd C:\work\xampp\htdocs\recoverry_brain\rb\memo
-	（
-			cd /d H:\
-			cd H:\develop\xampp\htdocs\repireBrain\rb\memo
-		）
+			自宅	cd /d H:\
+				cd H:\develop\xampp\htdocs\repireBrain\rb\memo
 
 	②設定ファイルの権限設定
 		cacls recovery_brain_web.pem /g hkuwayama:F
-		(	cacls recovery_brain_web.pem /g 博臣:F
-		)
+			自宅	cacls recovery_brain_web.pem /g 博臣:F
 
 	③.pemでログイン
 	ssh -i "recovery_brain_web.pem" ec2-user@18.182.237.90

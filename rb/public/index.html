@@ -39,7 +39,7 @@
 								コメント
 							</div>
 							<div id="modalImgList">
-								<img  src="/stereotype/st001.png" width="20%" height="20%">
+								<img src="/stereotype/st001.png" width="20%" height="20%">
 								<img src="/stereotype/st002.png" width="20%" height="20%">
 								<img  src="/stereotype/st003.png" width="20%" height="20%">
 								<img  src="/stereotype/st004.png" width="20%" height="20%">
@@ -93,14 +93,16 @@
 							<div id="scoreBrock" style="display: inline-block;margin-left: 50px;margin-right: 50px">
 								スコア
 								<span id="scoreTF"  style="font-size: x-large">
-									100
+									0
 								</span>点
 								<span id="compTF" style="margin-left: 50px">
 									0
 								</span>/
 								<span id="orgTF">
 									0
-								</span>残り
+								</span>ピクセル
+								<span id="scoreComent">
+								</span>
 								<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
 							</div>
 							<div id="editerAria">
@@ -110,6 +112,7 @@
 									<option value="line">直線</option>
 									<option value="stamp">図形スタンプ</option>
 									<option value="erasre">消しゴム</option>
+									<option value="colorpic">カラーピッカー</option>
 								</select>
 								<input type="color" id="colorPalet">
 								<span id="graficOptions">
@@ -127,6 +130,15 @@
 										<option value="square">四角</option>
 										<option value="butt">無し</option>
 									</select>
+									方向
+									<select id="directionSelect" size="1">
+										<option value="0">そのまま</option>
+										<!-- <option value="1">右へ90度</option>
+										<option value="2">左へ90度</option>
+										<option value="4">180度回転</option> -->
+										<option value="8">上下反転(鏡面)</option>
+										<!-- <option value="16">左右反転</option> -->
+									</select>
 								</span>
 								<span id="texeOptions">
 									文字サイズ
@@ -137,6 +149,7 @@
 										<option value="48">48pt</option>
 									</select>
 								</span>
+
 								<input type="button" id="allclear" value="消去" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
 								<input type="button" id="orgComp" value="確定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
 							</div>
@@ -215,13 +228,13 @@
 				var infoAria = document.getElementById("infoAria");
 					infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank">' + urlStr + '</a>';
 
-					// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
-					// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
-					// dbmsg += "　,ipAddress="+ipAddress;
-					var wifiURL = '192.168.100.6';		//課題；取得方法；Javascriptでは取得できない
-					// var wifiURL = '192.168.3.10';		//自宅
-					dbmsg += "　,wifiURL="+wifiURL;
 					if(-1 < urlStr.indexOf('127.0.0.1')){						//xamppでのテスト
+						// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
+						// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
+						// dbmsg += "　,ipAddress="+ipAddress;
+						var wifiURL = '192.168.100.6';		//課題；取得方法；Javascriptでは取得できない
+						// var wifiURL = '192.168.3.10';		//自宅
+						dbmsg += "　,wifiURL="+wifiURL;
 						urlStr = urlStr.replace('127.0.0.1', wifiURL);				//'http://192.168.3.10:3080'
 					}
 					dbmsg += "　,QR="+urlStr;

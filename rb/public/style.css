@@ -60,7 +60,7 @@ html, body {
 
     #contents {
         height: 90%;
-        top: 50px;
+        /* top: 50px; */
         background-color: #ffffff;
     }
 

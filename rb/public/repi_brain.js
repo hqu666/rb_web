@@ -28,6 +28,7 @@
 	var isComp=false;				//比較中
 	var orgCount=0;
 	var compCount=0;
+	var directionVal = 0;														//回転宝庫儒
 	var orgColor='#00FF00';
 	var compColor='#FFFFFF';
 	colorPalet.value=orgColor;
@@ -115,6 +116,8 @@
 		if(currenttype == "free"){
 			texeOptions.style.display="none";
 			graficOptions.style.display="border-box";
+		}else if(currenttype == "colorpic"){				//			<option value="">カラーピッカー</option>
+			colorPick();
 		}else if(currenttype == "text"){
 			// graficOptions.style.display="none";
 			// texeOptions.style.display="border-box";
@@ -153,6 +156,14 @@
 		var lineCap = this.value
 		current.lineCap =  lineCap;
 		dbMsg += ",lineCap="+ current.lineCap;
+		// socket.emit('changeLineCap', current.lineCap);
+		myLog(dbMsg);
+	}
+
+	document.getElementById('directionSelect').onchange = function () {				//回転方向
+		var dbMsg = "[typeSelect]";
+		directionVal = this.value
+		dbMsg += ",回転方向="+ directionVal;
 		// socket.emit('changeLineCap', current.lineCap);
 		myLog(dbMsg);
 	}
@@ -416,7 +427,20 @@
 		myLog(dbMsg);
 	}
 
+	function colorPick() {
+		canvas.addEventListener('mousemove', colorPickBody);
+	}
 
+	function colorPickBody(event) {
+	  var x = event.layerX;
+	  var y = event.layerY;
+	  var pixel = context.getImageData(x, y, 1, 1);
+	  var data = pixel.data;
+	  var rgba = 'rgba(' + data[0] + ',' + data[1] +',' + data[2] + ',' + (data[3] / 255) + ')';
+	  // document.getElementById('eventComent').style.background =  rgba;
+	  var cColor = rgb2hex("rgb("+  data[0] + ", " +  data[1] + ", " +  data[2] +")");
+	  document.getElementById('eventComent').textContent = rgba + "("+ cColor+ ")";
+	}
 //ファイル操作//////////////////////////////////////////
 /**
 * 定型パターンを画像で読込む（選択機構）
@@ -427,7 +451,7 @@
 		document.getElementById("allclear").click();
 		editerAria.style.display="inline-block";
 		document.getElementById("modalTitol").innerHTML = "定型パターン選択";
-		document.getElementById("modalComent").innerHTML = "クリックして選択";
+		document.getElementById("modalComent").innerHTML = "トレース元にする図形クリックして下さい。";
 		document.getElementById("modalImgList").style.display="inline-block";			 // 編集ツール表示
 		document.getElementById("progressBase").style.display="none";
 		$('#modal_box').modal('show');
@@ -445,7 +469,7 @@
 				 	var dbMsg = tag + ",src=" + srcName;
 				 	myLog(dbMsg);
 					$('#modal_box').modal('hide');
-				 	stereoTypeRead(srcName);
+				 	bitmapRead(srcName);
 	             };
 	     }
 	}
@@ -454,8 +478,8 @@
 	 * 定型静止画を読み込む
 	 * @param {*} srcName 型の画像ファイル名
 	 */
-	function stereoTypeRead(srcName) {
-	    var tag = "[stereoTypeRead]";
+	function bitmapRead(srcName) {
+	    var tag = "[bitmapRead]";
 	    var img = new Image();
 	    img.src = srcName;
 	    var dbMsg = tag + ",src=" + img.src;
@@ -486,128 +510,161 @@
 	        dbMsg = dbMsg + ",表示[" + dstWidth + "×" + dstHeight + "]=" + (dstWidth / dstHeight);
 	        var shiftX =( canvasX+tbCanvasWidth - dstWidth) / 2;				// (winW - dstWidth) / 2;
 	        var shiftY = (canvasY+tbCanvasHeight - dstHeight) / 2;				//(winH - dstHeight) / 2;
-	        dbMsg = dbMsg + ",(" + shiftX + "," + shiftY + ")";
-	        context.drawImage(this, shiftX, shiftY, dstWidth, dstHeight);
-
-			var canvasImageData = context.getImageData(0, 0, canvas.width, canvas.height);
-			var canvasRGBA = canvasImageData.data;
-			var newImageData = context.createImageData(canvas.width, canvas.height);
-			var newRGBA = newImageData.data;
-			oRed = 255;
-			oGreen = 255;
-			oBule = 255;
-			context.lineWidth=0;
-			var lineWidthMax = 0
-			for (var yPos = 0;yPos < canvas.height;yPos++) {
-				for (var xPos = 0;xPos < canvas.width;xPos++) {
-					var carentPos =(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4)
-					newRGBA[carentPos] = canvasRGBA[carentPos];
-					newRGBA[1 + carentPos] = canvasRGBA[1 + carentPos];
-					newRGBA[2 + carentPos] = canvasRGBA[2 + carentPos];
-					newRGBA[3 + carentPos] = canvasRGBA[3 + carentPos];
-
-					// var imagedata = context.getImageData(x, y, 1, 1);				//  指定座標のImageDataオブジェクトの取得
-					var cRed = newRGBA[carentPos];
-					var cGreen = newRGBA[1 + carentPos];
-					var cBule = newRGBA[2 + carentPos];
-					if(255 != cRed && 255 != cGreen && 255 != cBule && 0 != cRed && 0 != cGreen && 0 != cBule){
-						if(oRed != cRed && oGreen != cGreen && oBule != cBule){
-							if(cRed < oRed){
-								oRed = cRed;
-							}
-							if(cGreen<oGreen){
-								oGreen = cGreen;
-							}
-							if(cBule<oBule){
-								oBule = cBule;
-							}
-							 // oAlpha = imagedata.data[3];
-						 }else{
-							//  dbMsg += "("+ xPos + ","+ yPos + ")carentPos=" + carentPos;
- 							// dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule;
-							context.lineWidth++;
-						}
-					}else{														//白に戻った時
-						if(255 != oRed && 255 != oGreen && 255 != oBule){		//色が拾えていて
-							if(lineWidthMax < context.lineWidth){				//
-								lineWidthMax = context.lineWidth;
-							}
-						}
-						context.lineWidth=0;
-					}
-	// 上下反転		http://www.programmingmat.jp/webhtml_lab/canvas_image.html
-	// newRGBA[(j * 4) + ((canvas.height - 1 - i) * canvas.width * 4)] = canvasRGBA[(j * 4) + (i * canvas.width * 4)];
-	// newRGBA[1 + (j * 4) + ((canvas.height - 1 - i) * canvas.width * 4)] = canvasRGBA[1 + (j * 4) + (i * canvas.width * 4)];
-	// newRGBA[2 + (j * 4) + ((canvas.height - 1 - i) * canvas.width * 4)] = canvasRGBA[2 + (j * 4) + (i * canvas.width * 4)];
-	// newRGBA[3 + (j * 4) + ((canvas.height - 1 - i) * canvas.width * 4)] = canvasRGBA[3 + (j * 4) + (i * canvas.width * 4)];
-				}
+			dbMsg += "directionVal=" + directionVal;
+			if(directionVal == 8){
+				dbMsg += "上下反転";
+				shiftY =0;				//(winH - dstHeight) / 2;
 			}
-			context.putImageData(newImageData, 0, 0);					// コピーしたピクセル情報をCanvasに転送
 
-			dbMsg += ",r="+ oRed+",g="+ oGreen+",b="+ oGreen;						//r=63,g=72,b=72
-			orgColor = rgb2hex("rgb("+ oRed + ", " + oGreen + ", " + oGreen +")");
-			dbMsg += ">current.color>"+ orgColor;
-			colorPalet.value=orgColor;												//r=63,g=72,b=204
-			current.color=orgColor;
-			dbMsg += ">lineWidthMax>"+lineWidthMax;
-			context.lineWidth = lineWidthMax;
-			 // stereoTypeCheck(canvas)
+	        dbMsg = dbMsg + ",(" + shiftX + "," + shiftY + ")";
 			myLog(dbMsg);
+	        context.drawImage(this, shiftX, shiftY, dstWidth, dstHeight);
+			// document.getElementById('header').style.display = "none";
+			canvasSubstitution(canvas ,directionVal);
+			 stereoTypeCheck(canvas)
 			jobSelect.value = 'comp';
-			editerAria.style.display="none";
-			scoreBrock.style.display="inline-block";
-
+			// scoreStart();
+			// document.getElementById('header').style.display = "block";
 	    }
-	} //型になる静止画を読み//
+	}
 
+	/**
+	*①画像をピクセルにぽ機変える。
+	*②指定されたCanvacs内のビットマップを指定方向に置き換える。
+	* @param {*} canvas 捜査対象
+	* @param {*} direction 置換え方向　0：そのまま　、　1;鏡面（上下）
+	*/
+	function canvasSubstitution(canvas ,direction) {
+	    var tag = "[canvasSubstitution]";
+		var dbMsg = tag + "[" +  canvas.width +"×" + canvas.width + "]direction="+direction;
+		var context = canvas.getContext('2d');
+		var canvasImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+		var canvasRGBA = canvasImageData.data;
+		var newImageData = context.createImageData(canvas.width, canvas.height);
+		var newRGBA = newImageData.data;
+		var colorArray = new Array();
+		oRed = 255;
+		oGreen = 255;
+		oBule = 255;
+
+		context.lineWidth=0;
+		var lineWidthMax = 0
+		for (var yPos = 0;yPos < canvas.height;yPos++) {
+			for (var xPos = 0;xPos < canvas.width;xPos++) {
+				var carentPos =(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4);
+				var mirrorInversion = (xPos * 4) + (yPos * canvas.width * 4);								//鏡面反転
+				switch (direction) {
+                    case 0:
+						mirrorInversion = carentPos;
+						break;
+					case 8:
+						break;
+					}
+				//org; newRGBA[(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4)] = canvasRGBA[(xPos * 4) + (yPos * canvas.width * 4)];
+				newRGBA[carentPos] = canvasRGBA[mirrorInversion];
+				newRGBA[1 + carentPos] = canvasRGBA[1 + mirrorInversion];
+				newRGBA[2 + carentPos] = canvasRGBA[2 + mirrorInversion];
+				newRGBA[3 + carentPos] = canvasRGBA[3 + mirrorInversion];
+			}
+		}
+		context.putImageData(newImageData, 0, 0);					// コピーしたピクセル情報をCanvasに転送
+		myLog(dbMsg);
+	}
+	// 上下反転		http://www.programmingmat.jp/webhtml_lab/canvas_image.html
+	var bColor;
+	/**
+	* 使用されている色と線幅を取得
+	* @param {*} canvas 捜査対象
+	*/
 	function stereoTypeCheck(canvas) {
 	    var tag = "[stereoTypeCheck]";
 		var cWidth = canvas.width;
 		var cHeight = canvas.height;
 		var dbMsg = tag+"["+ cWidth + "×"+ cHeight + "]";
-		oRed = 0;
-		oGreen = 0;
-		oBule = 0;
-		// var dCount =0;
-		context.lineWidth=0;
-		for(var x = 0; x<cWidth; x+=10  ){
-			var pVar =Math.round(x/cWidth*100)+1;
-			document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
-			document.getElementById("progressBs").style.width =  String(pVar) + "%";
-			for(var y = 0; y<cHeight ;y++  ){
-				var imagedata = context.getImageData(x, y, 1, 1);				//  指定座標のImageDataオブジェクトの取得
-				var cRed = imagedata.data[0];
-				var cGreen = imagedata.data[1];
-				var cBule = imagedata.data[2];
-				// var cAlpha = imagedata.data[3];
-				if(oRed != cRed && oGreen != cGreen && oBule != cBule){
-					dbMsg += "("+ x + ","+ y + ")";
-					dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule;
-					 oRed = cRed;
-					 oGreen = cGreen;
-					 oBule = cBule;
-					 // oAlpha = imagedata.data[3];
-				 }else{
-					 if(0 != cRed && 0 != cGreen && 0 != cBule){
-						 context.lineWidth++;
-					 }else{
-						 if(0 != oRed && 0 != oGreen && 0 != oBule){
-							 dbMsg += ",lineWidth="+ context.lineWidth;
-							 if(1<context.lineWidth  ){
-								 dbMsg += "、終了("+ x + ","+ y + ")";
-								 colorPalet.value=rgb2hex("rgb("+ oRed + ", " + oGreen + ", " + oBule +")");　
-								 lineWidthSelect.value=context.lineWidth;
-								 myLog(dbMsg);
-								 return;
-							 }
-						 }else{
-							 context.lineWidth=0;
-						 }
-					 }
-				 }
-			}
-		}
+		var context = canvas.getContext('2d');
+		var canvasImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+		var canvasRGBA = canvasImageData.data;
+		var colorArray = new Array();
+		oRed = 255;
+		oGreen = 255;
+		oBule = 255;
+		bColor= rgb2hex("rgb("+ 255 + ", " + 255 + ", " + 255 +")");
+		// var lineWidth=0;
+		var lineWidthMax = 0
+
+		// context.imageSmoothingEnabled = false;
+	    // context.mozImageSmoothingEnabled = false;
+	    // context.webkitImageSmoothingEnabled = false;
+	    // context.msImageSmoothingEnabled = false;
+		// for (var i = 0;i < canvasRGBA.length;i+=4) {
+		for (var yPos = 0;yPos < canvas.height;yPos++) {
+			for (var xPos = 0;xPos < canvas.width;xPos++) {
+				var carentPos =	(yPos*(canvas.width*4)) + (xPos*4);
+				// var carentPos =(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4);
+				var cRed = canvasRGBA[carentPos];					//canvasRGBA[carentPos];
+				var cGreen = canvasRGBA[carentPos + 1];					//canvasRGBA[1 + carentPos];
+				var cBule = canvasRGBA[carentPos + 2];					//canvasRGBA[2 + carentPos];
+				var cAlpha =  canvasRGBA[carentPos + 3]/255;					//canvasRGBA[3 + carentPos];
+				if((0 <cRed && cRed<255) &&	(0 <cGreen && cGreen<255)  && (0 <cBule && cBule<255) && cAlpha == 1){
+					var cColor = rgb2hex("rgb("+ cRed + ", " + cGreen + ", " + cBule +")");
+					// dbMsg += "("+ xPos + ","+ yPos + ")carentPos=" + carentPos +";" + cColor;
+					if(bColor == cColor){
+						context.lineWidth++;
+						if(3<context.lineWidth){
+							if(colorArray.length==0){
+								oRed = cRed;
+								oGreen = cGreen;
+								oBule = cBule;
+								// colorArray.push(cColor);
+								colorArray[0]={ name:cColor, value:1 };
+							}else{
+								var rIndex = colorArray.filter(function(item, index){
+								  if (item.name == cColor){
+									  var rObj = colorArray[index];
+									  var rValue = rObj['value']+1;
+									  colorArray[index]={ name:cColor, value:rValue };
+									  return index;
+								  } else{
+									colorArray[index+1]={ name:cColor, value:1 };
+								  	return -1;
+								  }
+								});
+								context.lineWidth=0;
+							}
+						}
+					}else{
+						bColor = cColor;
+						if(lineWidthMax < context.lineWidth){				//
+							lineWidthMax = context.lineWidth;
+						}
+						context.lineWidth=0;
+					}
+				}else{
+					context.lineWidth=0;
+				}
+			}			//xPos
+		}				//yPos
+		dbMsg += ">抽出色>"+colorArray.length +"色；";	// + colorArray.toString();
+		colorArray.sort( function(a, b) {
+			 return a.value > b.value ? -1 : 1;
+		 });
+		orgColor = colorArray[0].name;			//rgb2hex("rgb("+ oRed + ", " + oGreen + ", " + oGreen +")");
+		dbMsg += ">current.color>"+ orgColor;
+		colorPalet.value=orgColor;
+		current.color=orgColor;
+		oRed =parseInt(orgColor.slice(1, 3),16);			//16新数；FFを10進数；255に
+		oGreen =parseInt(orgColor.slice(3,5),16);
+		oBule =parseInt(orgColor.slice(5,7),16);
+		dbMsg += ",r="+ oRed+",g="+ oGreen+",b="+ oBule;						//r=63,g=72,b=72
+		orgCount = colorArray[0].value;
+		dbMsg += ">評価点>"+orgCount;
+		dbMsg += ">lineWidthMax>"+lineWidthMax;
+		// context.lineWidth = lineWidthMax;
 		myLog(dbMsg);
+		document.getElementById('scoreComent').innerHTML = "対象"+orgColor;
+		var rgba = 'rgba(' + oRed + ',' +oGreen +',' + oBule + ',' + (255 / 255) + ')';
+		document.getElementById('scoreComent').style.background =  rgba;		//r=63,g=72,b=204 ="#3fcc48が正解
+		scoreBrock.style.display="inline-block";			//BD
 	}
 
 	var oRed;
@@ -616,6 +673,7 @@
 	function scoreStart() {
 		var dbMsg = "[scoreStart]";
 		isComp=true;				//比較中
+		editerAria.style.display="none";
 		scoreBrock.style.display="inline-block";
 		// orgCount=0;
 		document.getElementById('scoreTF').innerHTML = 0+"";
@@ -853,5 +911,5 @@
 
 
 
-
+//Canvas とピクセル操作	https://developer.mozilla.org/ja/docs/Web/Guide/HTML/Canvas_tutorial/Pixel_manipulation_with_canvas
 //上下反転	http://www.programmingmat.jp/webhtml_lab/canvas_image.html
