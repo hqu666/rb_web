@@ -20,5 +20,5 @@ io.on('connection', onConnection);
 //☆ここで    var urlStr = location.href;　　は取得できない
 var now = new Date();
 var UrlPparam =  "?sesion=" +  now.getYear() +(now.getMonth()+1)+now.getDate()+now.getHours()+now.getMinutes()+now.getSeconds();		// "?sesion="
-http.listen(port, () => console.log('web>>> '+  "http://127.0.0.1" +':' + port+UrlPparam));
-console.log('index.js : >>> '+  "http://127.0.0.1" +':' + port+UrlPparam);
+http.listen(port, () => console.log('web>>> '+  "http://127.0.0.1" +':' + port));       //cd H:\develop\xampp\htdocs\repireBrain\rb
+console.log('index.js : >>> '+  "http://127.0.0.1" +':' + port);

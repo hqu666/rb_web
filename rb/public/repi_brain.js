@@ -585,17 +585,18 @@
 		var canvasImageData = context.getImageData(0, 0, canvas.width, canvas.height);
 		var canvasRGBA = canvasImageData.data;
 		var colorArray = new Array();
+		var colorArray2 = new Array();
 		oRed = 255;
 		oGreen = 255;
 		oBule = 255;
 		bColor= rgb2hex("rgb("+ 255 + ", " + 255 + ", " + 255 +")");
-		// var lineWidth=0;
+		var lineWidth=0;
 		var lineWidthMax = 0
-
-		// context.imageSmoothingEnabled = false;
-	    // context.mozImageSmoothingEnabled = false;
-	    // context.webkitImageSmoothingEnabled = false;
-	    // context.msImageSmoothingEnabled = false;
+		var checkCount = 0
+		context.imageSmoothingEnabled = false;
+	    context.mozImageSmoothingEnabled = false;
+	    context.webkitImageSmoothingEnabled = false;
+	    context.msImageSmoothingEnabled = false;
 		// for (var i = 0;i < canvasRGBA.length;i+=4) {
 		for (var yPos = 0;yPos < canvas.height;yPos++) {
 			for (var xPos = 0;xPos < canvas.width;xPos++) {
@@ -605,12 +606,13 @@
 				var cGreen = canvasRGBA[carentPos + 1];					//canvasRGBA[1 + carentPos];
 				var cBule = canvasRGBA[carentPos + 2];					//canvasRGBA[2 + carentPos];
 				var cAlpha =  canvasRGBA[carentPos + 3]/255;					//canvasRGBA[3 + carentPos];
-				if((0 <cRed && cRed<255) &&	(0 <cGreen && cGreen<255)  && (0 <cBule && cBule<255) && cAlpha == 1){
+				// if(cRed<255 && cGreen<255  && cBule<255 ){	//&& cAlpha == 1
+				if((0 <cRed && cRed<255) &&	(0 <cGreen && cGreen<255)  && (0 <cBule && cBule<255) ){	//&& cAlpha == 1
 					var cColor = rgb2hex("rgb("+ cRed + ", " + cGreen + ", " + cBule +")");
 					// dbMsg += "("+ xPos + ","+ yPos + ")carentPos=" + carentPos +";" + cColor;
 					if(bColor == cColor){
-						context.lineWidth++;
-						if(3<context.lineWidth){
+						lineWidth++;
+						if(0<lineWidth){
 							if(colorArray.length==0){
 								oRed = cRed;
 								oGreen = cGreen;
@@ -618,32 +620,45 @@
 								// colorArray.push(cColor);
 								colorArray[0]={ name:cColor, value:1 };
 							}else{
+								checkCount++;
 								var rIndex = colorArray.filter(function(item, index){
 								  if (item.name == cColor){
-									  var rObj = colorArray[index];
-									  var rValue = rObj['value']+1;
-									  colorArray[index]={ name:cColor, value:rValue };
-									  return index;
+									var rObj = colorArray[index];
+									var rValue = rObj['value']+1;
+									colorArray[index]={ name:cColor, value:rValue };
+									return index;
 								  } else{
-									colorArray[index+1]={ name:cColor, value:1 };
-								  	return -1;
+									// oRed = cRed;
+  									// oGreen = cGreen;
+  									// oBule = cBule;
+									// colorArray[index+1]={ name:cColor, value:1 };
+								  	// // return -1;
 								  }
 								});
-								context.lineWidth=0;
+							}
+							if(colorArray2.indexOf(cColor) == -1){
+								colorArray2.push(cColor);
+								oRed = cRed;
+								oGreen = cGreen;
+								oBule = cBule;
+								colorArray[colorArray.length]={ name:cColor, value:1 };
+								lineWidth=0;
 							}
 						}
 					}else{
 						bColor = cColor;
-						if(lineWidthMax < context.lineWidth){				//
-							lineWidthMax = context.lineWidth;
+						if(lineWidthMax < lineWidth){				//
+							lineWidthMax = lineWidth;
 						}
-						context.lineWidth=0;
+						lineWidth=0;
 					}
 				}else{
-					context.lineWidth=0;
+					lineWidth=0;
 				}
 			}			//xPos
 		}				//yPos
+		dbMsg += ">checkCount>"+checkCount;
+		dbMsg += ">抽出色2>"+colorArray2.length +"色；";	// + colorArray.toString();
 		dbMsg += ">抽出色>"+colorArray.length +"色；";	// + colorArray.toString();
 		colorArray.sort( function(a, b) {
 			 return a.value > b.value ? -1 : 1;
@@ -652,26 +667,28 @@
 		dbMsg += ">current.color>"+ orgColor;
 		colorPalet.value=orgColor;
 		current.color=orgColor;
-		oRed =parseInt(orgColor.slice(1, 3),16);			//16新数；FFを10進数；255に
-		oGreen =parseInt(orgColor.slice(3,5),16);
-		oBule =parseInt(orgColor.slice(5,7),16);
-		dbMsg += ",r="+ oRed+",g="+ oGreen+",b="+ oBule;						//r=63,g=72,b=72
 		orgCount = colorArray[0].value;
 		dbMsg += ">評価点>"+orgCount;
+		document.getElementById('compTF').innerHTML = orgCount+"";
+		document.getElementById('orgTF').innerHTML = orgCount+"";
 		dbMsg += ">lineWidthMax>"+lineWidthMax;
-		// context.lineWidth = lineWidthMax;
+		current.width = lineWidthMax;
+		lineWidthSelect.value = lineWidthMax;
+		scoreStartRady();
+
 		myLog(dbMsg);
-		document.getElementById('scoreComent').innerHTML = "対象"+orgColor;
+		document.getElementById('scoreComent').innerHTML = " 対象 "+orgColor + " ; " + colorArray.length +"色中";
 		var rgba = 'rgba(' + oRed + ',' +oGreen +',' + oBule + ',' + (255 / 255) + ')';
 		document.getElementById('scoreComent').style.background =  rgba;		//r=63,g=72,b=204 ="#3fcc48が正解
+
 		scoreBrock.style.display="inline-block";			//BD
 	}
 
 	var oRed;
 	var oGreen;
 	var oBule;
-	function scoreStart() {
-		var dbMsg = "[scoreStart]";
+	function scoreStartRady() {
+		var dbMsg = "[scoreStartRady]";
 		isComp=true;				//比較中
 		editerAria.style.display="none";
 		scoreBrock.style.display="inline-block";
@@ -688,6 +705,29 @@
 		compColor =rgb2hex(retRGB);
 		current.color=compColor;
 		dbMsg += ">>"+ current.color;
+		myLog(dbMsg);
+	}
+
+
+	function scoreStart() {
+		var dbMsg = "[scoreStart]";
+		scoreStartRady();
+		// isComp=true;				//比較中
+		// editerAria.style.display="none";
+		// scoreBrock.style.display="inline-block";
+		// // orgCount=0;
+		// document.getElementById('scoreTF').innerHTML = 0+"";
+		// orgColor = current.color;
+		// dbMsg += ",selectColor="+ orgColor;
+		//  oRed =parseInt(orgColor.slice(1, 3),16);			//16新数；FFを10進数；255に
+		//  oGreen =parseInt(orgColor.slice(3,5),16);
+		//  oBule =parseInt(orgColor.slice(5,7),16);
+		// dbMsg += ",r="+ oRed+",g="+ oGreen+",b="+ oBule;
+		// var retRGB =complementary_color(oRed, oGreen, oBule);			 // current.color = e.target.className.split(' ')[1];
+		// dbMsg += ">retRGB>"+ retRGB;		//rgb(255, 0, 255)
+		// compColor =rgb2hex(retRGB);
+		// current.color=compColor;
+		// dbMsg += ">>"+ current.color;
 		// orgCount =setTimeout(scoreCount,1000);
 		orgCount =scoreCount(canvas , context.lineWidth , orgColor);
 		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
