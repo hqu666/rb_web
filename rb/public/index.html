@@ -35,17 +35,16 @@
 							</div>
 						</div>
 						<div class="modal-body">
-							<div id="modalComent">
+							<div  class="row" id="modalComent">
 								コメント
 							</div>
-							<div id="modalImgList">
-								<img src="/stereotype/st001.png" width="20%" height="20%">
-								<img src="/stereotype/st002.png" width="20%" height="20%">
-								<img  src="/stereotype/st003.png" width="20%" height="20%">
-								<img  src="/stereotype/st004.png" width="20%" height="20%">
+							<div  class="row" id="modalImgList">
+										<img class="col-sm-2" src="/stereotype/st001.png" width="20%" height="20%">
+										<img class="col-sm-2" src="/stereotype/st002.png" width="20%" height="20%">
+										<img  class="col-sm-2" src="/stereotype/st003.png" width="20%" height="20%">
+										<img  class="col-sm-2" src="/stereotype/st004.png" width="20%" height="20%">
+										<img  class="col-sm-2" src="/stereotype/st005.png" width="20%" height="20%">
 							</div>
-
-
 
 							<div id="progressBase"  class="progress" style="margin: 5px;">
 				  				<div id="progressBs" class="progress-bar" role="progressbar" style="width: 0%;">
@@ -90,12 +89,12 @@
 								<option value="patranList">パターンリスト表示</option>
 								<option value="comp">確定</option>
 							</select>
-							<div id="scoreBrock" style="display: inline-block;margin-left: 50px;margin-right: 50px">
+							<div id="scoreBrock" style="display: inline-block;margin-left: 30px;margin-right: 30px">
 								スコア
 								<span id="scoreTF"  style="font-size: x-large">
 									0
 								</span>点
-								<span id="compTF" style="margin-left: 50px">
+								<span id="compTF" style="margin-left: 30px">
 									0
 								</span>/
 								<span id="orgTF">
@@ -103,7 +102,8 @@
 								</span>ピクセル
 								<span id="scoreComent" style="color: white;">
 								</span>
-								<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
+								<input type="checkbox" id="mirrorCB" style="margin-left: 30px;">鏡面動作
+								<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 30px;">
 							</div>
 							<div id="editerAria">
 								<select id="typeSelect" size="1">
@@ -174,8 +174,8 @@
 				<canvas class="whiteboard" id="hitarea"></canvas>
 			</div>
 
-			<div id="footer">
-			<span id="eventComent" style="text-align: right;margin-left:  50px;"></span>
+			<div  id="footer">
+				<span id="eventComent" style="text-align: right;margin-left:  50px;"></span>
 			</div>
 	</div>
 	<script src="/socket.io/socket.io.js"></script>
@@ -236,6 +236,8 @@
 						// var wifiURL = '192.168.3.10';		//自宅
 						dbmsg += "　,wifiURL="+wifiURL;
 						urlStr = urlStr.replace('127.0.0.1', wifiURL);				//'http://192.168.3.10:3080'
+					}else{
+						isDebug =false;
 					}
 					dbmsg += "　,QR="+urlStr;
 					$("#urlQR").html("");

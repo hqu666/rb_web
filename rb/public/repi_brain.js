@@ -25,12 +25,13 @@
 		color:'#00FF00'
 		// ,width:'5'
 	};
+	var isMirror=true;				//鏡面動作
 	var isComp=false;				//比較中
 	var orgCount=0;
 	var compCount=0;
 	var directionVal = 0;														//回転宝庫儒
-	var orgColor='#00FF00';
-	var compColor='#FFFFFF';
+	var orgColor='#00ff00';
+	var compColor='#ffffff';
 	colorPalet.value=orgColor;
 	lineWidthSelect.value= 10;				//current.width;
 	current.width =  lineWidthSelect.value;
@@ -38,6 +39,10 @@
 
 	texeOptions.style.display="none";
 	var drawing = false;
+	var canvasRect = document.getElementById('hitarea').getBoundingClientRect();
+	var canvasX =canvasRect.left + window.pageXOffset;
+	var canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
+	// dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
 
 
 	canvas.addEventListener('mousedown', onMouseDown, false);
@@ -160,6 +165,13 @@
 		myLog(dbMsg);
 	}
 
+	document.getElementById('mirrorCB').onchange = function () {				//先端形状
+		dbMsg = "mirrorCB;";
+		isMirror = this.value
+		dbMsg += ",isMirror="+isMirror;
+		myLog(dbMsg);
+	}
+
 	document.getElementById('directionSelect').onchange = function () {				//回転方向
 		var dbMsg = "[typeSelect]";
 		directionVal = this.value
@@ -180,6 +192,11 @@
 		myLog(dbMsg);
 	});
 
+	socket.on('drawend', function(data) {
+		var dbMsg = "recive:draw end";
+		myLog(dbMsg);
+		scoreDrow();
+	});
 	// socket.on('changeColor', function(data) {
 	// 	var dbMsg = "recive:chngeColor="+data;
 	// 	current.color = data;			 // current.color = e.target.className.split(' ')[1];
@@ -218,7 +235,10 @@
 		drawing = true;
 		current.x = e.clientX;
 		current.y = e.clientY;
-		dbMsg = "(" + current.x + " , " + current.y + ")";
+		dbMsg += "(" + current.x + " , " + current.y + ")";
+		dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
+		current.x -= canvasX;
+		current.y -= canvasY;
 		drawLine( current.x,  current.y, current.x, current.y, current.color , current.width , current.lineCap , 0 , true);
           //htmlの場合は不要、Androidネイティブは書き出しでパスを生成するので必要
           //一点しかないので始点終点とも同じ座標を渡すし
@@ -234,13 +254,19 @@
 			dbMsg = "(" + currentX + " , " + currentY + ")";
 			current.x = e.clientX;
 			current.y = e.clientY;
+			dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
+			current.x -= canvasX;
+			current.y -= canvasY;
 			dbMsg += ",color=" + current.color+ ",width=" + current.width;
 			drawLine(currentX, currentY, current.x, current.y, current.color , current.width , current.lineCap , 2 , true);
 			dbMsg += ",isComp=" + isComp;
 			if(isComp){			//比較中
 				useComp.click();
 			}
+
 		}
+		socket.emit('drawend', {});
+
 		myLog(dbMsg);
 	}
 
@@ -248,9 +274,12 @@
 		var dbMsg = "onMouseMove(" + drawing;
 		if (drawing) {
 			dbMsg += ",color=" + current.color+ ",width=" + current.width;
-			drawLine(current.x, current.y, e.clientX, e.clientY, current.color,current.width , current.lineCap ,1, true);
-			current.x = e.clientX;
-			current.y = e.clientY;
+			dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
+			var eX = e.clientX-canvasX;
+			var eY = e.clientY- canvasY;
+			drawLine(current.x, current.y,eX, eY, current.color,current.width , current.lineCap ,1, true);
+			current.x = eX;
+			current.y = eY;
 			dbMsg = ">>(" + current.x + " , " + current.y + ")";
 		}
 		myLog(dbMsg);
@@ -301,17 +330,17 @@
 			// scoreDrow();
 		}
 		dbMsg = "[ontouchend]isComp=" + isComp;
-		// if(isComp){			//比較中
-		// 	scoreDrow();
-		// }
 		myLog(dbMsg);
+		// if(isComp){			//比較中
+			socket.emit('drawend', {});
+		// }
 	};
 
 	//drawingで受信したデータを書き込む/////////////////////////////////////イベント反映
 	function onDrawingEvent(data) {
 		var w = canvas.width;
 		var h = canvas.height;
-		var dbMsg = "onDrawingEvent；受信(" + data.x0 + " , " + data.y0 + ")";
+		var dbMsg = "[onDrawingEvent]受信(" + data.x0 + " , " + data.y0 + ")";
 		dbMsg += "～(" + data.x1 + " , " + data.y1 + ")";
 		if ( data.x0 != data.x1 ) {
 			dbMsg += "変位(" + (data.x0 - data.x1);
@@ -321,6 +350,9 @@
 		}
 		dbMsg += ",color=" + data.color+ ",width=" + data.width+ ",lineCap=" + data.lineCap+ ",action=" + data.action;
 		drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color , data.width , data.lineCap , data.action , false);
+		// if( data.action==1){
+		// 	scoreStart();
+		// }
 		myLog(dbMsg);
 	}
 
@@ -350,9 +382,8 @@
 
 //自画面のcanvaseに書き込み、指定が有れば送信
 	function drawLine(x0, y0, x1, y1, _color ,_width ,_lineCap,action, emit) {
-		var dbMsg = "[drawLine](" + x0 + " , " + y0 + ")"+_color;
-		dbMsg += "～(" + x1 + " , " + y1 + ")";
-		if ( x0 != x1 ) {
+		var dbMsg = "[drawLine](" + x0 + " , " + y0 + ")～(" + x1 + " , " + y1 + ")"+_color;
+			if ( x0 != x1 ) {
 			dbMsg += "変位(" + (x0 - x1);
 		}
 		if ( y0 != y1 ) {
@@ -416,6 +447,9 @@
 				action:action
 			});
 		}
+		// if( action==1){
+		// 	scoreStart();
+		// }
 
 		myLog(dbMsg);
 	}
@@ -489,16 +523,15 @@
 	        var dstWidth = this.width;
 	        var dstHeight = this.height;
 	        dbMsg = dbMsg + ",読み込んだ画像[" + dstWidth + "×" + dstHeight + "]Aspect=" + (dstWidth / dstHeight);
-			var rectHead = document.getElementById('header').getBoundingClientRect();				//canvasの上にある要素
-			var rect = document.getElementById('hitarea').getBoundingClientRect();
-			var canvasX =rect.left + window.pageXOffset;
-			var canvasY = rectHead.height			//rect.top + window.pageYOffset;は0しか取得できない
-			dbMsg = dbMsg + ",tbCanvas(" + canvasX + " , " + canvasY + ")[" + rect.width + "×" + rect.height +"]";
+			var canvasRect = document.getElementById('hitarea').getBoundingClientRect();
+			var canvasX =canvasRect.left + window.pageXOffset;
+			var canvasY = 0;// + window.pageYOffset;			//canvasRect.top = 110
+			dbMsg = dbMsg + ",tbCanvas(" + canvasX + " , " + canvasY + ")[" + canvasRect.width + "×" + canvasRect.height +"]";
 	        var tbCanvasWidth = canvas.width;
 	        var tbCanvasHeight = canvas.height;
 	        dbMsg = dbMsg + "[" + tbCanvasWidth + "×" + tbCanvasHeight + "]";
-	        var scaleWidth =  tbCanvasWidth/dstWidth*0.9;		//dstWidth / tbCanvasWidth;
-	        var scaleHeight = tbCanvasHeight/dstHeight*0.9;	//dstHeight / tbCanvasHeight;
+	        var scaleWidth =  tbCanvasWidth/dstWidth*0.75;		//dstWidth / tbCanvasWidth;
+	        var scaleHeight = tbCanvasHeight/dstHeight*0.75;	//dstHeight / tbCanvasHeight;
 	        dbMsg = dbMsg + ",scale[" + scaleWidth + "×" + scaleHeight + "%]";	//"更に" + tileBaceSize + "%";
 	        var biScale = scaleWidth;
 	        if (scaleHeight < scaleWidth) {
@@ -521,7 +554,7 @@
 	        context.drawImage(this, shiftX, shiftY, dstWidth, dstHeight);
 			// document.getElementById('header').style.display = "none";
 			canvasSubstitution(canvas ,directionVal);
-			 stereoTypeCheck(canvas)
+			stereoTypeCheck(canvas)
 			jobSelect.value = 'comp';
 			// scoreStart();
 			// document.getElementById('header').style.display = "block";
@@ -529,7 +562,7 @@
 	}
 
 	/**
-	*①画像をピクセルにぽ機変える。
+	*①読み込んだ画像をピクセル配列に変換する。
 	*②指定されたCanvacs内のビットマップを指定方向に置き換える。
 	* @param {*} canvas 捜査対象
 	* @param {*} direction 置換え方向　0：そのまま　、　1;鏡面（上下）
@@ -591,14 +624,23 @@
 		oBule = 255;
 		bColor= rgb2hex("rgb("+ 255 + ", " + 255 + ", " + 255 +")");
 		var lineWidth=0;
-		var lineWidthMax = 0
-		var checkCount = 0
-		context.imageSmoothingEnabled = false;
-	    context.mozImageSmoothingEnabled = false;
-	    context.webkitImageSmoothingEnabled = false;
-	    context.msImageSmoothingEnabled = false;
+		var lineWidthMax = 0;
+		var widthrray = new Array();
+		var widthrray2 = new Array();
+		var checkCount = 0;
+		// $('#modal_box').modal();
+		// $('#modalTitol').innerHTML = "読み込んだ画像の確認";
+		// $('#modalComent').innerHTML = "描画領域[" +cWidth+"×"+cHeight+ "]" ;
+		// context.imageSmoothingEnabled = false;
+	    // context.mozImageSmoothingEnabled = false;
+	    // context.webkitImageSmoothingEnabled = false;
+	    // context.msImageSmoothingEnabled = false;
 		// for (var i = 0;i < canvasRGBA.length;i+=4) {
 		for (var yPos = 0;yPos < canvas.height;yPos++) {
+			var pVar = Math.round(yPos/cHeight*100);
+			document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
+			// $(".progress-bar").css("width", String(pVar) + "%");		// $('.progressBs').css("width", String(pVar) + "%")では反映されない
+			document.getElementById("progressBs").style.width =  String(pVar) + "%";
 			for (var xPos = 0;xPos < canvas.width;xPos++) {
 				var carentPos =	(yPos*(canvas.width*4)) + (xPos*4);
 				// var carentPos =(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4);
@@ -606,47 +648,46 @@
 				var cGreen = canvasRGBA[carentPos + 1];					//canvasRGBA[1 + carentPos];
 				var cBule = canvasRGBA[carentPos + 2];					//canvasRGBA[2 + carentPos];
 				var cAlpha =  canvasRGBA[carentPos + 3]/255;					//canvasRGBA[3 + carentPos];
-				// if(cRed<255 && cGreen<255  && cBule<255 ){	//&& cAlpha == 1
-				if((0 <cRed && cRed<255) &&	(0 <cGreen && cGreen<255)  && (0 <cBule && cBule<255) ){	//&& cAlpha == 1
-					var cColor = rgb2hex("rgb("+ cRed + ", " + cGreen + ", " + cBule +")");
+				var cColor = rgb2hex("rgb("+ cRed + ", " + cGreen + ", " + cBule +")");
+				if(cColor!='#000000' && cColor!='#ffffff' ){	//真っ白はもしくは真っ黒もしk儒はデータ無し							&& cAlpha == 1
 					// dbMsg += "("+ xPos + ","+ yPos + ")carentPos=" + carentPos +";" + cColor;
 					if(bColor == cColor){
 						lineWidth++;
 						if(0<lineWidth){
-							if(colorArray.length==0){
+							checkCount++;
+							if(colorArray2.indexOf(cColor) == -1){							//カラーコードだけの単純配列に無ければ
+								colorArray2.push(cColor);
 								oRed = cRed;
 								oGreen = cGreen;
 								oBule = cBule;
-								// colorArray.push(cColor);
-								colorArray[0]={ name:cColor, value:1 };
+								colorArray[colorArray.length]={ name:cColor, value:1 };		//カウント付きの連想配列にも要素追加
+								lineWidth=0;
 							}else{
-								checkCount++;
 								var rIndex = colorArray.filter(function(item, index){
 								  if (item.name == cColor){
 									var rObj = colorArray[index];
 									var rValue = rObj['value']+1;
 									colorArray[index]={ name:cColor, value:rValue };
 									return index;
-								  } else{
-									// oRed = cRed;
-  									// oGreen = cGreen;
-  									// oBule = cBule;
-									// colorArray[index+1]={ name:cColor, value:1 };
-								  	// // return -1;
 								  }
 								});
-							}
-							if(colorArray2.indexOf(cColor) == -1){
-								colorArray2.push(cColor);
-								oRed = cRed;
-								oGreen = cGreen;
-								oBule = cBule;
-								colorArray[colorArray.length]={ name:cColor, value:1 };
-								lineWidth=0;
 							}
 						}
 					}else{
 						bColor = cColor;
+						if(widthrray2.indexOf(lineWidth) == -1){							//カラーコードだけの単純配列に無ければ
+							widthrray2.push(lineWidth);
+							widthrray[widthrray.length]={ name:lineWidth, value:1 };		//カウント付きの連想配列にも要素追加
+						}else{
+							var rIndex = widthrray.filter(function(item, index){
+							  if (item.name == lineWidth){
+								var rObj = widthrray[index];
+								var rValue = rObj['value']+1;
+								widthrray[index]={ name:lineWidth, value:rValue };
+								return index;
+							  }
+							});
+						}
 						if(lineWidthMax < lineWidth){				//
 							lineWidthMax = lineWidth;
 						}
@@ -657,30 +698,53 @@
 				}
 			}			//xPos
 		}				//yPos
+		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 		dbMsg += ">checkCount>"+checkCount;
 		dbMsg += ">抽出色2>"+colorArray2.length +"色；";	// + colorArray.toString();
 		dbMsg += ">抽出色>"+colorArray.length +"色；";	// + colorArray.toString();
-		colorArray.sort( function(a, b) {
-			 return a.value > b.value ? -1 : 1;
-		 });
-		orgColor = colorArray[0].name;			//rgb2hex("rgb("+ oRed + ", " + oGreen + ", " + oGreen +")");
-		dbMsg += ">current.color>"+ orgColor;
-		colorPalet.value=orgColor;
-		current.color=orgColor;
-		orgCount = colorArray[0].value;
-		dbMsg += ">評価点>"+orgCount;
+		if(0<colorArray.length){
+			colorArray.sort( function(a, b) {
+				 return a.value > b.value ? -1 : 1;
+			 });
+			orgColor = colorArray[0].name;			//rgb2hex("rgb("+ oRed + ", " + oGreen + ", " + oGreen +")");
+			dbMsg += ">current.color>"+ orgColor;
+			colorPalet.value=orgColor;
+			current.color=orgColor;
+			orgCount = colorArray[0].value;										//対象色の点数
+			dbMsg += ">評価点>"+orgCount;
+		}
 		document.getElementById('compTF').innerHTML = orgCount+"";
 		document.getElementById('orgTF').innerHTML = orgCount+"";
+		if(0<widthrray.length){
+			widthrray.sort( function(a, b) {
+				 return a.value > b.value ? -1 : 1;
+			 });
+			lineWidth = widthrray[1].name;			//0pxが最多になる
+			dbMsg += ">最多lineWidth>"+ lineWidth;
+			if(lineWidth<5){
+				lineWidth =5;
+			}else if(lineWidth<15){
+					lineWidth =10;
+			}else if(lineWidth<25){
+					lineWidth =20;
+			}else if(25<lineWidth){
+					lineWidth =30;
+			}
+			dbMsg += ">>"+ lineWidth;
+			lineWidthSelect.value=lineWidth;
+			current.widthr=lineWidth;
+			dbMsg += "；Y軸上"+widthrray[0].value+"個所";
+		}
 		dbMsg += ">lineWidthMax>"+lineWidthMax;
-		current.width = lineWidthMax;
-		lineWidthSelect.value = lineWidthMax;
 		scoreStartRady();
 
 		myLog(dbMsg);
-		document.getElementById('scoreComent').innerHTML = " 対象 "+orgColor + " ; " + colorArray.length +"色中";
+		document.getElementById('scoreComent').innerHTML = colorArray.length +"色中 対象 "+orgColor + " ;線＝" + lineWidth +"PX";
 		var rgba = 'rgba(' + oRed + ',' +oGreen +',' + oBule + ',' + (255 / 255) + ')';
 		document.getElementById('scoreComent').style.background =  rgba;		//r=63,g=72,b=204 ="#3fcc48が正解
-
+		if(isDebug){
+			editerAria.style.display="inline-block";
+		}
 		scoreBrock.style.display="inline-block";			//BD
 	}
 
@@ -692,9 +756,9 @@
 		isComp=true;				//比較中
 		editerAria.style.display="none";
 		scoreBrock.style.display="inline-block";
-		// orgCount=0;
 		document.getElementById('scoreTF').innerHTML = 0+"";
-		orgColor = current.color;
+		// orgColor = current.color;
+		orgColor = orgColor.toLowerCase();
 		dbMsg += ",selectColor="+ orgColor;
 		 oRed =parseInt(orgColor.slice(1, 3),16);			//16新数；FFを10進数；255に
 		 oGreen =parseInt(orgColor.slice(3,5),16);
@@ -707,52 +771,21 @@
 		dbMsg += ">>"+ current.color;
 		myLog(dbMsg);
 	}
-
-
-	function scoreStart() {
-		var dbMsg = "[scoreStart]";
-		scoreStartRady();
-		// isComp=true;				//比較中
-		// editerAria.style.display="none";
-		// scoreBrock.style.display="inline-block";
-		// // orgCount=0;
-		// document.getElementById('scoreTF').innerHTML = 0+"";
-		// orgColor = current.color;
-		// dbMsg += ",selectColor="+ orgColor;
-		//  oRed =parseInt(orgColor.slice(1, 3),16);			//16新数；FFを10進数；255に
-		//  oGreen =parseInt(orgColor.slice(3,5),16);
-		//  oBule =parseInt(orgColor.slice(5,7),16);
-		// dbMsg += ",r="+ oRed+",g="+ oGreen+",b="+ oBule;
-		// var retRGB =complementary_color(oRed, oGreen, oBule);			 // current.color = e.target.className.split(' ')[1];
-		// dbMsg += ">retRGB>"+ retRGB;		//rgb(255, 0, 255)
-		// compColor =rgb2hex(retRGB);
-		// current.color=compColor;
-		// dbMsg += ">>"+ current.color;
-		// orgCount =setTimeout(scoreCount,1000);
-		orgCount =scoreCount(canvas , context.lineWidth , orgColor);
-		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
-		dbMsg += ",orgCount="+ orgCount;
-		compCount = orgCount;
-		document.getElementById('compTF').innerHTML = orgCount+"";
-		document.getElementById('orgTF').innerHTML = orgCount+"";
-		// const prom =scoreCount();
-		// prom.then((orgCount) => {
-		// 	dbMsg += ",orgCount="+ orgCount;
-		// 	compCount = orgCount;
-		// 	document.getElementById('compTF').innerHTML = orgCount+"";
-		// 	document.getElementById('orgTF').innerHTML = orgCount+"";
-		// }).catch((err) => {
-		// 	dbMsg += "カウント失敗";
-		// });
-		myLog(dbMsg);
-	}
-
 /**
 * Illustrator の計算方法		https://q-az.net/complementary-color-javascript/
 */
 	function complementary_color(R, G, B) {
+		var dbMsg = "[complementary_color]R=" + R + ",G=" + G + ",B=" + B;
+		var comColor =null;
 	    //各値全てが数値かつ0以上255以下
-	    if(!isNaN(R + G + B) && 0 <= R && R <=255 && 0 <= G && G <=255 && 0 <= B && B <=255) {
+		if(isNaN(R + G + B) ) {
+		}else if(R ==255 &&  G ==0 &&  B ==0) {
+			comColor = "rgb("+ 0 + ", " + 0 + ", " + 255 +")";
+		}else if(R ==0 &&  G ==255 &&  B ==0) {
+			comColor = "rgb("+ 255 + ", " + 130+ ", " + 0 +")";
+		}else if(R ==0 &&  G ==0 &&  B ==255) {
+			comColor = "rgb("+ 255 + ", " + 0 + ", " + 0 +")";
+    	}else if(0 <= R && R <=255 && 0 <= G && G <=255 && 0 <= B && B <=255) {
 			//最大値、最小値を得る
 	        var max = Math.max(R, Math.max(G, B));
 	        var min = Math.min(R, Math.min(G, B));
@@ -761,19 +794,23 @@
 	        var newR = sum - R;
 	        var newG = sum - G;
 	        var newB = sum - B;
-	        var comColor = "rgb("+ newR + ", " + newG + ", " + newB +")";
-
+	         comColor = "rgb("+ newR + ", " + newG + ", " + newB +")";
 	        //文字列を返す
-	        return comColor;
 	    } else {
-
 	        //if 条件から外れた場合は null を返す
-	        return null;
 	    }
+		dbMsg = ",comColor=" + comColor;
+		myLog(dbMsg);
+		return comColor;
 	}
 
 	function rgb2hex ( col ) {
-		return "#" + col.match(/\d+/g).map(function(a){return ("0" + parseInt(a).toString(16)).slice(-2)}).join("");
+		// var dbMsg = "[rgb2hex]col=" + col;
+		// var retStr;
+		// // // retStr = retStr.toLowerCase();
+		// // dbMsg += ">>"+ retStr;
+		// myLog(dbMsg);
+		return "#" + col.match(/\d+/g).map(function(a){return ("0" + parseInt(a).toString(16)).slice(-2).toLowerCase()}).join("");
 	}
 
 	function scoreDrow() {
@@ -789,7 +826,8 @@
 		// $('#modalComent').innerHTML =  "を線幅" +lWidth+"で分割\n" ;
 		// $('#modal_box').modal();
 		// compCount =setTimeout(scoreCount,1000);
-		compCount =scoreCount(canvas , context.lineWidth , orgColor);
+		$('#modalTitol').innerHTML = "どれだけトレースできたかを確認しています";
+		compCount =scoreCount(canvas , orgColor);
 		dbMsg += "compCount"+ compCount;
 		orgCount=document.getElementById('orgTF').innerHTML;
 		dbMsg += "/"+ orgCount;
@@ -815,67 +853,100 @@
 		myLog(dbMsg);
 	}
 
-	function scoreCount(canvas , lWidth , orgColor) {
-		// return new Promise((onSuccess, onFailed) => {
-			var dbMsg = "[scoreCount]";
-			var dCount =0;
-			// var lWidth=context.lineWidth;
-			dbMsg += "lineWidth=" + lWidth;
-			dbMsg += ",orgColo="+ orgColor;
-			var cWidth = canvas.width;
-			var cHeight = canvas.height;
-			dbMsg += "["+ cWidth + "×"+ cHeight + "]";
-			// $('body').addClass('modal-open');
-			// $("#progressFleam").css("display", "block");
-			// document.getElementById("progressFleam").style.display="block";
-			// $('#modal_box').modal();
-			// $('#modalTitol').innerHTML = "元データを確認しています";
-			// $('#modalComent').innerHTML = "描画領域[" +cWidth+"×"+lWidth+ "]を線幅" +lWidth+"で分割\n" ;
-			// $('#dlog_bt').click();			// $('#modal_box').modal(); が効かない
 
-		// dispLoading("元データを確認しています");
-			// showProg();
-			// document.getElementById("modal_box").modal();//modal is not a function
-			// document.getElementById("progress").style.display="block";
-			// $('#progress').progressbar({
-			//    value: 0,
-			//    max: cWidth,
-			//    disabled: false
-			//  });
-			for(var x = 0; x<cWidth; x+=lWidth  ){
-				var pVar =Math.round(x/cWidth*100)+1;
-				// $('#progress').progressbar({
-				//    value: x,
-				//  });
-				//  $('#loading').text(pVar + '％');
-				document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
-				// $(".progress-bar").css("width", String(pVar) + "%");		// $('.progressBs').css("width", String(pVar) + "%")では反映されない
-				document.getElementById("progressBs").style.width =  String(pVar) + "%";
-				for(var y = 0; y<cHeight ;y+=lWidth  ){
-					var imagedata = context.getImageData(x, y, lWidth, lWidth);				//  指定座標のImageDataオブジェクトの取得
-					//  RGBAの取得
-					var cRed = imagedata.data[0];
-					var cGreen = imagedata.data[1];
-					var cBule = imagedata.data[2];
-					var cAlpha = imagedata.data[3];
-					if(oRed == cRed && oGreen == cGreen && oBule == cBule){
-						dbMsg += "("+ x + ","+ y + ")";
+	function scoreStart() {
+		var dbMsg = "[scoreStart]";
+		scoreStartRady();
+		orgCount=0;
+		$('#modalTitol').innerHTML = "元データを確認しています";
+		// orgCount =setTimeout(scoreCount,1000);
+		dbMsg += ",orgColo="+ orgColor;
+		orgCount =scoreCount(canvas ,  orgColor);
+		dbMsg += ",orgCount="+ orgCount;
+		compCount = orgCount;
+		document.getElementById('compTF').innerHTML = orgCount+"";
+		document.getElementById('orgTF').innerHTML = orgCount+"";
+		// const prom =scoreCount();
+		// prom.then((orgCount) => {
+		// 	dbMsg += ",orgCount="+ orgCount;
+		// 	compCount = orgCount;
+		// 	document.getElementById('compTF').innerHTML = orgCount+"";
+		// 	document.getElementById('orgTF').innerHTML = orgCount+"";
+		// }).catch((err) => {
+		// 	dbMsg += "カウント失敗";
+		// });
+		myLog(dbMsg);
+		if(isDebug){
+			editerAria.style.display="inline-block";
+		}
+
+	}
+
+	function scoreCount(canvas  , orgColor) {
+	// return new Promise((onSuccess, onFailed) => {
+		var dbMsg = "[scoreCount]orgColor="+ orgColor;
+		var dCount =0;
+		var checkCount = 0;														//色がついている部分
+	// var lWidth=context.lineWidth;
+		// dbMsg += "lineWidth=" + lWidth;
+		var cWidth = canvas.width;
+		var cHeight = canvas.height;
+		dbMsg += "["+ cWidth + "×"+ cHeight + "]";
+		var context = canvas.getContext('2d');
+		var canvasImageData = context.getImageData(0, 0, cWidth, cHeight);
+		var canvasRGBA = canvasImageData.data;
+
+		// $('body').addClass('modal-open');
+		// $("#progressFleam").css("display", "block");
+		$('#modal_box').modal();
+		document.getElementById("modalImgList").style.display="none";
+		document.getElementById("progressBase").style.display="block";
+		$('#modalComent').innerHTML = "描画領域[" +cWidth+"×"+cHeight+ "]" ;
+	// $('#dlog_bt').click();			// $('#modal_box').modal(); が効かない
+
+	// dispLoading("元データを確認しています");
+		// showProg();
+		// document.getElementById("modal_box").modal();//modal is not a function
+		// document.getElementById("progress").style.display="block";
+		// $('#progress').progressbar({
+		//    value: 0,
+		//    max: cWidth,
+		//    disabled: false
+		//  });
+		for (var yPos = 0;yPos < cHeight;yPos++) {
+			var pVar = Math.round(yPos/cHeight*100);
+			document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
+			// $(".progress-bar").css("width", String(pVar) + "%");		// $('.progressBs').css("width", String(pVar) + "%")では反映されない
+			document.getElementById("progressBs").style.width =  String(pVar) + "%";
+			for (var xPos = 0;xPos < cWidth;xPos++) {
+				var carentPos =	(yPos*(cWidth*4)) + (xPos*4);
+				// var carentPos =(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4);
+				var cRed = canvasRGBA[carentPos];					//canvasRGBA[carentPos];
+				var cGreen = canvasRGBA[carentPos + 1];					//canvasRGBA[1 + carentPos];
+				var cBule = canvasRGBA[carentPos + 2];					//canvasRGBA[2 + carentPos];
+				var cAlpha =  canvasRGBA[carentPos + 3]/255;					//canvasRGBA[3 + carentPos];
+				var cColor = rgb2hex("rgb("+ cRed + ", " + cGreen + ", " + cBule +")");
+				if(cColor!='#000000' && cColor!='#ffffff' ){	//真っ白はもしくは真っ黒もしk儒はデータ無し							&& cAlpha == 1
+					checkCount++;
+					if(orgColor == cColor){
+						dbMsg += "("+ xPos + ","+ yPos + ")"+cColor;
 						dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
 						dCount++;
 					}
 				}
 			}
-			// $('body').removeClass('modal-open'); // 1； body に自動的に付与されるクラスを削除する。このクラスがついたままだと、 画面スクロールが効かなくなる
-			// $('.modal-backdrop').remove();       // 2；モーダルの背景（黒い部分）を削除する処理。この処理を行わないとモーダルは消えても、背景が残ったままになり、 クリックが効かないままになる
-			// $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
-			// document.getElementById("progressBs").style.display="none";
-			// removeLoading();
+		}
+		// $('body').removeClass('modal-open'); // 1； body に自動的に付与されるクラスを削除する。このクラスがついたままだと、 画面スクロールが効かなくなる
+		// $('.modal-backdrop').remove();       // 2；モーダルの背景（黒い部分）を削除する処理。この処理を行わないとモーダルは消えても、背景が残ったままになり、 クリックが効かないままになる
+		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+		// document.getElementById("progressBs").style.display="none";
+		// removeLoading();
 //			document.getElementById("progressFleam").style.display="none";			 // ここでstyleは無効
-			dbMsg += ">>>dCount=" + dCount;
-			myLog(dbMsg);
-			return dCount;
-			// return onSuccess(dCount);
-	    // });
+		dbMsg += ">>>dCount=" + dCount +"/" + checkCount;
+		myLog(dbMsg);
+		return dCount;
+		// return onSuccess(dCount);
+    // });
 	}
 
  	$('#dlog_bt').on('click', function(){
