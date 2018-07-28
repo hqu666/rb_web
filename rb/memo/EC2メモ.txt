@@ -154,12 +154,12 @@ IPv4 パブリック IP		18.182.237.90
 
 ///	ソース編集の要点	/////////////////////////////////////////
 	①構成
-	　アプリケーションフォルダ	：	wb
+	　アプリケーションフォルダ	：	rb
 	　　　├index.js
 	　　　└サブフォルダ		；	public
-	　　　　　├w_board.js
-	　　　　　├index.html
-	　　　　　└style.css
+	　　　　　├ repi_brain.js
+	　　　　　├ index.html
+	　　　　　└ style.css
 	②view（index.html）にトリガー追加
 		<div class="button" id="allclear">消去</div>
 	③スクリプトファイルに
@@ -168,15 +168,17 @@ IPv4 パブリック IP		18.182.237.90
 				allClear();
 				socket.emit('allclear',{});					//送信コマンド
 			};
+
 	　ⅱ：実働部作成
 			function allClear() {
 				context.clearRect(0, 0,canvas.width,canvas.height);
 			}
+
 	　ⅲ；レシーバー作成
 		 socket.on('allclear', function (data) {
-			console.log("recive:all clear");
 			allClear();
 		});
+
 	④起動ファイル(index.js)のfunction onConnection(socket)にsocket.on追加
 		function onConnection(socket){
 		  socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
@@ -243,15 +245,16 @@ npm install express
 	Node.js + Socket.IOのサーバの基本構成と、Android版のSocket.IOクライアントのサンプル
 		https://qiita.com/tomo_watanabe/items/78d5bc96904d9e48e4d2
 
+	スマホ
+		http://tokidoki-web.com/2015/08/html5%E3%81%A8javascript%E3%81%A7%EF%BD%90%EF%BD%83%E3%83%BB%E3%82%B9%E3%83%9E%E3%83%9B%E3%81%AE%E3%83%9E%E3%83%AB%E3%83%81%E3%82%BF%E3%83%83%E3%83%81%E5%AF%BE%E5%BF%9C%E3%81%97%E3%81%A6%E3%82%84///////
+	JavaScriptでタッチイベントを取得しよう
+		http://kudox.jp/java-script/javascript-touch-event
+
+
 
 AWS   インスタンス作成	https://qiita.com/oishihiroaki/items/bc663eb1282d87c46e97
 　	セキュリティグループ名	launch-wizard-2
 	説明	launch-wizard-2 created 2018-07-20T14:42:34.171+09:00
-
-
-
-
-
 
 
 課題

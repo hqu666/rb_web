@@ -10,6 +10,7 @@ app.use(express.static(__dirname + '/public'));
 
 function onConnection(socket){
   socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
+  socket.on('sendcomp', (data) => socket.broadcast.emit('sendcomp', data));
   socket.on('drawend', (data) => socket.broadcast.emit('drawend', data));
   socket.on('allclear', (data) => socket.broadcast.emit('allclear', data));		       		//全消去
 }

@@ -1,7 +1,11 @@
 'use strict';
 
 (function() {
+	var isDebug =true;
 	var socket = io();
+	var ua =navigator.userAgent;
+	var isMobile=false;				//現在使用しているのはスマホ
+
 	var canvas = document.getElementsByClassName('whiteboard')[0];				//描画領域
 	var typeSelect = document.getElementById('typeSelect');						//描画種別
 	var colorPalet = document.getElementById('colorPalet');						//カラーパレット
@@ -26,7 +30,7 @@
 		// ,width:'5'
 	};
 	var isMirror=true;				//鏡面動作
-	var isComp=false;				//比較中
+	var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
 	var orgCount=0;
 	var compCount=0;
 	var directionVal = 0;														//回転宝庫儒
@@ -49,6 +53,73 @@
 	canvas.addEventListener('mouseup', onMouseUp, false);
 	canvas.addEventListener('mouseout', onMouseUp, false);
 	canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
+	if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
+		isMobile = true;
+		// canvas.addEventListener('touchend', ontouchend, false);
+		// canvas.addEventListener('touchstart', touchHandler, false);
+		// canvas.addEventListener('touchmove', touchHandler, false);
+		canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
+	}
+	// window.addEventListener('load', function() {
+	// 	var dbMsg = "[repi_brain/onload]";
+	// 	dbMsg += ",ua="+ ua;
+	// 	if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
+	// 		var start = "touchstart";
+	// 		var move  = "touchmove";
+	// 		var end   = "touchend";
+	// 		canvas.addEventListener('touchend', ontouchend, false);
+	// 		canvas.addEventListener('touchstart', touchHandler, false);
+	// 		canvas.addEventListener('touchmove', touchHandler, false);
+	// 		canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
+	// 		// alert(ua);
+	// 	}else{
+	// 		var start = "mousedown";
+	// 		var move  = "mousemove";
+	// 		var end   = "mouseup";
+	// 	}
+	//
+	// 	myLog(dbMsg);
+	// });
+
+	function touchHandler(evennt) {
+		var dbMsg = "[touchHandler]";
+		evennt.preventDefault();
+		dbMsg += "type="+evennt.type;
+		switch (evennt.type) {
+			case "touchstart" :
+				break;
+			case "touchmove" :
+				break;
+			case "touchcancel" :
+				break;
+			case "touchend" :
+				// var touches = evennt.changedTouches;
+				if (drawing) {
+					drawing = false;
+					var currentX = current.x;
+					var currentY = current.y;
+					dbMsg += "(" + currentX + " , " + currentY + ")";
+					var toucheX = event.touches[0].pageX;
+					var toucheY = event.touches[0].pageY;
+					dbMsg += "～(" + toucheX + " , " + toucheY + ")";
+					current.x = toucheX;
+					current.y = toucheY;
+					dbMsg += ",color=" + current.color+ ",width=" + current.width;
+					drawLine(currentX, currentY, current.x, current.y, current.color,current.width , current.lineCap ,1, true);
+					// scoreDrow();
+				}
+				dbMsg += ",isComp="+isComp;
+				mobileLog(dbMsg);
+				// if(isComp){			//比較中
+					socket.emit('drawend', {});
+				// }
+				break;
+		}
+	}
+
+	  window.addEventListener('resize', onResize, false);
+	  onResize();
+
   /////////////////////////////////////////////////////////////////////////////
 	jobSelect.onchange = function () {					 //描画する種類を変更
 		var dbMsg = "[jobSelect]";
@@ -113,7 +184,7 @@
 			jobSelect.value = 'comp';
 		}
 
-//変種ツール//////////////////////////////////////////////////////////////////
+//編集ツール//////////////////////////////////////////////////////////////////
 	typeSelect.onchange = function () {					 //描画する種類を変更
 		var dbMsg = "typeSelect;";
 		var currenttype =this.value;			 // current.color = e.target.className.split(' ')[1];
@@ -193,9 +264,21 @@
 	});
 
 	socket.on('drawend', function(data) {
-		var dbMsg = "recive:draw end";
-		myLog(dbMsg);
+		var dbMsg = "recive[drawend]";
 		scoreDrow();
+		myLog(dbMsg);
+	});
+
+	socket.on('sendcomp', function(data) {
+		var dbMsg = "recive[sendcomp]";
+		isComp =true;
+		compColor= data.compColor;
+		dbMsg += ",compColor="+compColor;
+		current.width= data.width;
+		dbMsg += ",width="+current.width;
+		myLog(dbMsg);
+		mobileLog(dbMsg);
+
 	});
 	// socket.on('changeColor', function(data) {
 	// 	var dbMsg = "recive:chngeColor="+data;
@@ -226,9 +309,6 @@
 		allClear();
 	});
 
-  window.addEventListener('resize', onResize, false);
-  onResize();
-
 //イベント反映
 	function onMouseDown(e) {
 		var dbMsg = "onMouseDown;drawing=" + drawing;
@@ -242,6 +322,21 @@
 		drawLine( current.x,  current.y, current.x, current.y, current.color , current.width , current.lineCap , 0 , true);
           //htmlの場合は不要、Androidネイティブは書き出しでパスを生成するので必要
           //一点しかないので始点終点とも同じ座標を渡すし
+		myLog(dbMsg);
+	}
+
+	function onMouseMove(e) {
+		var dbMsg = "onMouseMove(" + drawing;
+		if (drawing) {
+			dbMsg += ",color=" + current.color+ ",width=" + current.width;
+			dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
+			var eX = e.clientX-canvasX;
+			var eY = e.clientY- canvasY;
+			drawLine(current.x, current.y,eX, eY, current.color,current.width , current.lineCap ,1, true);
+			current.x = eX;
+			current.y = eY;
+			dbMsg = ">>(" + current.x + " , " + current.y + ")";
+		}
 		myLog(dbMsg);
 	}
 
@@ -262,30 +357,15 @@
 			dbMsg += ",isComp=" + isComp;
 			if(isComp){			//比較中
 				useComp.click();
+				socket.emit('drawend', {});
 			}
 
 		}
-		socket.emit('drawend', {});
-
 		myLog(dbMsg);
+		mobileLog(dbMsg);
+
 	}
 
-	function onMouseMove(e) {
-		var dbMsg = "onMouseMove(" + drawing;
-		if (drawing) {
-			dbMsg += ",color=" + current.color+ ",width=" + current.width;
-			dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
-			var eX = e.clientX-canvasX;
-			var eY = e.clientY- canvasY;
-			drawLine(current.x, current.y,eX, eY, current.color,current.width , current.lineCap ,1, true);
-			current.x = eX;
-			current.y = eY;
-			dbMsg = ">>(" + current.x + " , " + current.y + ")";
-		}
-		myLog(dbMsg);
-	}
-
-  //スマホタッチ対応；	http://tokidoki-web.com/2015/08/html5%E3%81%A8javascript%E3%81%A7%EF%BD%90%EF%BD%83%E3%83%BB%E3%82%B9%E3%83%9E%E3%83%9B%E3%81%AE%E3%83%9E%E3%83%AB%E3%83%81%E3%82%BF%E3%83%83%E3%83%81%E5%AF%BE%E5%BF%9C%E3%81%97%E3%81%A6%E3%82%84///////
 	canvas.ontouchstart = function(event) { //画面に指が触れた
 		var dbMsg = "ontouchstart(" + drawing;
 		drawing = true;
@@ -296,6 +376,10 @@
 		current.y = toucheY;
 		drawLine( current.x,  current.y, current.x, current.y, current.color , current.width , current.lineCap , 0 , true);
 		myLog(dbMsg);
+		// if(isDebug &&( ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1)){
+		// 	alert(dbMsg);
+		// }
+
 	};
 
 	canvas.ontouchmove = function(event) { //画面に指を触れたまま動かした
@@ -314,7 +398,7 @@
 	};
 
 	canvas.ontouchend = function(event) { //画面から指を離した
-		var dbMsg = "ontouchend;drawing=" + drawing;
+		var dbMsg = "[ontouchend]drawing=" + drawing;
 		if (drawing) {
 			drawing = false;
 			var currentX = current.x;
@@ -329,11 +413,12 @@
 			drawLine(currentX, currentY, current.x, current.y, current.color,current.width , current.lineCap ,1, true);
 			// scoreDrow();
 		}
-		dbMsg = "[ontouchend]isComp=" + isComp;
-		myLog(dbMsg);
+		dbMsg += ",isComp=" + isComp;
 		// if(isComp){			//比較中
 			socket.emit('drawend', {});
 		// }
+		myLog(dbMsg);
+		// mobileLog(dbMsg);
 	};
 
 	//drawingで受信したデータを書き込む/////////////////////////////////////イベント反映
@@ -353,7 +438,9 @@
 		// if( data.action==1){
 		// 	scoreStart();
 		// }
-		myLog(dbMsg);
+		if(data.action != 2){
+			myLog(dbMsg);
+		}
 	}
 
   // make the canvas fill its parent
@@ -450,8 +537,9 @@
 		// if( action==1){
 		// 	scoreStart();
 		// }
-
-		myLog(dbMsg);
+		if(action != 2){
+			myLog(dbMsg);
+		}
 	}
 
 	function allClear() {
@@ -769,6 +857,11 @@
 		compColor =rgb2hex(retRGB);
 		current.color=compColor;
 		dbMsg += ">>"+ current.color;
+		socket.emit('sendcomp', {
+			compColor: compColor,
+			width: current.width
+		});
+
 		myLog(dbMsg);
 	}
 /**
@@ -1008,11 +1101,16 @@
 	// // // // });
 	// myLog(dbMsg);
 
-	var isDebug =true;
 	function myLog(dbMsg) {
 		if(isDebug){
 			console.log(dbMsg);
 			eventComent.innerHTML = dbMsg;
+		}
+	}
+
+	function mobileLog(dbMsg) {
+		if(isMobile & isDebug){
+			alert(dbMsg);
 		}
 	}
 
