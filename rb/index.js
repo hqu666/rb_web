@@ -12,7 +12,9 @@ function onConnection(socket){
   socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
   socket.on('sendcomp', (data) => socket.broadcast.emit('sendcomp', data));
   socket.on('drawend', (data) => socket.broadcast.emit('drawend', data));
-  socket.on('allclear', (data) => socket.broadcast.emit('allclear', data));		       		//全消去
+  socket.on('setmirror', (data) => socket.broadcast.emit('setmirror', data));
+  socket.on('setautojudge', (data) => socket.broadcast.emit('setautojudge', data));
+ socket.on('allclear', (data) => socket.broadcast.emit('allclear', data));		       		//全消去
 }
 
 io.on('connection', onConnection);

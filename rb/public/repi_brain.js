@@ -2,16 +2,21 @@
 
 (function() {
 	var isDebug =true;
+	var isSmaphoDebug =false;
 	var socket = io();
 	var ua =navigator.userAgent;
 	var isMobile=false;				//現在使用しているのはスマホ
-
+	var srcName="";																	//トレース元のファイル名
 	var canvas = document.getElementsByClassName('whiteboard')[0];				//描画領域
 	var typeSelect = document.getElementById('typeSelect');						//描画種別
 	var colorPalet = document.getElementById('colorPalet');						//カラーパレット
 	var editerAria = document.getElementById('editerAria');						//上記の編集パーツ
 	var scoreBrock = document.getElementById('scoreBrock');						//スコア表示
 	var jobSelect = document.getElementById('jobSelect');						//元データの作り方
+	jobSelect.options[0].disabled = true;										//>選択して下さい
+    jobSelect.options[4].disabled = true;										//もう一度
+	jobSelect.options[5].disabled = true;										//確定
+
 	var orgComp = document.getElementById('orgComp');							//元データの描画結果
 	var useComp = document.getElementById('useComp');							//トレース後の描画結果
 
@@ -30,12 +35,16 @@
 		// ,width:'5'
 	};
 	var isMirror=true;				//鏡面動作
+	var isAutoJudge=true;				//トレース後に自動判定
 	var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
 	var orgCount=0;
 	var compCount=0;
 	var directionVal = 0;														//回転宝庫儒
 	var orgColor='#00ff00';
 	var compColor='#ffffff';
+	var oRed;
+	var oGreen;
+	var oBule;
 	colorPalet.value=orgColor;
 	lineWidthSelect.value= 10;				//current.width;
 	current.width =  lineWidthSelect.value;
@@ -46,79 +55,61 @@
 	var canvasRect = document.getElementById('hitarea').getBoundingClientRect();
 	var canvasX =canvasRect.left + window.pageXOffset;
 	var canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
-	// dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
+	var canvasWidth = canvasRect.width;
+	var canvasHeight = canvasRect.height;
+	var originPixcel;
 
 
 	canvas.addEventListener('mousedown', onMouseDown, false);
 	canvas.addEventListener('mouseup', onMouseUp, false);
-	canvas.addEventListener('mouseout', onMouseUp, false);
+	// canvas.addEventListener('mouseout', onMouseUp, false);
 	canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
-	if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
-		isMobile = true;
-		// canvas.addEventListener('touchend', ontouchend, false);
-		// canvas.addEventListener('touchstart', touchHandler, false);
-		// canvas.addEventListener('touchmove', touchHandler, false);
-		canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
-	}
-	// window.addEventListener('load', function() {
-	// 	var dbMsg = "[repi_brain/onload]";
-	// 	dbMsg += ",ua="+ ua;
-	// 	if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
-	// 		var start = "touchstart";
-	// 		var move  = "touchmove";
-	// 		var end   = "touchend";
-	// 		canvas.addEventListener('touchend', ontouchend, false);
-	// 		canvas.addEventListener('touchstart', touchHandler, false);
-	// 		canvas.addEventListener('touchmove', touchHandler, false);
-	// 		canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
-	// 		// alert(ua);
-	// 	}else{
-	// 		var start = "mousedown";
-	// 		var move  = "mousemove";
-	// 		var end   = "mouseup";
-	// 	}
-	//
-	// 	myLog(dbMsg);
-	// });
+	// if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
+	// 	isMobile = true;
+	// 	// canvas.addEventListener('touchend', ontouchend, false);
+	// 	// canvas.addEventListener('touchstart', touchHandler, false);
+	// 	// canvas.addEventListener('touchmove', touchHandler, false);
+	// 	canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
+	// }
+	window.addEventListener('resize', onResize, false);
+	onResize();
 
-	function touchHandler(evennt) {
-		var dbMsg = "[touchHandler]";
-		evennt.preventDefault();
-		dbMsg += "type="+evennt.type;
-		switch (evennt.type) {
-			case "touchstart" :
-				break;
-			case "touchmove" :
-				break;
-			case "touchcancel" :
-				break;
-			case "touchend" :
-				// var touches = evennt.changedTouches;
-				if (drawing) {
-					drawing = false;
-					var currentX = current.x;
-					var currentY = current.y;
-					dbMsg += "(" + currentX + " , " + currentY + ")";
-					var toucheX = event.touches[0].pageX;
-					var toucheY = event.touches[0].pageY;
-					dbMsg += "～(" + toucheX + " , " + toucheY + ")";
-					current.x = toucheX;
-					current.y = toucheY;
-					dbMsg += ",color=" + current.color+ ",width=" + current.width;
-					drawLine(currentX, currentY, current.x, current.y, current.color,current.width , current.lineCap ,1, true);
-					// scoreDrow();
-				}
-				dbMsg += ",isComp="+isComp;
-				mobileLog(dbMsg);
-				// if(isComp){			//比較中
-					socket.emit('drawend', {});
-				// }
-				break;
+	window.addEventListener('load', function() {
+		var dbMsg = "[repi_brain/onload]";
+		// canvasRect = document.getElementById('hitarea').getBoundingClientRect();
+		// canvasX =canvasRect.left + window.pageXOffset;
+		// canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
+		// dbMsg += ",canvas("+ canvasX + " , " + canvasY + ")";
+	 	// var canvasWidth = canvasRect.width;
+		// var canvasHeight = canvasRect.height;
+		// dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
+		//  canvasHeight = canvasWidth*9/16;
+		// dbMsg += ">>" + canvasHeight + "]";
+		// document.getElementById('hitarea').style.height = canvasHeight;
+		if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
+			isMobile=true;				//現在使用しているのはスマホ
+			canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
+			// window.directions=0;			//this,window	>>cannat CET;0
+			// window.location = 0;
+		}else{
+			isMobile=false;
 		}
-	}
+		dbMsg += ",isMobile="+isMobile;
+		isMirror = document.getElementById('mirrorCB').checked;
+		dbMsg += ",isMirror="+isMirror;
+		// mobileLog(dbMsg);
+		myLog(dbMsg);
+	});
 
-	  window.addEventListener('resize', onResize, false);
-	  onResize();
+	// window.addEventListener('resize', function() {
+	// 	var dbMsg = "[repi_brain/resize]";
+	// 	canvas.width = window.innerWidth;
+	// 	dbMsg = "[" + canvas.width;
+	// 	var setHight = canvas.width*1080/1920;
+	// 	dbMsg = " , " + setHight + "]";
+	// 	canvas.height = setHight;			//window.innerHeight;
+	// 	myLog(dbMsg);
+	// })
 
   /////////////////////////////////////////////////////////////////////////////
 	jobSelect.onchange = function () {					 //描画する種類を変更
@@ -128,7 +119,8 @@
 		scoreBrock.style.display="none";
 		editerAria.style.display="none";
 		myLog(dbMsg);
-		if(currentjob == "fileSel"){			//ファイルから読み込み</option>
+		if(currentjob == "none"){
+		}else if(currentjob == "fileSel"){			//確定</option>
 			alert( '作成中です。');  //数値と文字の結合
 		}else if(currentjob == "patranList"){			//パターンリスト表示</option>
 			isComp=false;				//比較中
@@ -136,14 +128,16 @@
 			stereoTypeStart();
 		}else if(currentjob == "make"){			//">作成</option>
 		 	isComp=false;				//比較中
+			if(isMirror){
+				document.getElementById('mirrorCB').click();
+			}
 			document.getElementById("allclear").click();
 			editerAria.style.display="inline-block";
 			current.color =orgColor;			 // current.color = e.target.className.split(' ')[1];
+		}else if(currentjob == "again"){			//もう一度</option>
+			drowAgain();
 		}else if(currentjob == "comp"){			//確定</option>
 			orgComp.click();
-			// editerAria.style.display="none";
-			// this.close();
-			// scoreStart();
 		}else{			// <option value="line">作成</option>
 			alert( '作成中です。');  //数値と文字の結合
 		}
@@ -167,22 +161,25 @@
 		jobSelect.value = 'comp';
 	}
 
-		useComp.onclick = function () {											//トレース後の描画結果
-			var dbMsg = "[useComp]";
-			$('#modalTitol').innerHTML = "トレースの確認";
-			var cWidth = canvas.width;
-			var cHeight = canvas.height;
-			dbMsg += "["+ cWidth + "×"+ cHeight + "]";
-			var lWidth=context.lineWidth;
-			dbMsg += "lineWidth=" + lWidth;
-			dbMsg += ",orgColo="+ orgColor;
-			$('#modalComent').innerHTML =  "を線幅" +lWidth+"で分割\n" ;
-			$('#modal_box').modal('show');
-			scoreDrow();
-			$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+	/**
+	*トレース後の描画結果
+	*/
+	useComp.onclick = function () {
+		var dbMsg = "[useComp]";
+		$('#modalTitol').innerHTML = "トレースの確認";
+		var cWidth = canvas.width;
+		var cHeight = canvas.height;
+		dbMsg += "["+ cWidth + "×"+ cHeight + "]";
+		var lWidth=context.lineWidth;
+		dbMsg += "lineWidth=" + lWidth;
+		dbMsg += ",orgColo="+ orgColor;
+		$('#modalComent').innerHTML =  "を線幅" +lWidth+"で分割\n" ;
+		$('#modal_box').modal('show');
+		scoreDrow();
+		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 
-			jobSelect.value = 'comp';
-		}
+		jobSelect.value = 'comp';
+	}
 
 //編集ツール//////////////////////////////////////////////////////////////////
 	typeSelect.onchange = function () {					 //描画する種類を変更
@@ -237,10 +234,26 @@
 	}
 
 	document.getElementById('mirrorCB').onchange = function () {				//先端形状
-		dbMsg = "mirrorCB;";
-		isMirror = this.value
+		var dbMsg = "[mirrorCB]";
+		isMirror = document.getElementById('mirrorCB').checked;
 		dbMsg += ",isMirror="+isMirror;
 		myLog(dbMsg);
+		socket.emit('setmirror', {
+			bool:isMirror
+		});
+	}
+
+/**
+*トレース後に自動判定
+*/
+	document.getElementById('autojudgeCB').onchange = function () {
+		var dbMsg = "[autojudgeCB]";
+		isAutoJudge = document.getElementById('autojudgeCB').checked;
+		dbMsg += ",isAutoJudge="+isAutoJudge;
+		myLog(dbMsg);
+		socket.emit('setautojudge', {
+			bool:isAutoJudge
+		});
 	}
 
 	document.getElementById('directionSelect').onchange = function () {				//回転方向
@@ -269,17 +282,35 @@
 		myLog(dbMsg);
 	});
 
+	socket.on('setmirror', function(data) {
+		var dbMsg = "recive[setmirror]";
+		isMirror = data.bool;
+		dbMsg += ",isMirror="+isMirror;
+		document.getElementById('mirrorCB').checked=isMirror;
+		myLog(dbMsg);
+		mobileLog(dbMsg);
+	});
+
+	socket.on('setautojudge', function(data) {
+		var dbMsg = "recive[setautojudge]";
+		isAutoJudge = data.bool;
+		dbMsg += ",isAutoJudge="+isAutoJudge;
+		document.getElementById('autojudgeCB').checked=isAutoJudge;
+		myLog(dbMsg);
+		mobileLog(dbMsg);
+	});
+
 	socket.on('sendcomp', function(data) {
 		var dbMsg = "recive[sendcomp]";
 		isComp =true;
-		compColor= data.compColor;
-		dbMsg += ",compColor="+compColor;
+		dbMsg += ",compColor="+ data.compColor;
+		current.color =data.compColor;
 		current.width= data.width;
 		dbMsg += ",width="+current.width;
 		myLog(dbMsg);
 		mobileLog(dbMsg);
-
 	});
+
 	// socket.on('changeColor', function(data) {
 	// 	var dbMsg = "recive:chngeColor="+data;
 	// 	current.color = data;			 // current.color = e.target.className.split(' ')[1];
@@ -311,14 +342,24 @@
 
 //イベント反映
 	function onMouseDown(e) {
-		var dbMsg = "onMouseDown;drawing=" + drawing;
+		var dbMsg = "[onMouseDown]drawing=" + drawing;
 		drawing = true;
-		current.x = e.clientX;
-		current.y = e.clientY;
-		dbMsg += "(" + current.x + " , " + current.y + ")";
+		jobSelect.options[4].disabled = false;										//もう一度
+	 	jobSelect.options[5].disabled = false;										//確定
+		canvasRect = document.getElementById('hitarea').getBoundingClientRect();
+		canvasX =canvasRect.left + window.pageXOffset;
+		canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
 		dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
-		current.x -= canvasX;
-		current.y -= canvasY;
+		canvasWidth = canvasRect.width;
+		canvasHeight = canvasRect.height;
+		dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
+		current.x = e.clientX - canvasX;
+		current.y = e.clientY - canvasY;
+		dbMsg += ",Mouse(" + current.x + " , " + current.y + ")isMirror="+isMirror;
+		if(isMirror){
+			current.y = canvasHeight-current.y;
+			dbMsg += ">y>" + current.y ;
+		}
 		drawLine( current.x,  current.y, current.x, current.y, current.color , current.width , current.lineCap , 0 , true);
           //htmlの場合は不要、Androidネイティブは書き出しでパスを生成するので必要
           //一点しかないので始点終点とも同じ座標を渡すし
@@ -326,16 +367,21 @@
 	}
 
 	function onMouseMove(e) {
-		var dbMsg = "onMouseMove(" + drawing;
+		var dbMsg = "[onMouseMove]drawing=" + drawing;
 		if (drawing) {
 			dbMsg += ",color=" + current.color+ ",width=" + current.width;
 			dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
-			var eX = e.clientX-canvasX;
+			var eX = e.clientX - canvasX;
 			var eY = e.clientY- canvasY;
+			dbMsg += ",Mouse(" + eX + " , " + eY + ")isMirror="+isMirror;
+			if(isMirror){
+				eY = canvasHeight-eY;
+				dbMsg += ">y>" + eY;
+			}
 			drawLine(current.x, current.y,eX, eY, current.color,current.width , current.lineCap ,1, true);
 			current.x = eX;
 			current.y = eY;
-			dbMsg = ">>(" + current.x + " , " + current.y + ")";
+			dbMsg += ">>(" + current.x + " , " + current.y + ")";
 		}
 		myLog(dbMsg);
 	}
@@ -347,15 +393,18 @@
 			var currentX = current.x;
 			var currentY = current.y;
 			dbMsg = "(" + currentX + " , " + currentY + ")";
-			current.x = e.clientX;
-			current.y = e.clientY;
 			dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
-			current.x -= canvasX;
-			current.y -= canvasY;
+			current.x = e.clientX - canvasX;
+			current.y = e.clientY- canvasY;
+			dbMsg += ",Mouse(" + current.x + " , " + current.y + ")isMirror="+isMirror;
+			if(isMirror){
+				current.y = canvasHeight-current.y;
+				dbMsg += ">y>" + current.y ;
+			}
 			dbMsg += ",color=" + current.color+ ",width=" + current.width;
 			drawLine(currentX, currentY, current.x, current.y, current.color , current.width , current.lineCap , 2 , true);
-			dbMsg += ",isComp=" + isComp;
-			if(isComp){			//比較中
+			dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
+			if(isComp && isAutoJudge){			//比較中
 				useComp.click();
 				socket.emit('drawend', {});
 			}
@@ -369,26 +418,41 @@
 	canvas.ontouchstart = function(event) { //画面に指が触れた
 		var dbMsg = "ontouchstart(" + drawing;
 		drawing = true;
-		var toucheX = event.touches[0].pageX; //タッチしている湯便の本数文、イベントは発生する
+		jobSelect.options[4].disabled = false;										//もう一度
+	 	jobSelect.options[5].disabled = false;										//確定
+
+		canvasRect = document.getElementById('hitarea').getBoundingClientRect();
+		canvasX =canvasRect.left + window.pageXOffset;
+		canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
+		dbMsg += ",canvas("+ canvasX + " , " + canvasY + ")";
+		canvasWidth = canvasRect.width;
+		canvasHeight = canvasRect.height;
+		dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
+		var toucheX = event.touches[0].pageX-canvasX; //タッチしている湯便の本数文、イベントは発生する
 		var toucheY = event.touches[0].pageY;
-		dbMsg += "(" + toucheX + " , " + toucheY + ")";
+		dbMsg += "(" + toucheX + " , " + toucheY + ")isMirror="+isMirror;
+		if(isMirror){
+			toucheY = canvasHeight-toucheY;
+			dbMsg += ">y>" + toucheY ;
+		}
+
 		current.x = toucheX;
 		current.y = toucheY;
 		drawLine( current.x,  current.y, current.x, current.y, current.color , current.width , current.lineCap , 0 , true);
 		myLog(dbMsg);
-		// if(isDebug &&( ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1)){
-		// 	alert(dbMsg);
-		// }
-
 	};
 
 	canvas.ontouchmove = function(event) { //画面に指を触れたまま動かした
 		var dbMsg = "[ontouchmove]drawing=" + drawing;
 		if (drawing) {
 			event.preventDefault(); // 画面のスクロールを防止する
-			var toucheX = event.touches[0].pageX;
+			var toucheX = event.touches[0].pageX-canvasX;
 			var toucheY = event.touches[0].pageY;
-			dbMsg += "(" + toucheX + " , " + toucheY + ")";
+			dbMsg += "(" + toucheX + " , " + toucheY + ")isMirror="+isMirror;
+			if(isMirror){
+				toucheY = canvasHeight-toucheY;
+				dbMsg += ">y>" + toucheY ;
+			}
 			dbMsg += ",color=" + current.color+ ",width=" + current.width;
 			drawLine(current.x, current.y, toucheX, toucheY, current.color, current.width , current.lineCap , 2,true);
 			current.x = toucheX;
@@ -404,22 +468,62 @@
 			var currentX = current.x;
 			var currentY = current.y;
 			dbMsg += "(" + currentX + " , " + currentY + ")";
-			var toucheX = event.touches[0].pageX;
+			var toucheX = event.touches[0].pageX-canvasX;
 			var toucheY = event.touches[0].pageY;
-			dbMsg += "～(" + toucheX + " , " + toucheY + ")";
+			dbMsg += "～(" + toucheX + " , " + toucheY+ ")isMirror="+isMirror;
+			if(isMirror){
+				toucheY = canvasHeight-toucheY;
+				dbMsg += ">y>" + toucheY ;
+			}
 			current.x = toucheX;
 			current.y = toucheY;
 			dbMsg += ",color=" + current.color+ ",width=" + current.width;
 			drawLine(currentX, currentY, current.x, current.y, current.color,current.width , current.lineCap ,1, true);
 			// scoreDrow();
 		}
-		dbMsg += ",isComp=" + isComp;
-		// if(isComp){			//比較中
+		dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
+		if(isComp && isAutoJudge){			//比較中
 			socket.emit('drawend', {});
-		// }
+		}
 		myLog(dbMsg);
 		// mobileLog(dbMsg);
 	};
+
+	function touchHandler(evennt) {
+		var dbMsg = "[touchHandler]";
+		evennt.preventDefault();
+		dbMsg += "type="+evennt.type;
+		switch (evennt.type) {
+			case "touchstart" :
+				break;
+			case "touchmove" :
+				break;
+			case "touchcancel" :
+				break;
+			case "touchend" :
+				// var touches = evennt.changedTouches;
+				if (drawing) {
+					drawing = false;
+					var currentX = current.x;
+					var currentY = current.y;
+					dbMsg += "(" + currentX + " , " + currentY + ")";
+					var toucheX = event.touches[0].pageX;
+					var toucheY = event.touches[0].pageY-canvasX;
+					dbMsg += "～(" + toucheX + " , " + toucheY + ")";
+					current.x = toucheX;
+					current.y = toucheY;
+					dbMsg += ",color=" + current.color+ ",width=" + current.width;
+					drawLine(currentX, currentY, current.x, current.y, current.color,current.width , current.lineCap ,1, true);
+					// scoreDrow();
+				}
+				dbMsg += ",isComp="+isComp;
+				// mobileLog(dbMsg);
+				if(isComp){			//比較中
+					socket.emit('drawend', {});
+				}
+				break;
+		}
+	}
 
 	//drawingで受信したデータを書き込む/////////////////////////////////////イベント反映
 	function onDrawingEvent(data) {
@@ -585,14 +689,14 @@
 	// function stereoTypeSelect() {
 		 var tag = "[modalImgList]";
 		 var $getListAItems = document.getElementById( "modalImgList" ).children;
-	     for( var $i = 0; $i < $getListAItems.length; $i++ ){
-	         $getListAItems[$i].onclick =function(){
-					 var srcName =this.src;			 // current.color = e.target.className.split(' ')[1];
-				 	var dbMsg = tag + ",src=" + srcName;
-				 	myLog(dbMsg);
-					$('#modal_box').modal('hide');
-				 	bitmapRead(srcName);
-	             };
+		 for( var $i = 0; $i < $getListAItems.length; $i++ ){
+			 $getListAItems[$i].onclick =function(){
+			 srcName =this.src;			 // current.color = e.target.className.split(' ')[1];
+			 	var dbMsg = tag + ",src=" + srcName;
+			 	myLog(dbMsg);
+				$('#modal_box').modal('hide');
+			 	bitmapRead(srcName);
+             };
 	     }
 	}
 
@@ -618,8 +722,8 @@
 	        var tbCanvasWidth = canvas.width;
 	        var tbCanvasHeight = canvas.height;
 	        dbMsg = dbMsg + "[" + tbCanvasWidth + "×" + tbCanvasHeight + "]";
-	        var scaleWidth =  tbCanvasWidth/dstWidth*0.75;		//dstWidth / tbCanvasWidth;
-	        var scaleHeight = tbCanvasHeight/dstHeight*0.75;	//dstHeight / tbCanvasHeight;
+	        var scaleWidth =  tbCanvasWidth/dstWidth;		//dstWidth / tbCanvasWidth;
+	        var scaleHeight = tbCanvasHeight/dstHeight;	//dstHeight / tbCanvasHeight;
 	        dbMsg = dbMsg + ",scale[" + scaleWidth + "×" + scaleHeight + "%]";	//"更に" + tileBaceSize + "%";
 	        var biScale = scaleWidth;
 	        if (scaleHeight < scaleWidth) {
@@ -827,18 +931,38 @@
 		scoreStartRady();
 
 		myLog(dbMsg);
-		document.getElementById('scoreComent').innerHTML = colorArray.length +"色中 対象 "+orgColor + " ;線＝" + lineWidth +"PX";
-		var rgba = 'rgba(' + oRed + ',' +oGreen +',' + oBule + ',' + (255 / 255) + ')';
-		document.getElementById('scoreComent').style.background =  rgba;		//r=63,g=72,b=204 ="#3fcc48が正解
 		if(isDebug){
-			editerAria.style.display="inline-block";
+			document.getElementById('scoreComent').innerHTML = colorArray.length +"色中 対象 "+orgColor + " ;線＝" + lineWidth +"PX";
+			var rgba = 'rgba(' + oRed + ',' +oGreen +',' + oBule + ',' + (255 / 255) + ')';
+			document.getElementById('scoreComent').style.background =  rgba;		//r=63,g=72,b=204 ="#3fcc48が正解
+			// 	editerAria.style.display="inline-block";
 		}
 		scoreBrock.style.display="inline-block";			//BD
 	}
 
-	var oRed;
-	var oGreen;
-	var oBule;
+	function drowAgain() {				//やり直し
+		var dbMsg = "[drowAgain]srcName="+srcName;
+		if(srcName !=""){
+			drawing = false;
+			isComp=false;				//比較中
+			bitmapRead(srcName);
+		}else if(0 < originPixcel.length){
+			 scoreStartRady();
+	 		orgCount=0;
+	 		$('#modalTitol').innerHTML = "元データを書き直しています";
+	 		// orgCount =setTimeout(scoreCount,1000);
+	 		dbMsg += ",orgColo="+ orgColor;
+	 		orgCount= reDrowScoreCount(canvas  , originPixcel , orgColor);
+	 		dbMsg += ",orgCount="+ orgCount;
+	 		compCount = orgCount;
+	 		document.getElementById('compTF').innerHTML = orgCount+"";
+	 		document.getElementById('orgTF').innerHTML = orgCount+"";
+
+		}else{
+			alert("「もう一度」は選択したパターンでやり直す機能です。\n使用するパターンを選択して下さい。");
+		}
+	}
+
 	function scoreStartRady() {
 		var dbMsg = "[scoreStartRady]";
 		isComp=true;				//比較中
@@ -857,10 +981,13 @@
 		compColor =rgb2hex(retRGB);
 		current.color=compColor;
 		dbMsg += ">>"+ current.color;
-		socket.emit('sendcomp', {
-			compColor: compColor,
-			width: current.width
-		});
+		// dbMsg +=",emit=" + emit;
+		// if (emit) {
+			socket.emit('sendcomp', {
+				compColor: compColor,
+				width: current.width
+			});
+		// }
 
 		myLog(dbMsg);
 	}
@@ -949,6 +1076,7 @@
 
 	function scoreStart() {
 		var dbMsg = "[scoreStart]";
+		originPixcel = new Array();				//
 		scoreStartRady();
 		orgCount=0;
 		$('#modalTitol').innerHTML = "元データを確認しています";
@@ -976,19 +1104,18 @@
 	}
 
 	function scoreCount(canvas  , orgColor) {
-	// return new Promise((onSuccess, onFailed) => {
 		var dbMsg = "[scoreCount]orgColor="+ orgColor;
 		var dCount =0;
 		var checkCount = 0;														//色がついている部分
-	// var lWidth=context.lineWidth;
-		// dbMsg += "lineWidth=" + lWidth;
 		var cWidth = canvas.width;
 		var cHeight = canvas.height;
 		dbMsg += "["+ cWidth + "×"+ cHeight + "]";
 		var context = canvas.getContext('2d');
 		var canvasImageData = context.getImageData(0, 0, cWidth, cHeight);
 		var canvasRGBA = canvasImageData.data;
-
+		if(0==originPixcel.length){
+			 originPixcel = canvasImageData.data;
+		}
 		// $('body').addClass('modal-open');
 		// $("#progressFleam").css("display", "block");
 		$('#modal_box').modal();
@@ -1019,6 +1146,7 @@
 				var cBule = canvasRGBA[carentPos + 2];					//canvasRGBA[2 + carentPos];
 				var cAlpha =  canvasRGBA[carentPos + 3]/255;					//canvasRGBA[3 + carentPos];
 				var cColor = rgb2hex("rgb("+ cRed + ", " + cGreen + ", " + cBule +")");
+
 				if(cColor!='#000000' && cColor!='#ffffff' ){	//真っ白はもしくは真っ黒もしk儒はデータ無し							&& cAlpha == 1
 					checkCount++;
 					if(orgColor == cColor){
@@ -1029,6 +1157,78 @@
 				}
 			}
 		}
+		// $('body').removeClass('modal-open'); // 1； body に自動的に付与されるクラスを削除する。このクラスがついたままだと、 画面スクロールが効かなくなる
+		// $('.modal-backdrop').remove();       // 2；モーダルの背景（黒い部分）を削除する処理。この処理を行わないとモーダルは消えても、背景が残ったままになり、 クリックが効かないままになる
+		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+		// document.getElementById("progressBs").style.display="none";
+		// removeLoading();
+//			document.getElementById("progressFleam").style.display="none";			 // ここでstyleは無効
+		dbMsg += ">>>dCount=" + dCount +"/" + checkCount;
+		myLog(dbMsg);
+		return dCount;
+		// return onSuccess(dCount);
+    // });
+	}
+
+	function reDrowScoreCount(canvas  , originPixcel , orgColor) {
+	// return new Promise((onSuccess, onFailed) => {
+		var dbMsg = "[reDrowScoreCount]orgColor="+ orgColor + "originPixcel" + originPixcel.length;
+		var dCount =0;
+		var checkCount = 0;														//色がついている部分
+		var cWidth = canvas.width;
+		var cHeight = canvas.height;
+		dbMsg += "["+ cWidth + "×"+ cHeight + "]";
+		var context = canvas.getContext('2d');
+		var canvasImageData = context.getImageData(0, 0, cWidth, cHeight);
+		var canvasRGBA = originPixcel;
+		var newImageData = context.createImageData(canvas.width, canvas.height);
+		var newRGBA = newImageData.data;
+		$('#modal_box').modal();
+		document.getElementById("modalImgList").style.display="none";
+		document.getElementById("progressBase").style.display="block";
+		$('#modalComent').innerHTML = "描画領域[" +cWidth+"×"+cHeight+ "]" ;
+	// $('#dlog_bt').click();			// $('#modal_box').modal(); が効かない
+
+	// dispLoading("元データを確認しています");
+		// showProg();
+		// document.getElementById("modal_box").modal();//modal is not a function
+		// document.getElementById("progress").style.display="block";
+		// $('#progress').progressbar({
+		//    value: 0,
+		//    max: cWidth,
+		//    disabled: false
+		//  });
+		for (var yPos = 0;yPos < cHeight;yPos++) {
+			var pVar = Math.round(yPos/cHeight*100);
+			document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
+			// $(".progress-bar").css("width", String(pVar) + "%");		// $('.progressBs').css("width", String(pVar) + "%")では反映されない
+			document.getElementById("progressBs").style.width =  String(pVar) + "%";
+			for (var xPos = 0;xPos < cWidth;xPos++) {
+				var carentPos =	(yPos*(cWidth*4)) + (xPos*4);
+				// var carentPos =(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4);
+				var cRed = canvasRGBA[carentPos];					//canvasRGBA[carentPos];
+				var cGreen = canvasRGBA[carentPos + 1];					//canvasRGBA[1 + carentPos];
+				var cBule = canvasRGBA[carentPos + 2];					//canvasRGBA[2 + carentPos];
+				var cAlpha =  canvasRGBA[carentPos + 3]/255;					//canvasRGBA[3 + carentPos];
+				var cColor = rgb2hex("rgb("+ cRed + ", " + cGreen + ", " + cBule +")");
+
+				newRGBA[carentPos] = canvasRGBA[carentPos];
+				newRGBA[1 + carentPos] = canvasRGBA[1 + carentPos];
+				newRGBA[2 + carentPos] = canvasRGBA[2 + carentPos];
+				newRGBA[3 + carentPos] = canvasRGBA[3 + carentPos];
+
+				if(cColor!='#000000' && cColor!='#ffffff' ){	//真っ白はもしくは真っ黒もしk儒はデータ無し							&& cAlpha == 1
+					checkCount++;
+					if(orgColor == cColor){
+						dbMsg += "("+ xPos + ","+ yPos + ")"+cColor;
+						dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
+						dCount++;
+					}
+				}
+			}
+		}
+		context.putImageData(newImageData, 0, 0);					// コピーしたピクセル情報をCanvasに転送
+
 		// $('body').removeClass('modal-open'); // 1； body に自動的に付与されるクラスを削除する。このクラスがついたままだと、 画面スクロールが効かなくなる
 		// $('.modal-backdrop').remove();       // 2；モーダルの背景（黒い部分）を削除する処理。この処理を行わないとモーダルは消えても、背景が残ったままになり、 クリックが効かないままになる
 		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
@@ -1109,7 +1309,7 @@
 	}
 
 	function mobileLog(dbMsg) {
-		if(isMobile & isDebug){
+		if(isMobile & isSmaphoDebug){
 			alert(dbMsg);
 		}
 	}

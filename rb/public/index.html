@@ -39,7 +39,7 @@
 								コメント
 							</div>
 							<div  class="row" id="modalImgList">
-										<img class="col-sm-2" src="/stereotype/st001.png" width="20%" height="20%">
+										<img class="col-sm-2"  src="/stereotype/st001.png" width="20%" height="20%">
 										<img class="col-sm-2" src="/stereotype/st002.png" width="20%" height="20%">
 										<img  class="col-sm-2" src="/stereotype/st003.png" width="20%" height="20%">
 										<img  class="col-sm-2" src="/stereotype/st004.png" width="20%" height="20%">
@@ -77,16 +77,20 @@
 						操作側のブラウザにセットするURL≫  <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
 						 >>スマホはQRコードで接続して下さい。<br>
 						 トレース元図形を確定にするとスコアの評価が始まります。
-						 <input type="button" id="dlog_bt" value="モーダル表示確認" style="height: 24px;border-radius: 4px;margin-left: 50px;">
+						 <input type="checkbox" id="mirrorCB" checked=true style="margin-left: 30px;">鏡面動作
+						 <input type="checkbox" id="autojudgeCB" checked=true style="margin-left: 30px;">トレース後に自動判定
+			 		 	<input type="button" id="dlog_bt" value="モーダル表示確認" style="height: 24px;border-radius: 4px;margin-left: 50px;">
 					 <!-- <div class="click_btn" id="dlog_bt" style="">
 							 ここをClickするとモーダルが出る
 						</div> -->
 						<div id="scoreAria">
 							  トレース元図形
 							<select id="jobSelect" size="1">
-								<option value="make">作成</option>
-								<!-- <option value="fileSel">ファイルから読み込み</option> -->
+								<option value="none">選択して下さい</option>
 								<option value="patranList">パターンリスト表示</option>
+								<option value="fileSel">ファイルから読み込み</option>
+								<option value="make">手書きで作成</option>
+								<option value="again">もう一度</option>
 								<option value="comp">確定</option>
 							</select>
 							<div id="scoreBrock" style="display: inline-block;margin-left: 30px;margin-right: 30px">
@@ -102,7 +106,6 @@
 								</span>ピクセル
 								<span id="scoreComent" style="color: white;">
 								</span>
-								<input type="checkbox" id="mirrorCB" style="margin-left: 30px;">鏡面動作
 								<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 30px;">
 							</div>
 							<div id="editerAria">
@@ -174,8 +177,8 @@
 				<canvas class="whiteboard" id="hitarea"></canvas>
 			</div>
 
-			<div  id="footer">
-				<span id="eventComent" style="text-align: right;margin-left:  50px;"></span>
+			<div id="footer">
+				<span id="eventComent" style="text-align: right;margin-left:  5px;"></span>
 			</div>
 	</div>
 	<script src="/socket.io/socket.io.js"></script>
@@ -183,7 +186,11 @@
     <script src="jquery.qrcode.min.js"></script>
 
 	<script type="text/javascript">
+		var isDebug =false;
+		var isSmaphoDebug =false;
 		var ua;
+		var isMobile=false;				//現在使用しているのはスマホ
+
 		window.onload = function(){	// onload	;	ページ読み込み時に実行したい処理
 			var dbMsg = "[onload]";
 			var protocol = location.protocol
@@ -212,7 +219,7 @@
 			// var targetUrl = urlStr.replace( path, ":3080" );
 			// dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
 			var reciverPostion =urlStr.indexOf('reciver');
-			dbMsg += "　,reciverPostion="+reciverPostion + "/" + urlStr.length;
+			// dbMsg += "　,reciverPostion="+reciverPostion + "/" + urlStr.length;
 			if(-1 == urlStr.indexOf('sesion')){
 				var now = new Date();
 				var UrlPparam =  "?sesion=" +  now.getYear() +(now.getMonth()+1)+now.getDate()+now.getHours()+now.getMinutes()+now.getSeconds();		// "?sesion="
@@ -226,12 +233,16 @@
 				document.getElementById("urlInfoAria").style.display="none";				// $("#urlInfoAria").では使えない
 				//課題　；非表示にした分、描画範囲修正（上端）
 				// current.color= '#FF0000';						//課題；Canvaceを取得してカラー設定
+				// urlStr =urlStr.replace('?reciver=pad ', "");
+				// openWindow(urlStr);
+				// navigator.directions=0;			//this,window,document	>>cannat CET;0  	/	navigator,location >>無反応
+				// navigator.location = 0;
 			}else{
 				urlStr +='?reciver=pad';
 				var infoAria = document.getElementById("infoAria");
-					infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank">' + urlStr + '</a>';
-
-					if(-1 < urlStr.indexOf('127.0.0.1')){						//xamppでのテスト
+					infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank" >' + urlStr + '</a>';
+//   directions=no location=no
+					if(-1 < urlStr.indexOf('127.0.0.1')){						//xamppでのテスト中は
 						// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
 						// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
 						// dbmsg += "　,ipAddress="+ipAddress;
@@ -250,31 +261,67 @@
 			}
 			document.getElementById("scoreBrock").style.display="none";
 			// document.getElementById("useComp").style.display="none";
-			document.getElementById("editerAria").style.display="inline-block";			 // 編集ツール表示
+			document.getElementById("editerAria").style.display="none";			 // 編集ツール表示
+			// document.getElementById("editerAria").style.display="inline-block";			 // 編集ツール表示
 			document.getElementById("dlog_bt").style.display="none";
 			document.getElementById("allclear").click();								//リロード時の消去
 
+			var hitarea = document.getElementById('hitarea');
+			if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
+				 isMobile=true;				//現在使用しているのはスマホ
+			// openWindow(urlStr,"myWindow");
+				// // if (hitarea.requestFullscreen) {
+				//   hitarea.requestFullscreen();
+				// // }
+			}
 
-			// if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
-			// 	var start = "touchstart";
-			// 	var move  = "touchmove";
-			// 	var end   = "touchend";
-			// }else{
-			// 	var start = "mousedown";
-			// 	var move  = "mousemove";
-			// 	var end   = "mouseup";
-			// }
+			var canvasRect = hitarea.getBoundingClientRect();
+			var canvasX =canvasRect.left + window.pageXOffset;
+			var canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
+			dbMsg += ",canvas("+ canvasX + " , " + canvasY + ")";
+		 	var canvasWidth = canvasRect.width;
+			var canvasHeight = canvasRect.height;
+			dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
+			//  canvasHeight = canvasWidth*9/16;
+			// dbMsg += ">>" + canvasHeight + "]";
+			// document.getElementById('hitarea').style.height = canvasHeight;
+			if(isMobile){
+				canvasHeight = canvasHeight-canvasY-110;				//課題；アドレスバーの高さ
+				dbMsg += ">height>" + canvasHeight ;
+				canvasWidth = canvasHeight*16/9;
+				dbMsg += ">width>" + canvasWidth ;
+				hitarea.width = canvasWidth;
+				hitarea.height = canvasHeight;
+				dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
+			}
+			if(! dbMsg){
+				document.getElementById("footer").style.display="none";
+			}
 			myLog(dbMsg)
-			// console.log(dbMsg);
+			mobileLog(dbMsg)
 		}
 
-		var isDebug =true;
+		// function openWindow(url){
+		//   info = 'toolbar=no,location=no,directories=no,menubar=no' ;//+		   ',status=no,scrollbars=yes,left=0,top=0,resizable=yes,width=1014,height=740,title=no'
+		//   var window1 = window.open(url,info);
+		//   window1.moveTo(0, 0);
+		//   window.opener = self;
+		//   window.close();
+		// }
+
 		function myLog(dbMsg) {
 			if(isDebug){
 				console.log(dbMsg);
 				eventComent.innerHTML = dbMsg;
 			}
 		}
+
+		function mobileLog(dbMsg) {
+			if(isMobile & isSmaphoDebug){
+				alert(dbMsg);
+			}
+		}
+
 	</script>
 	</body>
 </html>
