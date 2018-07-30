@@ -72,17 +72,21 @@
 			<div id="header">
 				<div class="row" id="urlInfoAria">
 					<div class="col-sm-10" id="urlDescriptionAria">
-						RECOVERY DOOR社のリカバリーブラインをアプリケーション化しました。<br>
-						こちら側の画面に表示される線や図形を、操作側の画面からなぞり、一致した度合いでスコアを表示します。<br>
+						<div class="row" id="infoHead">
+							<div class="col-sm-10">
+								RECOVERY DOOR社のリカバリーブラインをアプリケーション化しました。<br>
+								こちら側の画面に表示される線や図形を、操作側の画面からなぞり、一致した度合いでスコアを表示します。<br>
+							</div>
+							<div class="col-sm-2">
+								<input type="button" id="about_bt" value="このページの使い方" style="border-radius: 4px">
+							</div>
+						</div>
 						操作側のブラウザにセットするURL≫  <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
 						 >>スマホはQRコードで接続して下さい。<br>
 						 トレース元図形を確定にするとスコアの評価が始まります。
 						 <input type="checkbox" id="mirrorCB"  style="margin-left: 30px;">鏡面動作
 						 <input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 30px;">トレース後に自動判定
 			 		 	<input type="button" id="dlog_bt" value="モーダル表示確認" style="height: 24px;border-radius: 4px;margin-left: 50px;">
-					 <!-- <div class="click_btn" id="dlog_bt" style="">
-							 ここをClickするとモーダルが出る
-						</div> -->
 						<div id="scoreAria">
 							  トレース元図形
 							<select id="jobSelect" size="1">
@@ -305,6 +309,13 @@
 			myLog(dbMsg)
 			mobileLog(dbMsg)
 		}
+
+		document.getElementById("about_bt").onclick = function () {
+			var dbMsg = "[about_bt]";
+			window.open('/about',"このページの説明");
+			//location=no,toolbar=no,'menubar=no'
+		}
+
 
 		// function openWindow(url){
 		//   info = 'toolbar=no,location=no,directories=no,menubar=no' ;//+		   ',status=no,scrollbars=yes,left=0,top=0,resizable=yes,width=1014,height=740,title=no'
