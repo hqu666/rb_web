@@ -25,7 +25,7 @@ IPv4 パブリック IP		18.182.237.90
 			自宅	cd /d H:\
 				cd H:\develop\xampp\htdocs\repireBrain\rb\memo
 
-	②設定ファイルの権限設定
+	②設定ファイルの権限変更
 		cacls recovery_brain_web.pem /g hkuwayama:F
 			自宅	cacls recovery_brain_web.pem /g 博臣:F
 
@@ -35,19 +35,19 @@ IPv4 パブリック IP		18.182.237.90
 	④作業フォルダに移動
 		$ cd rb
 
-	⑤ハングアップ シグナル( HUP )を出さずに該当スクリプト起動；SSHログアウト後も動作が続く)
+	⑤入口になるJSの起動
 		nohup  node index.js &
 
 			☆node index.js  ではシェル終了、ログアウトで接続も切れる
+			ハングアップ シグナル( HUP )を出さずに該当スクリプト起動；SSHログアウト後も動作が続く)	https://www.glamenv-septzen.net/view/854
 			☆nohup コマンド &　
-				☆"&"でバックグラウンド
-				※	nohup: ignoring input and appending output to ‘nohup.out’　と表示されるが起動
+				☆必ず "&" でバックグラウンド動作にする事
+				※nohup: ignoring input and appending output to ‘nohup.out’　と表示されるが起動
 					ログを表示せず同フォルダのnohup.outに書き出される
-			☆windowsローカルでは
-			Start-Job { & node index.js }
-			確認：デーモン化して起動
-					sudo forever start node index.js
-					node indexnde .js			//	node http-server-simple.js
+				※nohupが有効化されない時は
+					nohupはSIGTERM, SIGQUITなど他のシグナルハンドラをデフォルト設定のままにしている。
+					たとえnohupで起動していたとしても、それらデフォルトでプロセス終了となるシグナルを受信すれば当然、プロセスは終了する。
+
 	成功したら
 		EC2>>> ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com:3080
 		と表示される
@@ -78,6 +78,17 @@ IPv4 パブリック IP		18.182.237.90
 			cd /d H:\
 			cd H:\develop\xampp\htdocs\repireBrain\rb
 	②　node index.js
+	　start /b cmd /c & node index.js
+	start /b cmd /c & node C:\work\xampp\htdocs\recoverry_brain\rb\index.js
+
+
+	Start-Job { & node index.js }
+	確認：デーモン化して起動
+			sudo forever start node index.js
+			node indexnde .js			//	node http-server-simple.js
+
+
+
 	③ブラウザで
 
 

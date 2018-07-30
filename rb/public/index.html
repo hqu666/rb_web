@@ -77,8 +77,8 @@
 						操作側のブラウザにセットするURL≫  <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
 						 >>スマホはQRコードで接続して下さい。<br>
 						 トレース元図形を確定にするとスコアの評価が始まります。
-						 <input type="checkbox" id="mirrorCB" checked=true style="margin-left: 30px;">鏡面動作
-						 <input type="checkbox" id="autojudgeCB" checked=true style="margin-left: 30px;">トレース後に自動判定
+						 <input type="checkbox" id="mirrorCB"  style="margin-left: 30px;">鏡面動作
+						 <input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 30px;">トレース後に自動判定
 			 		 	<input type="button" id="dlog_bt" value="モーダル表示確認" style="height: 24px;border-radius: 4px;margin-left: 50px;">
 					 <!-- <div class="click_btn" id="dlog_bt" style="">
 							 ここをClickするとモーダルが出る
@@ -93,6 +93,7 @@
 								<option value="again">もう一度</option>
 								<option value="comp">確定</option>
 							</select>
+							<input type="file" id="files" name="files[]" />
 							<div id="scoreBrock" style="display: inline-block;margin-left: 30px;margin-right: 30px">
 								スコア
 								<span id="scoreTF"  style="font-size: x-large">
@@ -186,7 +187,7 @@
     <script src="jquery.qrcode.min.js"></script>
 
 	<script type="text/javascript">
-		var isDebug =false;
+		var isDebug =true;
 		var isSmaphoDebug =false;
 		var ua;
 		var isMobile=false;				//現在使用しているのはスマホ
@@ -196,7 +197,7 @@
 			var protocol = location.protocol
 			dbMsg += "　,protocol="+protocol;		//protocol=http:
 			var urlStr = location.href +"";
-			dbMsg += ",urlStr=　"+urlStr;				//protocol + hostname + port + hash をまとめて首都kぅ
+			dbMsg += ",urlStr=　"+urlStr;				//protocol + hostname + port + hash をまとめて取得
 			var host = location.hostname ;			//プロトコル情報を除外したURLを取得する(port情報なし)>>
 			dbMsg += "　,host="+host;						//host=127.0.0.1
 			var path = location.pathname ;				//URLでパスの部分を取得・設定する
@@ -216,6 +217,10 @@
 			var	tframe = document.getElementById("tframe");
 			var	titolAncar = document.getElementById("titolAncar");
 
+			if(-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')){
+				isDebug =false;
+				isSmaphoDebug =false;
+			}
 			// var targetUrl = urlStr.replace( path, ":3080" );
 			// dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
 			var reciverPostion =urlStr.indexOf('reciver');
@@ -246,8 +251,8 @@
 						// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
 						// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
 						// dbmsg += "　,ipAddress="+ipAddress;
-						// var wifiURL = '192.168.100.6';		//課題；取得方法；Javascriptでは取得できない
-						var wifiURL = '192.168.3.10';		//自宅
+						var wifiURL = '192.168.100.6';		//課題；取得方法；Javascriptでは取得できない
+						// var wifiURL = '192.168.3.10';		//自宅
 						dbMsg += "　,wifiURL="+wifiURL;
 						urlStr = urlStr.replace('127.0.0.1', wifiURL);				//'http://192.168.3.10:3080'
 					}else{
@@ -286,7 +291,7 @@
 			// dbMsg += ">>" + canvasHeight + "]";
 			// document.getElementById('hitarea').style.height = canvasHeight;
 			if(isMobile){
-				canvasHeight = canvasHeight-canvasY-110;				//課題；アドレスバーの高さ
+				canvasHeight = canvasHeight-canvasY-80;				//課題；アドレスバーの高さ
 				dbMsg += ">height>" + canvasHeight ;
 				canvasWidth = canvasHeight*16/9;
 				dbMsg += ">width>" + canvasWidth ;

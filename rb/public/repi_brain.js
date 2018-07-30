@@ -18,7 +18,8 @@
 	jobSelect.options[5].disabled = true;										//確定
 
 	var orgComp = document.getElementById('orgComp');							//元データの描画結果
-	var useComp = document.getElementById('useComp');							//トレース後の描画結果
+	var useComp = document.getElementById('useComp');							//判定ボタン；トレース後の描画結果
+	useComp.style.display="none";												//判定ボタン
 
 	var graficOptions = document.getElementById('graficOptions');				//グラフィック設定
 	var lineWidthSelect = document.getElementById('lineWidthSelect');			//線の太さ
@@ -26,19 +27,22 @@
 
 	var texeOptions = document.getElementById('texeOptions');					//テキスト設定
 	var eventComent = document.getElementById("eventComent");
-	eventComent.innerHTML = "Drow OK";
+	eventComent.innerHTML = "";				//"Drow OK";
 	var $document = $(document);
 	var $hitarea = $('#whiteboard');
 	var context = canvas.getContext('2d');
 	var current = {
-		color:'#00FF00'
-		// ,width:'5'
+		color:'#00FF00',
+		width:'1',
+		lineCap:"round"										//butt, round, square
 	};
-	var isMirror=true;				//鏡面動作
+	var isMirror=false;				//鏡面動作
 	var isAutoJudge=true;				//トレース後に自動判定
 	var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
 	var orgCount=0;
 	var compCount=0;
+	var currentWidth=10;
+	var currentLineCap="round";
 	var directionVal = 0;														//回転宝庫儒
 	var orgColor='#00ff00';
 	var compColor='#ffffff';
@@ -46,9 +50,9 @@
 	var oGreen;
 	var oBule;
 	colorPalet.value=orgColor;
-	lineWidthSelect.value= 10;				//current.width;
-	current.width =  lineWidthSelect.value;
-	current.lineCap =  "round";
+	lineWidthSelect.value= 10;				//currentWidth;
+	currentWidth =  lineWidthSelect.value;
+	currentLineCap =  "round";
 
 	texeOptions.style.display="none";
 	var drawing = false;
@@ -76,6 +80,20 @@
 
 	window.addEventListener('load', function() {
 		var dbMsg = "[repi_brain/onload]";
+		var urlStr = location.href +"";
+		dbMsg += ",urlStr=　"+urlStr;				//protocol + hostname + port + hash をまとめて取得
+		if(-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')){
+			isDebug =false;
+			isSmaphoDebug =false;
+		}
+		if (window.File && window.FileReader && window.FileList && window.Blob) {		//ファイル読込みが可能な環境なら
+			dbMsg += ",ファイル読込み可能";
+			jobSelect.options[4].disabled = false;										//ファイルから読み込み　を有効化
+			document.getElementById('files').addEventListener('change', handleFileSelect, false);
+		} else {
+			jobSelect.options[4].disabled = true;
+		}
+		document.getElementById('files').style.display="none";
 		// canvasRect = document.getElementById('hitarea').getBoundingClientRect();
 		// canvasX =canvasRect.left + window.pageXOffset;
 		// canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
@@ -94,7 +112,7 @@
 		}else{
 			isMobile=false;
 		}
-		dbMsg += ",isMobile="+isMobile;
+		dbMsg += " ,isMobile="+isMobile;
 		isMirror = document.getElementById('mirrorCB').checked;
 		dbMsg += ",isMirror="+isMirror;
 		// mobileLog(dbMsg);
@@ -110,6 +128,15 @@
 	// 	canvas.height = setHight;			//window.innerHeight;
 	// 	myLog(dbMsg);
 	// })
+	function onResize() {
+		var dbMsg = "onResize;";
+		canvas.width = window.innerWidth;
+		dbMsg += "[" + canvas.width;
+		var setHight = canvas.width*1080/1920;
+		dbMsg += " , " + setHight + "]";
+		canvas.height = setHight;			//window.innerHeight;
+		// myLog(dbMsg);
+	}
 
   /////////////////////////////////////////////////////////////////////////////
 	jobSelect.onchange = function () {					 //描画する種類を変更
@@ -118,22 +145,23 @@
 		dbMsg += ",currentjob="+ currentjob;
 		scoreBrock.style.display="none";
 		editerAria.style.display="none";
+		document.getElementById('files').style.display="none";
 		myLog(dbMsg);
 		if(currentjob == "none"){
-		}else if(currentjob == "fileSel"){			//確定</option>
-			alert( '作成中です。');  //数値と文字の結合
-		}else if(currentjob == "patranList"){			//パターンリスト表示</option>
+		}else if(currentjob == "fileSel"){										//ファイルから読み込み
+			document.getElementById('files').style.display="inline-block";
+		}else if(currentjob == "patranList"){									//パターンリスト表示</option>
 			isComp=false;				//比較中
 			document.getElementById("allclear").click();
 			stereoTypeStart();
-		}else if(currentjob == "make"){			//">作成</option>
-		 	isComp=false;				//比較中
-			if(isMirror){
-				document.getElementById('mirrorCB').click();
+		}else if(currentjob == "make"){											//"手書きで作成の場合
+		 	isComp=false;														//比較中解除
+			if(isMirror){														//鏡面動作になっていたら
+				document.getElementById('mirrorCB').click();					//解除
 			}
-			document.getElementById("allclear").click();
-			editerAria.style.display="inline-block";
-			current.color =orgColor;			 // current.color = e.target.className.split(' ')[1];
+			document.getElementById("allclear").click();						//画面を初期化して
+			editerAria.style.display="inline-block";							//編集ツール表示
+			current.color =orgColor;			 								//元パターン用の色に戻す
 		}else if(currentjob == "again"){			//もう一度</option>
 			drowAgain();
 		}else if(currentjob == "comp"){			//確定</option>
@@ -211,25 +239,31 @@
 		var dbMsg = "colorPalet;";
 		current.color =this.value;			 // current.color = e.target.className.split(' ')[1];
 		dbMsg += ",selectColor="+ current.color;
-		// socket.emit('changeColor', current.color);
+		socket.emit('changeColor', {
+			color:current.color
+		});
 		myLog(dbMsg);
 	}
 
 	lineWidthSelect.onchange = function () {
 		var dbMsg = "lineWidthSelect;";
 		var selectWidth = this.value
-		current.width =  selectWidth;
-		dbMsg += ",selectWidth="+ current.width;
-		// socket.emit('changeLineWidth', current.width);
+		currentWidth =  selectWidth;
+		dbMsg += ",selectWidth="+ currentWidth;
+		socket.emit('changeLineWidth', {
+			width:currentWidth
+		});
 		myLog(dbMsg);
 	}
 
 	lineCapSelect.onchange = function () {				//先端形状
 		dbMsg = "lineCapSelect;";
 		var lineCap = this.value
-		current.lineCap =  lineCap;
-		dbMsg += ",lineCap="+ current.lineCap;
-		// socket.emit('changeLineCap', current.lineCap);
+		currentLineCap =  lineCap;
+		dbMsg += ",lineCap="+ currentLineCap;
+		socket.emit('changeLineCap', {
+			lineCap:currentLineCap
+		});
 		myLog(dbMsg);
 	}
 
@@ -250,6 +284,11 @@
 		var dbMsg = "[autojudgeCB]";
 		isAutoJudge = document.getElementById('autojudgeCB').checked;
 		dbMsg += ",isAutoJudge="+isAutoJudge;
+		if(isAutoJudge){
+			useComp.style.display="none";												//判定ボタン
+		}else {
+			useComp.style.display="inline-block";												//判定ボタン
+		}
 		myLog(dbMsg);
 		socket.emit('setautojudge', {
 			bool:isAutoJudge
@@ -260,7 +299,7 @@
 		var dbMsg = "[typeSelect]";
 		directionVal = this.value
 		dbMsg += ",回転方向="+ directionVal;
-		// socket.emit('changeLineCap', current.lineCap);
+		// socket.emit('changeLineCap', currentLineCap);
 		myLog(dbMsg);
 	}
 
@@ -269,7 +308,7 @@
 		socket.emit('allclear', {});
 	}
 
-//イベント受信////////////////////////////////////////////////////////////////////////////
+//socket.ioイベント受信////////////////////////////////////////////////////////////////////////////
 	socket.on('drawing', function(data) {
 		var dbMsg = "recive:drawing";
 		onDrawingEvent(data);
@@ -296,6 +335,11 @@
 		isAutoJudge = data.bool;
 		dbMsg += ",isAutoJudge="+isAutoJudge;
 		document.getElementById('autojudgeCB').checked=isAutoJudge;
+		if(isAutoJudge){
+			useComp.style.display="none";												//判定ボタン
+		}else {
+			useComp.style.display="inline-block";												//判定ボタン
+		}
 		myLog(dbMsg);
 		mobileLog(dbMsg);
 	});
@@ -303,36 +347,39 @@
 	socket.on('sendcomp', function(data) {
 		var dbMsg = "recive[sendcomp]";
 		isComp =true;
-		dbMsg += ",compColor="+ data.compColor;
-		current.color =data.compColor;
-		current.width= data.width;
-		dbMsg += ",width="+current.width;
+		dbMsg += ",compColor="+ data.color+" , "+ data.width+" , "+ data.lineCap;
+		current.color =data.color;
+		colorPalet.value=current.color;
+		currentWidth= data.width;
+		lineWidthSelect.value=currentWidth;
+		currentLineCap =  data.lineCap;
+		lineCapSelect.value=currentLineCap;
 		myLog(dbMsg);
 		mobileLog(dbMsg);
 	});
 
-	// socket.on('changeColor', function(data) {
-	// 	var dbMsg = "recive:chngeColor="+data;
-	// 	current.color = data;			 // current.color = e.target.className.split(' ')[1];
-	// 	colorPalet.value=current.color;
-	// 	myLog(dbMsg);
-	// });
-    //
-	// socket.on('changeLineWidth', function(data) {
-	// 	var dbMsg = "recive:changeLineWidth;";
-	// 	current.width = data;
-	// 	dbMsg += "="+current.width;
-	// 	lineWidthSelect.value=current.width;
-	// 	myLog(dbMsg);
-	// });
-    //
-	// socket.on('changeLineCap', function(data) {
-	// 	var dbMsg = "recive:changeLineCap;";
-	// 	current.lineCap = data;
-	// 	dbMsg += "="+current.lineCap;
-	// 	lineCapSelect.value=current.lineCap;
-	// 	myLog(dbMsg);
-	// });
+	socket.on('changeColor', function(data) {
+		var dbMsg = "recive:chngeColor="+data;
+		current.color = data.color;			 // current.color = e.target.className.split(' ')[1];
+		colorPalet.value=current.color;
+		myLog(dbMsg);
+	});
+
+	socket.on('changeLineWidth', function(data) {
+		var dbMsg = "recive:changeLineWidth;";
+		currentWidth = data.width;
+		dbMsg += "="+currentWidth;
+		lineWidthSelect.value=currentWidth;
+		myLog(dbMsg);
+	});
+
+	socket.on('changeLineCap', function(data) {
+		var dbMsg = "recive:changeLineCap;";
+		currentLineCap = data.lineCap;
+		dbMsg += "="+currentLineCap;
+		lineCapSelect.value=currentLineCap;
+		myLog(dbMsg);
+	});
 
 	socket.on('allclear', function(data) {
 		var dbMsg = "recive:all clear";
@@ -360,7 +407,7 @@
 			current.y = canvasHeight-current.y;
 			dbMsg += ">y>" + current.y ;
 		}
-		drawLine( current.x,  current.y, current.x, current.y, current.color , current.width , current.lineCap , 0 , true);
+		drawLine( current.x,  current.y, current.x, current.y, current.color , currentWidth , currentLineCap , 0 , true);
           //htmlの場合は不要、Androidネイティブは書き出しでパスを生成するので必要
           //一点しかないので始点終点とも同じ座標を渡すし
 		myLog(dbMsg);
@@ -369,7 +416,7 @@
 	function onMouseMove(e) {
 		var dbMsg = "[onMouseMove]drawing=" + drawing;
 		if (drawing) {
-			dbMsg += ",color=" + current.color+ ",width=" + current.width;
+			dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
 			dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
 			var eX = e.clientX - canvasX;
 			var eY = e.clientY- canvasY;
@@ -378,7 +425,7 @@
 				eY = canvasHeight-eY;
 				dbMsg += ">y>" + eY;
 			}
-			drawLine(current.x, current.y,eX, eY, current.color,current.width , current.lineCap ,1, true);
+			drawLine(current.x, current.y,eX, eY, current.color,currentWidth , currentLineCap ,1, true);
 			current.x = eX;
 			current.y = eY;
 			dbMsg += ">>(" + current.x + " , " + current.y + ")";
@@ -401,8 +448,8 @@
 				current.y = canvasHeight-current.y;
 				dbMsg += ">y>" + current.y ;
 			}
-			dbMsg += ",color=" + current.color+ ",width=" + current.width;
-			drawLine(currentX, currentY, current.x, current.y, current.color , current.width , current.lineCap , 2 , true);
+			dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
+			drawLine(currentX, currentY, current.x, current.y, current.color , currentWidth , currentLineCap , 2 , true);
 			dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
 			if(isComp && isAutoJudge){			//比較中
 				useComp.click();
@@ -438,7 +485,7 @@
 
 		current.x = toucheX;
 		current.y = toucheY;
-		drawLine( current.x,  current.y, current.x, current.y, current.color , current.width , current.lineCap , 0 , true);
+		drawLine( current.x,  current.y, current.x, current.y, current.color , currentWidth , currentLineCap , 0 , true);
 		myLog(dbMsg);
 	};
 
@@ -453,8 +500,8 @@
 				toucheY = canvasHeight-toucheY;
 				dbMsg += ">y>" + toucheY ;
 			}
-			dbMsg += ",color=" + current.color+ ",width=" + current.width;
-			drawLine(current.x, current.y, toucheX, toucheY, current.color, current.width , current.lineCap , 2,true);
+			dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
+			drawLine(current.x, current.y, toucheX, toucheY, current.color, currentWidth , currentLineCap , 2,true);
 			current.x = toucheX;
 			current.y = toucheY;
 		}
@@ -477,8 +524,8 @@
 			}
 			current.x = toucheX;
 			current.y = toucheY;
-			dbMsg += ",color=" + current.color+ ",width=" + current.width;
-			drawLine(currentX, currentY, current.x, current.y, current.color,current.width , current.lineCap ,1, true);
+			dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
+			drawLine(currentX, currentY, current.x, current.y, current.color,currentWidth , currentLineCap ,1, true);
 			// scoreDrow();
 		}
 		dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
@@ -512,8 +559,8 @@
 					dbMsg += "～(" + toucheX + " , " + toucheY + ")";
 					current.x = toucheX;
 					current.y = toucheY;
-					dbMsg += ",color=" + current.color+ ",width=" + current.width;
-					drawLine(currentX, currentY, current.x, current.y, current.color,current.width , current.lineCap ,1, true);
+					dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
+					drawLine(currentX, currentY, current.x, current.y, current.color,currentWidth , currentLineCap ,1, true);
 					// scoreDrow();
 				}
 				dbMsg += ",isComp="+isComp;
@@ -545,17 +592,6 @@
 		if(data.action != 2){
 			myLog(dbMsg);
 		}
-	}
-
-  // make the canvas fill its parent
-	function onResize() {
-		var dbMsg = "onResize;";
-		canvas.width = window.innerWidth;
-		dbMsg = "[" + canvas.width;
-		var setHight = canvas.width*1080/1920;
-		dbMsg = " , " + setHight + "]";
-		canvas.height = setHight;			//window.innerHeight;
-		myLog(dbMsg);
 	}
 
 	///実働部///////////////////////////////////////////////////////////////////////
@@ -633,7 +669,7 @@
 				x1: x1 / w,
 				y1: y1 / h,
 				color: context.strokeStyle,
-				width: current.width,
+				width: currentWidth,
 				lineCap:context.lineCap,
 				action:action
 			});
@@ -669,6 +705,34 @@
 	}
 //ファイル操作//////////////////////////////////////////
 /**
+*input type="file"からファイルを読み込む
+*	https://www.html5rocks.com/ja/tutorials/file/dndfiles/
+*/
+	function handleFileSelect(evt) {
+		var dbMsg = "[handleFileSelect]";
+		var file = evt.target.files[0]; // FileList object
+		if (file.type.match('image.*')) {      // Only process image files.
+			var reader = new FileReader();
+			reader.onload = (function(theFile) {
+				return function(e) {
+					var dbMsg = "[handleFileSelect・reader.onload]";
+					dbMsg +=  escape(theFile.name);
+					dbMsg += ",e=" +  e;
+					srcName = e.target.result;
+					dbMsg += srcName;
+					myLog(dbMsg);
+					directionVal = 0;
+					bitmapRead(srcName);
+				};
+			})(file);
+			reader.readAsDataURL(file);        // Read in the image file as a data URL.
+		}else{
+			alert("画像ファイルを選択して下さい。");
+		}
+		myLog(dbMsg);
+	}
+
+ /**
 * 定型パターンを画像で読込む（選択機構）
 */
 	function stereoTypeStart() {
@@ -686,7 +750,6 @@
 	}
 
 	document.getElementById("modalImgList").onclick = function (event) {					 // カラーパレットからの移し替え
-	// function stereoTypeSelect() {
 		 var tag = "[modalImgList]";
 		 var $getListAItems = document.getElementById( "modalImgList" ).children;
 		 for( var $i = 0; $i < $getListAItems.length; $i++ ){
@@ -695,8 +758,8 @@
 			 	var dbMsg = tag + ",src=" + srcName;
 			 	myLog(dbMsg);
 				$('#modal_box').modal('hide');
-			 	bitmapRead(srcName);
-             };
+				bitmapRead(srcName);
+			};
 	     }
 	}
 
@@ -746,6 +809,7 @@
 	        context.drawImage(this, shiftX, shiftY, dstWidth, dstHeight);
 			// document.getElementById('header').style.display = "none";
 			canvasSubstitution(canvas ,directionVal);
+			originPixcel = new Array();				//
 			stereoTypeCheck(canvas)
 			jobSelect.value = 'comp';
 			// scoreStart();
@@ -816,7 +880,6 @@
 		oBule = 255;
 		bColor= rgb2hex("rgb("+ 255 + ", " + 255 + ", " + 255 +")");
 		var lineWidth=0;
-		var lineWidthMax = 0;
 		var widthrray = new Array();
 		var widthrray2 = new Array();
 		var checkCount = 0;
@@ -880,9 +943,6 @@
 							  }
 							});
 						}
-						if(lineWidthMax < lineWidth){				//
-							lineWidthMax = lineWidth;
-						}
 						lineWidth=0;
 					}
 				}else{
@@ -922,14 +982,15 @@
 			}else if(25<lineWidth){
 					lineWidth =30;
 			}
-			dbMsg += ">>"+ lineWidth;
-			lineWidthSelect.value=lineWidth;
-			current.widthr=lineWidth;
+			currentWidth=lineWidth;
+			dbMsg += ">>"+ currentWidth;
+			lineWidthSelect.value=currentWidth;
 			dbMsg += "；Y軸上"+widthrray[0].value+"個所";
+			socket.emit('changeLineWidth', {
+				width:currentWidth
+			});
 		}
-		dbMsg += ">lineWidthMax>"+lineWidthMax;
 		scoreStartRady();
-
 		myLog(dbMsg);
 		if(isDebug){
 			document.getElementById('scoreComent').innerHTML = colorArray.length +"色中 対象 "+orgColor + " ;線＝" + lineWidth +"PX";
@@ -938,6 +999,11 @@
 			// 	editerAria.style.display="inline-block";
 		}
 		scoreBrock.style.display="inline-block";			//BD
+		if(isAutoJudge){
+			useComp.style.display="none";												//判定ボタン
+		}else {
+			useComp.style.display="inline-block";												//判定ボタン
+		}
 	}
 
 	function drowAgain() {				//やり直し
@@ -945,6 +1011,8 @@
 		if(srcName !=""){
 			drawing = false;
 			isComp=false;				//比較中
+			// var img = new Image();
+			// img.src = srcName;
 			bitmapRead(srcName);
 		}else if(0 < originPixcel.length){
 			 scoreStartRady();
@@ -966,26 +1034,33 @@
 	function scoreStartRady() {
 		var dbMsg = "[scoreStartRady]";
 		isComp=true;				//比較中
+		originPixcel = new Array();				//
 		editerAria.style.display="none";
 		scoreBrock.style.display="inline-block";
+		if(isAutoJudge){
+			useComp.style.display="none";												//判定ボタン
+		}else {
+			useComp.style.display="inline-block";												//判定ボタン
+		}
 		document.getElementById('scoreTF').innerHTML = 0+"";
 		// orgColor = current.color;
 		orgColor = orgColor.toLowerCase();
 		dbMsg += ",selectColor="+ orgColor;
-		 oRed =parseInt(orgColor.slice(1, 3),16);			//16新数；FFを10進数；255に
-		 oGreen =parseInt(orgColor.slice(3,5),16);
-		 oBule =parseInt(orgColor.slice(5,7),16);
+		oRed =parseInt(orgColor.slice(1, 3),16);			//16新数；FFを10進数；255に
+		oGreen =parseInt(orgColor.slice(3,5),16);
+		oBule =parseInt(orgColor.slice(5,7),16);
 		dbMsg += ",r="+ oRed+",g="+ oGreen+",b="+ oBule;
 		var retRGB =complementary_color(oRed, oGreen, oBule);			 // current.color = e.target.className.split(' ')[1];
 		dbMsg += ">retRGB>"+ retRGB;		//rgb(255, 0, 255)
 		compColor =rgb2hex(retRGB);
 		current.color=compColor;
-		dbMsg += ">>"+ current.color;
+		dbMsg += ">>"+ current.color+ "," +currentWidth+ "," +currentLineCap;
 		// dbMsg +=",emit=" + emit;
 		// if (emit) {
 			socket.emit('sendcomp', {
-				compColor: compColor,
-				width: current.width
+				color: compColor,
+				width: currentWidth,
+				lineCap:currentLineCap
 			});
 		// }
 
@@ -1076,7 +1151,6 @@
 
 	function scoreStart() {
 		var dbMsg = "[scoreStart]";
-		originPixcel = new Array();				//
 		scoreStartRady();
 		orgCount=0;
 		$('#modalTitol').innerHTML = "元データを確認しています";
@@ -1113,8 +1187,10 @@
 		var context = canvas.getContext('2d');
 		var canvasImageData = context.getImageData(0, 0, cWidth, cHeight);
 		var canvasRGBA = canvasImageData.data;
-		if(0==originPixcel.length){
-			 originPixcel = canvasImageData.data;
+		if(originPixcel){
+			if(0==originPixcel.length){
+				 originPixcel = canvasImageData.data;
+			}
 		}
 		// $('body').addClass('modal-open');
 		// $("#progressFleam").css("display", "block");
@@ -1171,7 +1247,6 @@
 	}
 
 	function reDrowScoreCount(canvas  , originPixcel , orgColor) {
-	// return new Promise((onSuccess, onFailed) => {
 		var dbMsg = "[reDrowScoreCount]orgColor="+ orgColor + "originPixcel" + originPixcel.length;
 		var dCount =0;
 		var checkCount = 0;														//色がついている部分
