@@ -17,6 +17,15 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script type="text/javascript" src="js/org_util.js"></script>
     <link rel="stylesheet" type="text/css" href="../main.css" title="優先スタイル">
+    <style>
+        table {
+        	border-collapse: collapse;
+        }
+        td {
+        	border: solid 1px;
+        	padding: 0.5em;
+        }
+    </style>
 </head>
 
 <body style="padding: 5px;">
@@ -34,6 +43,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="col-xs-12 col-sm-12">
+                                <div style="text-align: right;">更新日 2018/7/31</div>
                                 <h1>リカバリーブラインWeb(仮)の使い方</h1>
                                 <!-- <h4>PHPやデータベースが使えないサーバ環境で、何が何処までできるか試しています。</h4>
                                 <div class="alert alert-danger" role="alert" style="width:96%;height: auto;margin-left: 10px;">
@@ -70,7 +80,9 @@
                         <div class="panel panel-default">
                             <div class="panel-title">
                                 <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#about_recovary_brain_body" aria-expanded="true">
-                                    <h3>リカバリーブラインについて</h3>
+                                    脳機能回復訓練箱
+                                    <span style="font-size: x-large;margin-right: 20px;">リカバリーブラインについて</span>
+                                    <span style="font-size: small;margin-right: 20px;">特許番号　第3114239 号</span>
                                 </div>
                             </div>
 
@@ -81,10 +93,9 @@
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-4">
                                                 <img src="Recovery11.png" class="phorRes" style="width:100%;" align="top" alt="抜型">
+                                                <span style="font-size: small;margin-left: 20px;">販売価格　￥35,000(税込)</span>
                                             </div>
                                             <div class="col-xs-12 col-sm-4">
-                                                <h4>脳機能回復訓練箱</h4>
-
                                                 <img src="Recovery12.png" class="phorRes" style="width:100%;" align="top" alt="抜型">
                                             </div>
 
@@ -92,225 +103,9 @@
                                                 <img src="Recovery13.png" class="phorRes" style="width:100%;" align="top" alt="抜型">
                                             </div>
                                         </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row " id="beginning">
-                            <div class="col-sm-12">
-                                <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
-                                <div class="panel-group">
-                                    <div class="panel panel-default">
-                                        <div class="panel-title">
-                                            <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#beginning_recovary_brain_body" aria-expanded="true">
-                                                <h3>最初は同じ画面で結果を確かめてみましょう</h3>
-                                            </div>
-                                        </div>
-
-                                        <div id="beginning_recovary_brain_body" class="panel-collapse collapse in" aria-expanded="true">
-                                            <!--class="panel-collapse collapse" -->
-                                            <div class="panel-body">
-                                                <div class="panel-group">
-                                                    <h4>
-                                                    リカバリーブラインWeb(仮)は表示した線や図形などのパターンを他の画面から操作してトレースする事で、表示されている線の消し込みを行います。</h4>
-                                                    結果の出し方は
-                                                    <ul>
-                                                        <li>
-                                                            トレース元図形を確定するとその画像のピクセルをカウントします。
-                                                        </li>
-                                                         <li>
-                                                            トレースが終わった時点（マウスボタンを離す　もしくは　画面から指を離した時）トレース元図形の残りを色で判別して
-                                                            開始時と比較して何パーセント消せたかで１００点満点のスコアを算出します。
-                                                        </li>
-                                                  <div class="row">
-                                                        <div class="col-xs-12 col-sm-3">
-                                                            <img src="jobselect1.png" class="phorRes" style="width:100%;" align="top" alt="jobselect1">
-                                                        </div>
-                                                        <div class="col-xs-12 col-sm-9">
-                                                            まず「トレース元画像」の「パターンリスト表示」でトレース元画像を選択します。
-                                                            <img src="patarnselect.png" class="phorRes" style="width:50%;" align="top" alt="beginning1">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row">
-                                                          <div class="col-xs-12 col-sm-8">
-                                                              <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;">
-                                                                  表示された時点でトレース元画像の色と、その色が塗られているピクセル数をカウントします。<br>
-                                                                  また線の太さも読取り、塗り潰す線の太さも確定します。
-                                                              </p>
-                                                              PCのWeb画面ならマウスで、スマホなら指でリンクされた画面をなぞる（トレースする）と表示側のweb画面にトレース元図形と反対の色でトレースした線が書き込まれ、トレース元図形を塗り潰します。
-                                                          </div>
-                                                          <div class="col-xs-12 col-sm-4">
-                                                              <img src="beginning1.png" class="phorRes" style="width:100%;" align="top" alt="beginning1">
-                                                          </div>
-                                                   </div>
-
-                                                   <div class="row">
-                                                       <div class="col-xs-12 col-sm-4">
-                                                           <img src="beginning2.png" class="phorRes" style="width:100%;" align="top" alt="beginning2">
-                                                       </div>
-                                                       <div class="col-xs-12 col-sm-8">
-                                                           トレースが終わった時点（マウスボタンを離す　もしくは　画面から指を離した時）トレース元図形の残りを色で判別して
-                                                           開始時と比較して何パーセント消せたかで１００点満点のスコアを算出します。
-                                                           <img src="score.png" class="phorRes" style="width:100%;" align="top" alt="beginning1">
-
-                                                         </div>
-                                                  </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row " id="mirror">
-                                        <div class="col-sm-12">
-                                            <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
-                                            <div class="panel-group">
-                                                <div class="panel panel-default">
-                                                    <div class="panel-title">
-                                                        <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#mirror_recovary_brain_body" aria-expanded="true">
-                                                            <h3>難易度を上げましょう</h3>
-                                                        </div>
-                                                    </div>
-
-                                                    <div id="mirror_recovary_brain_body" class="panel-collapse collapse in" aria-expanded="true">
-                                                        <!--class="panel-collapse collapse" -->
-                                                        <div class="panel-body">
-                                                            <div class="panel-group">
-                                                                <div class="row">
-                                                                    <div class="col-xs-12 col-sm-2">
-                                                                        <img src="mirrorcb.png" class="phorRes" style="width:100%;" align="top" alt="抜型">
-                                                                    </div>
-                                                                    <div class="col-xs-12 col-sm-8">
-                                                                        <h4>まだ同じ画面で構いません</h4>
-                                                                        「鏡面動作」のチェックボックスをOnにしてください。
-                                                                        <p>
-                                                                            トレースの動きが上下反転します。
-                                                                        </p>
-                                                                        この機能で鏡越しに手元に置かれた紙に書かれた線をトレースする機能を実現します、
-                                                                    </div>
-
-                                                                    <div class="col-xs-12 col-sm-2">
-                                                                        <img src="Recovery11.png" class="phorRes" style="width:100%;" align="top" alt="抜型">
-                                                                    </div>
-                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                    <div class="panel-group">
-                                        <div class="row">
-                                            <div class="col-xs-12 col-sm-8">
-                                                <div style="text-align: right;">更新日 2017/8/12</div>
-                                                シナリオに沿ったスライドショー
-                                                <div style="padding: 10px;background-color: #3c763d;color: white;">
-                                                    概要
-                                                </div>
-                                                <div style="padding: 10px;background-color: #dff0d8;">
-                                                    各カットでどの位置に何を表示させるかを（シナリオ？絵コンテで）指定して、連続したアニメーションを実行します。 <br>用途は
-                                                    <ol>
-                                                        <li>デジタルサイネージなどを利用する動く広告</li>
-                                                        <li>結婚式に使うエンドロール</li>
-                                                        <li>汎用的なプレゼンツール</li>
-                                                    </ol>
-                                                    ...などをweb上に構築するシステムです。
-                                                </div>
-                                                <p></p>
-
-                                                <div class="panel panel-success">
-                                                    <div class="panel-heading btn btn-success collapse_bt" data-toggle="collapse" data-target="#free_strage_veiw">
-                                                        結果から観る
-                                                    </div>
-                                                    <div id="free_strage_veiw" class="panel-collapse collapse in" aria-expanded="true">
-                                                        <div class="panel-body">
-                                                            <a href="signage/" target="_blank" class="btn btn-primary btn-sx col-xs-12 col-sm-12" role="button" style="margin-bottom: 10px;padding: 5px;">
-                                                        結婚披露宴に使われるエンドロール
-                                                        <div class="label label-danger  label-sx "  style="margin-top: 5px;">
-                                                            音量にご注意ください。
-                                                        </div>
-                                                    </a>
-                                                            <div class="alert alert-info" role="alert" style="margin-top: 40px;padding: 5px;margin-bottom: 0px;font-size: small;">
-                                                                一番右の<img src="signage/info/img/navi_close.png" style="width: 20px;">ボタンで操作パネルを閉じて自動実行に入るか<br>
-                                                                <img src="signage/info/img/play_bt.png" style="width: 20px;">ボタンで再生を開始して下さい。
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <br>
-                                                <!-- 結果から観る -->
-                                                <div class="panel panel-success">
-                                                    <div class="panel-heading btn btn-success collapse_bt" data-toggle="collapse" data-target="#free_strage_edit">
-                                                        順を追って使う
-                                                    </div>
-                                                    <div id="free_strage_edit" class="panel-collapse collapse in" aria-expanded="true">
-                                                        <div class="panel-body">
-                                                            <a href="signage/view.htm" target="_blank" class="btn btn-primary btn-sx col-xs-12 col-sm-12" role="button">絵コンテから開く</a>
-                                                            <div class="col-xs-1 col-sm-1"></div>
-                                                            <div class="alert alert-info" role="alert" style="margin-top: 40px;padding: 5px;margin-bottom: 0px;font-size: small;">
-                                                                使い方の概要は
-                                                                <ol>
-                                                                    <li>
-                                                                        （０からでも使えますが）テンプレートを選ぶ
-                                                                    </li>
-                                                                    <li>
-                                                                        リスト編集画面で必要なシーン.カットを作成（テンプレートから不要なシーン・カットを削除）
-                                                                    </li>
-                                                                    <li>
-                                                                        カットの編集ボタンでエレメントエディタを開き文字や写真を設定する
-                                                                    </li>
-
-                                                                </ol>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <br>
-                                                <!-- 順を追って使う -->
-                                                <div>
-                                                    <a href="signage/info/" class="btn btn-warning btn-sx col-xs-12 col-sm-12" role="button" style="margin-top: 10px;padding: 5px;margin-bottom: 10px;">
-                                                    説明
-                                                </a>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-xs-12 col-sm-4">
-                                                コンテを読み込んで...<br>
-                                                <img src="signage/info/img/list0200.png" class="phorRes" style="width:100%;" align="top" alt="抜型"><br>スライドショースタート
-                                                <img src="signage/info/img/s1c2.png" class="phorRes" style="width:100%;" align="top" alt="s1c2"><br>
-                                                <img src="signage/info/img/s3c1.png" class="phorRes" style="width:100%;" align="top" alt="s1c2"><br>
-                                                <img src="signage/info/img/s050end.png" class="phorRes" style="width:100%;" alt="s1c2">
-                                            </div>
-                                        </div>
-
-                                        <div class="panel panel-success" id="free_web_strage_text_file_read">
-                                            <div class="panel-heading btn btn-success collapse_bt" data-toggle="collapse" data-target="#text_file_read">
-                                                実験１;PC上のテキストファイルを読む
-                                            </div>
-                                            <div id="text_file_read" class="panel-collapse collapse">
-                                                <div class="panel-body">
-                                                    <div style="text-align: right;">作成中</div>
-                                                    <div class="col-xs-12 col-sm-8">
-                                                        <div style="padding: 10px;background-color: #3c763d;color: white;">
-                                                            概要
-                                                        </div>
-                                                        <div style="padding: 10px;background-color: #dff0d8;">
-                                                            タブ区切りのテキストファイルをwebから書き出し、再度読み込んで中身を書き換えます。
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-xs-12 col-sm-4">
-                                                        <p class="alert btn-sm" role="alert" style="background-color: #9796ef;text-align: center;font-size: 18px;">
-                                                            準備中
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="row" style="background-color: #F6CEF5;">
+                                            リカバリーブラインWeb(仮)はこの機能をパソコンやスマートフォンで再現する物です。<br>
+                                            表示した線や図形などのパターンをトレースする事で表示されている線の消し込みを行い、どれだけ消せたか（正確にトレースできたか）を評価します。
                                         </div>
 
                                     </div>
@@ -320,368 +115,494 @@
                     </div>
                 </div>
             </div>
-            <!--free web strage-->
 
-            <div class="row" id="continuity_slid">
+            <div class="row " id="beginning">
                 <div class="col-sm-12">
+                    <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
                     <div class="panel-group">
                         <div class="panel panel-default">
                             <div class="panel-title">
-                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3" data-target="#continuity_slid_body">
-                                    特定フォルダからの連続アニメーション
+                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#beginning_recovary_brain_body" aria-expanded="true">
+                                    <h3>最初は同じ画面で動作を確かめてみましょう</h3>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <div id="continuity_slid_body" class="panel-collapse collapse in" aria-expanded="true">
-                                <!--class="panel-collapse collapse" -->
-                                <div class="panel-body">
-                                    <div class="panel-group">
-                                        <div class="row">
-                                            <div class="col-xs-12 col-sm-8">
-                                                <div style="text-align: right;">更新日 2017/4/16</div>
-                                                <div style="padding: 10px;background-color: #3c763d;color: white;">
-                                                    概要
-                                                </div>
-                                                <div style="padding: 10px;background-color: #dff0d8;">
-                                                    <!--<a data-toggle="collapse" id="scNoPanel" href="#tilt_anime">「タイル」を使ったアニメーション</a>-->
-                                                    動作の概要は
-                                                    <ol>
-                                                        <li>
-                                                            ２枚一組で画像を
-                                                        </li>
-                                                        <li>
-                                                            フェードインさせながらズームイン
-                                                        </li>
-                                                        <li>
-                                                            一定秒数静止して、
-                                                        </li>
-                                                        <li>
-                                                            ズームアップしながらフェードアウト
-                                                        </li>
-                                                        <li>
-                                                            表示を終えた画像を設定したタイルに配置します
-                                                        </li>
-                                                    </ol>
-                                                </div>
-                                            </div>
-                                            <div class="col-xs-12 col-sm-4">
-                                                <img src="slid/img/silide00.png" class="phorRes" style="width:100%;" alt="抜型">
-                                                <a href="slid/" class="btn btn-primary btn-sx" role="button">デモンストレーション</a><br>でご覧ください。
-                                            </div>
-                                        </div>
+                    <div id="beginning_recovary_brain_body" class="panel-collapse collapse in" aria-expanded="true">
+                        <!--class="panel-collapse collapse" -->
+                        <div class="panel-body">
+                            <div class="panel-group">
+                                このページにアクセスしたら
+                              <div class="row">
+                                    <div class="col-xs-12 col-sm-3">
+                                        <img src="jobselect1.png" class="phorRes" style="width:100%;" align="top" alt="jobselect1">
                                     </div>
-                                    <br>
-                                    <!-- 概要 -->
-                                    <div class="panel panel-success" id="tilt_pict">
-                                        <div class="panel-heading btn btn-success collapse_bt" data-toggle="collapse" data-target="#tilt_pict_body">
-                                            実験１;サムネイルを特定の形状に並べる
-                                        </div>
-                                        <div id="tilt_pict_body" class="panel-collapse collapse in" aria-expanded="true">
-                                            <div class="panel-body">
-                                                <div style="text-align: right;">更新日 2017/4/16</div>
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-sm-8">
-                                                        <div style="padding: 10px;background-color: #3c763d;color: white;">
-                                                            概要
-                                                        </div>
-                                                        <div style="padding: 10px;background-color: #dff0d8;">
-                                                            抜き型になる画像ファイルを読み込み、<br>その画像の余白部分にサムネイルを配置します。
-                                                        </div>
-                                                        <div class="row" style="margin: 20px;">
-                                                            <div>
-                                                                <a href="slid/tile.htm" class="btn btn-primary btn-sx col-xs-7 col-sm-7" role="button">デモンストレーション</a>
-                                                            </div>
-                                                            <div class="col-xs-1 col-sm-1"></div>
-                                                            <div>
-                                                                <a href="slid/tile_info.htm" class="btn btn-warning btn-sx col-xs-4 col-sm-4" role="button">説明</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        ①まず「トレース元画像」の「パターンリスト表示」でトレース元画像を選択します。
+                                        <img src="patarnselect.png" class="phorRes" style="width: 80%;margin: 5px;" align="top" alt="beginning1">
+                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                            表示された時点でトレース元画像の色と、その色が塗られているピクセル数をカウントします。また線の太さも読取り、塗り潰す線の太さも確定します。
+                                        </p>
+                                          <p>
+                                              ②PCのWeb画面ならマウスで、スマホなら指でリンクされた画面をなぞる（トレースする）と表示側のweb画面にトレース元図形と反対の色でトレースした線が書き込まれ、トレース元図形を塗り潰します。
+                                          </p>
+                                      </div>
+                                      <div class="col-xs-12 col-sm-3">
+                                          <img src="beginning1.png" class="phorRes" style="width:100%;" align="top" alt="beginning1">
+                                      </div>
+                               </div>
 
-                                                    <div class="col-xs-12 col-sm-4">
-                                                        透過PINGを読み込ませ<br>
-                                                        <div class="row" style="margin-top: 20px;">
-                                                            <div style="padding-left: 15%;text-align: center;">
-                                                                <img src="slid/tile_bace.png" class="phorRes" style="width:70%;" alt="抜型">
-                                                                <img src="slid/img/tile_kekka.png" class="phorRes" style="width:100%;" alt="結果"> こんな感じに型抜き
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
+                               <div class="row">
+                                   <div class="col-xs-12 col-sm-4">
+                                       <img src="beginning2.png" class="phorRes" style="width:100%;" align="top" alt="beginning2">
+                                   </div>
+                                   <div class="col-xs-12 col-sm-8">
+                                       ③トレースが終わった時点（マウスボタンを離す　もしくは　画面から指を離した時）トレース元図形の残りを色で判別して
+                                       開始時と比較して何パーセント消せたかで１００点満点のスコアを算出します。
+                                       <div style="background-color: #eeeeee;font-size: large;margin: 10px;width: fit-content;padding: 10px;">
+                                           <div  style="display: inline-block;margin-left: 30px;margin-right: 30px">
+               								スコア
+               								<span  style="font-size: x-large">
+               									68
+               								</span>点
+               								<span style="margin-left: 30px">
+               									4861
+               								</span>/
+               								<span >
+               									15155
+               								</span>ピクセル
+               							</div>
                                         </div>
+                                           <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                               逐次、評価で動きが止まる事が不快な様でしたら「トレース後に自動判定」のチェックを外してください。
+                                               <div style="background-color: #eeeeee;font-size: large;margin: 10px;width: fit-content;padding: 10px;">
+                                                   <input type="checkbox" checked="checked" style="margin-left: 30px;">トレース後に自動判定
+                                               </div>
+                                         </div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="row " id="mirror">
+                    <div class="col-sm-12">
+                        <div class="panel-group">
+                            <div class="panel panel-default">
+                                <div class="panel-title">
+                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#mirror_body" aria-expanded="true">
+                                        <h3>鏡面動作で難易度を上げましょう</h3>
                                     </div>
-                                    <br>
-                                    <!-- 実験１;サムネイルを特定の形状に並べる -->
-                                    <div class="panel panel-success" id="pict_alaive">
-                                        <div class="panel-heading btn btn-success collapse_bt" data-toggle="collapse" data-target="#pict_alaive_body">
-                                            実験2;新着アニメーション
-                                        </div>
-                                        <div id="pict_alaive_body" class="panel-collapse collapse">
-                                            <div class="panel-body">
-                                                <div style="text-align: right;">準備中</div>
-                                                <div class="col-xs-12 col-sm-9">
-                                                    <div style="padding: 10px;background-color: #3c763d;color: white;">
-                                                        概要
-                                                    </div>
-                                                    <div style="padding: 10px;background-color: #dff0d8;">
-                                                        <ul>
-                                                            <li>
-                                                                ストックされた画像をループ再生するスライドショーアニメーションに新着画像を割り込ませます。
-                                                            </li>
-                                                        </ul>
-                                                    </div>
+                                </div>
+
+                                <div id="mirror_body" class="panel-collapse collapse in" aria-expanded="true">
+                                    <div class="panel-body">
+                                        <div class="panel-group">
+                                            <div class="row">
+                                                <div class="col-xs-12 col-sm-2">
+                                                    <div style="background-color: #eeeeee;font-size: large;margin: 10px;width: fit-content;padding: 10px;">
+                                                         <input type="checkbox" id="mirrorCB"  style="margin-left: 30px;">鏡面動作
+                                                     </div>
+                                                     まだ同じ画面で構いません
+                                                </div>
+                                                <div class="col-xs-12 col-sm-7">
+                                                    「鏡面動作」をチェックしてください。
+                                                    <h3>
+                                                        トレースの動きが上下反転します。
+                                                    </h3>
+                                                    この機能で鏡越しに手元に置かれた紙に書かれた線をトレースする機能を実現します、
                                                 </div>
 
                                                 <div class="col-xs-12 col-sm-3">
-                                                    <p class="alert btn-sm" role="alert" style="background-color: #9796ef;text-align: center;font-size: 18px;">
-                                                        準備中
-                                                    </p>
+                                                    <img src="mirror_p2.png" class="phorRes" style="width:50%;" align="top" alt="mirror_p2">
+                                                    <img src="mirror_p1.png" class="phorRes" style="width:50%;" align="top" alt="mirror_p1">
                                                 </div>
-                                            </div>
+                                             </div>
                                         </div>
                                     </div>
-                                    <br>
-                                    <!-- 実験2;新着アニメーション -->
-                                    <div class="panel panel-success" id="bg_anime">
-                                        <div class="panel-heading btn btn-success collapse_bt" data-toggle="collapse" data-target="#bg_anime_body">
-                                            実験3;背景アニメーション
-                                        </div>
-                                        <div id="bg_anime_body" class="panel-collapse collapse">
-                                            <div class="panel-body">
-                                                <div style="text-align: right;">準備中</div>
-                                                <div class="col-xs-12 col-sm-9">
-                                                    <div style="padding: 10px;background-color: #3c763d;color: white;">
-                                                        概要
-                                                    </div>
-                                                    <div style="padding: 10px;background-color: #dff0d8;">
-                                                        <ul>
-                                                            <li>
-                                                                メインアニメーションの背景に羽や花びらを舞わせます。
-                                                            </li>
-                                                            <li>
-                                                                表示されるメイン画像を回避します。
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-12 col-sm-3">
-                                                    <p class="alert btn-sm" role="alert" style="background-color: #9796ef;text-align: center;font-size: 18px;">
-                                                        準備中
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row " id="other_screen">
+                    <div class="col-sm-12">
+                        <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
+                        <div class="panel-group">
+                            <div class="panel panel-default">
+                                <div class="panel-title">
+                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#other_screen_body" aria-expanded="true">
+                                        <h3>別画面からの操作で更に難易度を上げましょう</h3>
                                     </div>
-                                    <br>
-                                    <!-- 実験3;背景アニメーション -->
-                                    <div class="panel panel-success" id="msg_anime">
-                                        <div class="panel-heading btn btn-success collapse_bt" data-toggle="collapse" data-target="#msg_anime_body">
-                                            実験4;メッセージ付き画像投稿
-                                        </div>
-                                        <div id="msg_anime_body" class="panel-collapse collapse">
-                                            <div class="panel-body">
-                                                <div style="text-align: right;">準備中</div>
-                                                <div class="col-xs-12 col-sm-9">
-                                                    <div style="padding: 10px;background-color: #3c763d;color: white;">
-                                                        概要
-                                                    </div>
-                                                    <div style="padding: 10px;background-color: #dff0d8;">
-                                                        <ul>
-                                                            <li>
-                                                                画像送信の前にメッセージの入力枠を表示させます。
-                                                            </li>
-                                                            <li>
-                                                                スマホの場合は既に撮った写真のみならず、カメラで撮影した直後の画像送信も対象とします。
-                                                            </li>
-                                                        </ul>
-                                                    </div>
+                                </div>
+
+                                <div id="other_screen_body" class="panel-collapse collapse in" aria-expanded="true">
+                                    <div class="panel-body">
+                                        <div class="panel-group">
+                                            <div class="row">
+                                                <div class="col-xs-8 col-sm-10">
+                                                    <div style="background-color: #eeeeee;font-size: large;margin: 10px;width: fit-content;padding: 10px;">
+                                                        操作側のブラウザにセットするURL≫  <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"> http://ec2- ・・・・.ap-northeast-1.compute.amazonaws.com:3080/?sesion=</span>
+                                                     </div>
+                                                    「操作側のブラウザにセットするUR」をクリックしてください。<br>
+                                                    <h3>
+                                                        マウスイベントがリンクした別ウィンドウを開きます。
+                                                    </h3>
+                                                    スマホは右上に表示されるQRコードで接続して下さい。
                                                 </div>
-                                                <div class="col-xs-12 col-sm-3">
-                                                    <p class="alert btn-sm" role="alert" style="background-color: #9796ef;text-align: center;font-size: 18px;">
-                                                        準備中
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
+
+
+                                             <div class="col-xs-4 col-sm-2">
+                                                 <img src="qrcord.png" class="phorRes" style="width:100%;" align="top" alt="qrcord">
+                                             </div>
+                                      </div>
+                                      <h3>
+                                          トレースする手元と、書き込みが行われる画面に視線を分離すると難易度は更に上がります。
+                                      </h3>
                                     </div>
-                                    <!-- 実験4;メッセージ付き画像投稿 -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!--特定フォルダからの連続アニメーション-->
 
-            <div class="row " id="net_bingo">
+            <div class="row " id="usage">
                 <div class="col-sm-12">
+                    <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
                     <div class="panel-group">
-                        <div id="scenr_propaty" class="panel panel-default">
+                        <div class="panel panel-default">
                             <div class="panel-title">
-                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3" data-target="#net_bingo_body">
-                                    ネットワークビンゴ
+                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#usage_body" aria-expanded="true">
+                                    <h3>機能と使い方</h3>
                                 </div>
                             </div>
-                            <div id="net_bingo_body" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <div class="panel-group">
-                                        <div class="row">
-                                            <div class="col-xs-12 col-sm-8">
-                                                <div style="text-align: right;">只今考案中</div>
-                                                <div style="padding: 10px;background-color: #3c763d;color: white;">
-                                                    概要
-                                                </div>
-                                                <div style="padding: 10px;background-color: #dff0d8;">
-                                                    <ol>
-                                                        <li>
-                                                            まずはディーラーを設定
-                                                            <Br>ディーラーのページには
-                                                            <p class="btn-primary btn-sx">
-                                                                操作によって１から75の数字を一つづつ表示する乱数発生器を表示
-                                                            </p>
-                                                        </li>
-                                                        <li>
-                                                            ディーラーが参加者にこのシステムのURLとアカウントを連絡
-                                                        </li>
-                                                        <li>
-                                                            参加者が連絡されたURLにアクセスすると、
-                                                            <p class="btn-warning btn-sx ">
-                                                                それぞれのビンゴカードが表示されます。
-                                                            </p>
-                                                        </li>
-                                                        <li>
-                                                            ゲームの進行に従い、
-                                                            <p class="btn-warning btn-sx ">
-                                                                出た数字を各参加者の端末に表示
-                                                            </p>
-                                                            該当する数字が有れば
-                                                            <p class="btn-primary btn-sx">
-                                                                リーチやビンゴといった結果がディーラー端末に表示
-                                                            </p>
-                                                            <p class="btn-warning btn-sx ">
-                                                                ビンゴが出た参加者をそれぞれの端末にも表示
-                                                            </p>
-                                                        </li>
-                                                    </ol>
 
+                            <div id="usage_body" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="row " id="jobSelect">
+                                    <div class="col-sm-12">
+                                        <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
+                                        <div class="panel-group">
+                                            <div class="panel panel-default">
+                                                <div class="panel-title">
+                                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#jobSelect_body" aria-expanded="true" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
+                                                        トレース元図形
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-xs-12 col-sm-4">
-                                                <p class="alert btn-sm" role="alert" style="background-color: #ccc;text-align: center;font-size: 18px;">
-                                                    只今考案中
-                                                </p>
+
+                                                <div id="jobSelect_body" class="panel-collapse collapse in" aria-expanded="true">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-3">
+                                                                    <img src="jobselect1.png" class="phorRes" style="width:100%;" align="top" alt="jobselect1">
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-9">
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        トレースの元になる図形をどう作るか、次の動作モードを内にするかを設定するセレクタです。
+                                                                        <ol>
+                                                                            <li>
+                                                                                <h4>パターンリスト表示</h4>
+                                                                                <div class="row">
+                                                                                    <div class="col-xs-12 col-sm-6">
+                                                                                        <img src="patarnselect.png" class="phorRes" style="width:100%;" align="top" alt="patarnselect">
+                                                                                    </div>
+                                                                                    <div class="col-xs-12 col-sm-6">
+                                                                                        表示されたダイアログからトレースの元になる図形をクリックして下さい。
+                                                                                    </div>
+                                                                                </div>
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>ファイルから読み込み</h4>
+
+                                                                                <div class="row">
+                                                                                    <div class="col-xs-12 col-sm-4">
+                                                                                        <div style="background-color: #eeeeee;margin: 10px;width: fit-content;">
+                                                                                            <input type="file"　name="files[]" />
+                                                                                         </div>
+                                                                                    </div>
+                                                                                    <div class="col-xs-12 col-sm-8">
+                                                                                        セレクタの横にファイル選択ダイアログを表示するボタンが追加されます。<br>
+                                                                                        パソコンなどに保存してある画像ファイルをトレースの元になる図形として読み込めます。
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;">
+                                                                                    使用できる画像の目安
+                                                                                    <table style="border-collapse: collapse;">
+                                                                                        <tr valign="top">
+                                                                                            <td style="width: 80px;">サイズ</td>
+                                                                                            <td>縦横比16：9</td>
+                                                                                            <td>幅が960pxなら高さは540px</td>
+                                                                                        </tr>
+                                                                                        <tr valign="top">
+                                                                                            <td rowspan="2">線の太さ</td>
+                                                                                            <td>
+                                                                                                画面サイズはFHD(1920×1080)を基準にしています。<br>
+                                                                                                この画面に960×540の画像読み込むと10ポイントの線幅は5ポイントになります。
+                                                                                            </td>
+                                                                                            <td>10ポイントに表示させるには20ポイントの線幅で描画して下さい。</td>
+                                                                                        </tr>
+                                                                                        <tr valign="top">
+                                                                                            <td colspan="2">
+                                                                                                トレース（塗りつぶし）に使う線の太さは100%が得点できる様、切り上げ算出で少し太めに設定されます。
+                                                                                            </td>
+                                                                                          </tr>
+
+                                                                                         <tr valign="top">
+                                                                                              <td rowspan="2">線の色</td>
+                                                                                              <td>
+                                                                                                  必ず単色にして下さい。
+                                                                                              </td>
+                                                                                              <td>複数の色を使うと塗り面積の多い色だけが判定対象になります。</td>
+                                                                                        </tr>
+                                                                                        <tr valign="top">
+                                                                                            <td>
+                                                                                                できるだけ単純な色にして下さい。
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                トレース（塗りつぶし）に使う色はイラストレーターのカラーパレットを参考にした補色のアルゴリズムを使っていますが、色によっては反対とは思えない色になりますのでご了承ください。
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>手書きで作成</h4>
+                                                                                作成中；現在フリーハンドのみ<br>
+                                                                                詳細は「手書きで作成で表示されるツール」をご参照ください。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>もう一度</h4>
+                                                                                トレースした線を消して、評価前の状態に戻します。
+                                                                                <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                                    トレース元画像の読込みが完了した時点、もしくは作成して確定した時点でトレース元画像のピクセル配列を一旦記憶しています。「もう一度」を選択すると画面を消去して記録したピクセル配列を再度書き込みます。
+                                                                                </p>
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>確定</h4>
+                                                                                「手書きで作成」を選択してトレース元画像の作成が完了したら、この機能で評価を開始できる状態にします。<br>
+                                                                                この操作でトレース元画像のピクセルを読み、トレース線の色と太さを確定します。
+
+                                                                            </li>
+                                                                        </ol>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--ネットワークビンゴ-->
 
-            <!--AndroidもiPhoneも無くなってもwebだけは最後まで生き残るのでしょうねぇ…。-->
-            <div class="row " id="info_row">
-                <div class="col-sm-12">
-                    <div class="panel-group">
-                        <div id="scenr_propaty" class="panel panel-default">
-                            <!-- <div class="panel-heading"> -->
-                            <div class="panel-title">
-                                <div class="panel-heading btn btn-default collapse_bt" data-toggle="collapse" data-target="#edit_other">
-                                    <h3>ご連絡</h3>
-                                </div>
-                            </div>
-                            <!-- </div> -->
-                            <div id="edit_other" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <div class="panel-group">
-                                        只今、就活中。<br>広島市近郊のデベロッパー様でプログラマーをお探しでしたらご一報ください。
-                                        <input type="text" name="email" id="mail_send_titol" style="width:85%; margin-top: 5px;" placeholder="御社名をご記入ください">
-                                        <button type="button" id="mail_send" class="btn btn-Default glyphicon glyphicon-send btn-xs" role="button " style="margin-top: -6px;text-align: right;" onclick="mailSender(event)"> 送信</button>
-                                        <br>
-                                        <textarea type="text" name="email" class="form-control text_souce" id="mail_send_souce" style="min-height: 10em;margin-top: 5px;" placeholder="業務内容、就業場所などをご記入下さい。"></textarea>
-                                        <br>車での通勤可否と交通費の支給によっては広島市外への通勤も可能です。
-                                        <br>ハローワークインタネットサービスに登録されている案件は求人番号をご記入ください。
-                                        <br>その他の求人サイトにご登録の場合はその旨をお伝えください。
+                                <div class="row " id="editerAria">
+                                    <div class="col-sm-12">
+                                        <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
+                                        <div class="panel-group">
+                                            <div class="panel panel-default">
+                                                <div class="panel-title">
+                                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#editerAria_body" aria-expanded="true" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
+                                                        手書きで作成で表示されるツール
+                                                    </div>
+                                                </div>
+
+                                                <div id="editerAria_body" class="panel-collapse collapse in" aria-expanded="true">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            「トレース元画像」で「手書きで作成」を選択すると下記の様なパネルが表示されます。
+                                                            <img src="editpanel.png" class="phorRes" style="width:100%;" align="top" alt="editpanel">
+
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-2">
+                                                                    <img src="toolserect.png" class="phorRes" style="width:100%;" align="top" alt="toolserect">
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-10">
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        何を書き込むかを選択するセレクタです。
+                                                                        <ol>
+                                                                            <li>
+                                                                                <h4>フリーハンド</h4>
+                                                                                マウスの動きに合わせて線を書き込みます。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>直線</h4>
+                                                                                以下の四角や円と同じく、マウスのボタンを押した所を始点、離した所を終点に直線を引きます。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>四角</h4>
+                                                                                マウスのボタンを押した所を左上、離した所を右下の範囲で四角を描きます。<br>
+                                                                                コントロールキーを押しながらドラッグすると正方形になります。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>円</h4>
+                                                                                マウスのボタンを押した所を左上、離した所を右下の範囲に収まる円を描きます。<br>
+                                                                                コントロールキーを押しながらドラッグすると真円になります。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>消しゴム</h4>
+                                                                                ドラッグした範囲にあるピクセルを消去します。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>選択</h4>
+                                                                                ドラッグした範囲にあるピクセルを選択します。<br>
+                                                                                選択後、Deleteキーで範囲内のピクセルを消去します。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>カラーピッカー</h4>
+                                                                                マウスポイントのピクセルカラーを描画エリアに表示します。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>確定</h4>
+                                                                                「手書きで作成」する機能を終了し、書込まれたピクセルデータを読み取ります。<br>
+                                                                                完了すると書込まれている（着色された部分の）ピクセル数を表示します。
+                                                                            </li>
+                                                                        </ol>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <p></p>
+                                                            <div class="row" style="margin-top: 10px;">
+                                                                <div class="col-xs-12 col-sm-8">
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        <img src="colorparetbt.png" class="phorRes" align="top" alt="colorparetbt">
+                                                                        をクリックするとカラーパレットを表示します。
+                                                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                            必ず単色にして下さい。	複数の色を使うと塗り面積の多い色だけが判定対象になります。
+                                                                        </p>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-4">
+                                                                    <img src="colorparet.png" class="phorRes" style="width:100%;" align="top" alt="colorparet">
+                                                                </div>
+                                                            </div>
+                                                            <p></p>
+                                                            <div class="row" style="margin-top: 10px;">
+                                                                <div class="col-xs-12 col-sm-2">
+                                                                    <img src="lineselect.png" class="phorRes" style="width:100%;" align="top" alt="lineselect">
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-10">
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        線の太さを設定します。
+                                                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                            細くするほど難しくなりますので、デフォルトは10ポイントにしています。
+                                                                        </p>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <p></p>
+                                                            <div class="row" style="margin-top: 10px;">
+                                                                <div class="col-xs-12 col-sm-10">
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        線の先端形状を設定します。
+                                                                        <ol>
+                                                                            <li>
+                                                                                <h4>丸</h4>
+                                                                                マウスアップしたポイントを中心に線の太さ分の円弧が描かれます。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>四角</h4>
+                                                                                マウスアップしたポイントを中心に線の太さ分の四角が描かれます。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>無し</h4>
+                                                                                マウスアップしたポイントまでの線が描かれます。
+                                                                            </li>
+                                                                        </ol>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-2">
+                                                                    <img src="linecapsselect.png" class="phorRes" style="width:100%;" align="top" alt="linecapsselect">
+                                                                </div>
+                                                            </div>
+                                                            <p></p>
+                                                            <div class="row" style="margin-top: 10px;">
+                                                                <div class="col-xs-12 col-sm-2">
+                                                                    <img src="directionselect.png" class="phorRes" style="width:100%;" align="top" alt="directionselect">
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-10">
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        回転もしくは反転の方向を設定します。
+                                                                        <ol>
+                                                                            <li>
+                                                                                <h4>右90度</h4>
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>左90度</h4>
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>180度</h4>
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>上下反転</h4>
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>左右反転</h4>
+                                                                            </li>
+                                                                        </ol>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <p></p>
+                                                            <div class="row" style="margin-top: 10px;">
+                                                                <div class="col-xs-12 col-sm-10">
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        <ol>
+                                                                            <li>
+                                                                                <h4>全消去</h4>
+                                                                                何も選択していない状態なら画面全体のピクセルを消去します。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>部分消去</h4>
+                                                                                範囲を選択した状態ならその範囲内のピクセルを消去します。
+                                                                            </li>
+                                                                        </ol>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-2">
+                                                                    <img src="delbt.png" class="phorRes" style="width:100%;" align="top" alt="delbt">
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+
+
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="sidebar" style="padding:5px;">
-            <a href="../">
-                <img src="../img/koubou.png" alt="比治山工房" style="width:100%;margin-top: 10px;">
-            </a><br><br>
-            <ul>
-                <li>
-                    <a href="#pagetop">ページトップへ</a>
-                </li>
-                <li>
-                    <a href="#free_web_strage">free web strage</a>
-                    <ul class="sub_li">
-                        <li>
-                            <a href="#free_web_strage_text_file_read">PC上のテキストファイルを読む</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#continuity_slid">特定フォルダからの連続アニメーション</a>
-                    <ul class="sub_li">
-                        <li>
-                            <a href="#tilt_pict">サムネイルを特定の形状に並べる</a>
-                        </li>
-                        <li>
-                            <a href="#pict_alaive">新着アニメーション</a>
-                        </li>
-                        <li>
-                            <a href="#bg_anime">背景アニメーション</a>
-                        </li>
-                        <li>
-                            <a href="#msg_anime">メッセージ付き画像投稿</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#net_bingo">ネットワークビンゴ</a>
-                </li>
-                <li class="nomark_li">
-                </li>
-                <li>
-                    <a href="#info_row">ご連絡</a>
-                </li>
-            </ul>
-            <div>
-                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3146425308522831" data-ad-slot="4219928305" data-ad-format="auto"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-
-                <script type="text/javascript">
-                    var nend_params = {
-                        "media": 32269,
-                        "site": 206990,
-                        "spot": 583222,
-                        "type": 1,
-                        "oriented": 1
-                    };
-                </script>
-                <script type="text/javascript" src="https://js1.nend.net/js/nendAdLoader.js"></script>
-            </div>
 
 
-        </div>
-        <!-- <div id="footer">
-         </div> -->
-    </div>
+
     <script type="text/javascript">
+        $(function () {
+            $("#editerAria_body").collapse('hide'); //
+            $("#jobSelect_body").collapse('hide'); //editerAria_body
+            // $("#panelCollapse").collapse('show'); //デフォルトでオープン
+            $("#about_recovary_brain_body").collapse('hide'); //デフォルトでクローズ
+            $("#beginning_recovary_brain_body").collapse('hide');
+            $("#mirror_body").collapse('hide');
+            $("#other_screen_body").collapse('hide');
+            $("#usage_body").collapse('hide'); //
+        });
+
         $(function() {
             var headerHight = $('#header').outerHeight(true); //ヘッダの高さ
             // console.log(headerHight);

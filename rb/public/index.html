@@ -81,8 +81,12 @@
 								<input type="button" id="about_bt" value="このページの使い方" style="border-radius: 4px">
 							</div>
 						</div>
-						操作側のブラウザにセットするURL≫  <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
-						 >>スマホはQRコードで接続して下さい。<br>
+						<div class="row" id="infoHead">
+							<input type="button" id="pad_bt" value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;margin-left: 50px;">
+							 <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
+							 >>スマホはQRコードで接続して下さい。
+						 </div>
+
 						 トレース元図形を確定にするとスコアの評価が始まります。
 						 <input type="checkbox" id="mirrorCB"  style="margin-left: 30px;">鏡面動作
 						 <input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 30px;">トレース後に自動判定
@@ -195,12 +199,13 @@
 		var isSmaphoDebug =false;
 		var ua;
 		var isMobile=false;				//現在使用しているのはスマホ
+		var urlStr;
 
 		window.onload = function(){	// onload	;	ページ読み込み時に実行したい処理
 			var dbMsg = "[onload]";
 			var protocol = location.protocol
 			dbMsg += "　,protocol="+protocol;		//protocol=http:
-			var urlStr = location.href +"";
+			urlStr = location.href +"";
 			dbMsg += ",urlStr=　"+urlStr;				//protocol + hostname + port + hash をまとめて取得
 			var host = location.hostname ;			//プロトコル情報を除外したURLを取得する(port情報なし)>>
 			dbMsg += "　,host="+host;						//host=127.0.0.1
@@ -249,7 +254,7 @@
 			}else{
 				urlStr +='?reciver=pad';
 				var infoAria = document.getElementById("infoAria");
-					infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank" >' + urlStr + '</a>';
+					// infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank" >' + urlStr + '</a>';
 //   directions=no location=no
 					if(-1 < urlStr.indexOf('127.0.0.1')){						//xamppでのテスト中は
 						// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
@@ -310,10 +315,16 @@
 			mobileLog(dbMsg)
 		}
 
+		document.getElementById("pad_bt").onclick = function () {
+			var dbMsg = "[pad_bt]";
+			var optionVal = 'location=no,toolbar=no,menubar=no';
+			window.open(urlStr,"操作画面" , optionVal);
+		}
+
 		document.getElementById("about_bt").onclick = function () {
 			var dbMsg = "[about_bt]";
-			window.open('/about',"このページの説明");
-			//location=no,toolbar=no,'menubar=no'
+			var optionVal = 'location=no,toolbar=no,menubar=no';
+			window.open('/about',"このページの説明" , optionVal);
 		}
 
 
