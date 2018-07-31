@@ -48,6 +48,10 @@ IPv4 パブリック IP		18.182.237.90
 					nohupはSIGTERM, SIGQUITなど他のシグナルハンドラをデフォルト設定のままにしている。
 					たとえnohupで起動していたとしても、それらデフォルトでプロセス終了となるシグナルを受信すれば当然、プロセスは終了する。
 
+				※ハングアップする場合はnohupで起動後
+				　$ disown -ah
+				で全てのジョブにHUPシグナルを送らないようにする	2017/7/31	
+
 	成功したら
 		EC2>>> ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com:3080
 		と表示される
@@ -58,6 +62,13 @@ IPv4 パブリック IP		18.182.237.90
 	⑨動作しない時の確認
 		・
 		・稼働までに時間が掛かる？
+
+		[ec2-user@ip-172-31-39-52 rb]$ ps aux | grep node		でプロセスIDを検索
+		ec2-user 20983  0.1  4.0 1211224 41120 pts/0   Sl   08:32   0:03 node index.js
+		ec2-user 21371  0.0  0.0 119468   968 pts/1    S+   09:15   0:00 grep --color=auto node
+
+		・disown -h 20983			HUPシグナルだけを送らないようにする
+		（ジョブ番号1にHUPシグナルを送らないようにする）http://www.atmarkit.co.jp/ait/articles/1708/25/news012.html
 
  	テスト
 		http://[your_ip_address]:3000/
