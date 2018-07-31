@@ -48,9 +48,15 @@ IPv4 パブリック IP		18.182.237.90
 					nohupはSIGTERM, SIGQUITなど他のシグナルハンドラをデフォルト設定のままにしている。
 					たとえnohupで起動していたとしても、それらデフォルトでプロセス終了となるシグナルを受信すれば当然、プロセスは終了する。
 
-				※ハングアップする場合はnohupで起動後
-				　$ disown -ah
-				で全てのジョブにHUPシグナルを送らないようにする	2017/7/31	
+				※ハングアップする場合はnohupで起動後、同じShellで
+				jobs
+					と入力すると
+				[1]+  Running                 nohup node index.js &
+					と表示されるので、HUPシグナルだけを送らないようにする
+				$ disown -h %1
+
+					　$ disown -ah
+					で全てのジョブにHUPシグナルを送らないようにする	2017/7/31
 
 	成功したら
 		EC2>>> ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com:3080
@@ -91,6 +97,7 @@ IPv4 パブリック IP		18.182.237.90
 	②　node index.js
 	　start /b cmd /c & node index.js
 	start /b cmd /c & node C:\work\xampp\htdocs\recoverry_brain\rb\index.js
+		node H:\develop\xampp\htdocs\repireBrain\rb\index.js
 
 
 	Start-Job { & node index.js }
