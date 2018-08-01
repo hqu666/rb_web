@@ -1,6 +1,4 @@
-
 <!DOCTYPE HTML>
-<!--PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"-->
 <html lang="ja">
 
 <head>
@@ -15,8 +13,8 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="js/org_util.js"></script>
-    <link rel="stylesheet" type="text/css" href="../main.css" title="優先スタイル">
+    <!-- <script type="text/javascript" src="js/org_util.js"></script> -->
+    <!-- <link rel="stylesheet" type="text/css" href="../main.css" title="優先スタイル"> -->
     <style>
         table {
         	border-collapse: collapse;
@@ -43,7 +41,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="col-xs-12 col-sm-12">
-                                <div style="text-align: right;">更新日 2018/7/31</div>
+                                <div style="text-align: right;">更新日 2018/8/1</div>
                                 <h1>リカバリーブラインWeb(仮)の使い方</h1>
                                 <!-- <h4>PHPやデータベースが使えないサーバ環境で、何が何処までできるか試しています。</h4>
                                 <div class="alert alert-danger" role="alert" style="width:96%;height: auto;margin-left: 10px;">
@@ -103,11 +101,15 @@
                                                 <img src="Recovery13.png" class="phorRes" style="width:100%;" align="top" alt="抜型">
                                             </div>
                                         </div>
-                                        <div class="row" style="background-color: #F6CEF5;">
-                                            リカバリーブラインWeb(仮)はこの機能をパソコンやスマートフォンで再現する物です。<br>
-                                            表示した線や図形などのパターンをトレースする事で表示されている線の消し込みを行い、どれだけ消せたか（正確にトレースできたか）を評価します。
+                                        <div class="row" >
+                                            <div class="col-xs-11 col-sm-11" style="background-color: #F6CEF5;">
+                                                リカバリーブラインWeb(仮)はこの機能をパソコンやスマートフォンで再現する物です。<br>
+                                                表示した線や図形などのパターンをトレースする事で表示されている線の消し込みを行い、どれだけ消せたか（正確にトレースできたか）を評価します。
+                                            </div>
+                                            <div class="col-xs-1 col-sm-1"  data-toggle="collapse" style="text-align: right;" data-target="#about_recovary_brain_body" aria-expanded="true">
+                                                <img src="close.png" class="phorRes" align="top" alt="qrcord">
+                                            </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -118,7 +120,6 @@
 
             <div class="row " id="beginning">
                 <div class="col-sm-12">
-                    <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
                     <div class="panel-group">
                         <div class="panel panel-default">
                             <div class="panel-title">
@@ -182,91 +183,101 @@
                                          </div>
                                      </div>
                                 </div>
+                                <div data-toggle="collapse" style="width: 100%;text-align: right;;" data-target="#beginning_recovary_brain_body" aria-expanded="true">
+                                    <img src="close.png" class="phorRes" align="top" alt="qrcord">
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                <div class="row " id="mirror">
-                    <div class="col-sm-12">
-                        <div class="panel-group">
-                            <div class="panel panel-default">
-                                <div class="panel-title">
-                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#mirror_body" aria-expanded="true">
-                                        <h3>鏡面動作で難易度を上げましょう</h3>
-                                    </div>
+            <div class="row " id="mirror">
+                <div class="col-sm-12">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-title">
+                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#mirror_body" aria-expanded="true">
+                                    <h3>鏡面動作で難易度を上げましょう</h3>
                                 </div>
+                            </div>
 
-                                <div id="mirror_body" class="panel-collapse collapse in" aria-expanded="true">
-                                    <div class="panel-body">
-                                        <div class="panel-group">
-                                            <div class="row">
-                                                <div class="col-xs-12 col-sm-2">
-                                                    <div style="background-color: #eeeeee;font-size: large;margin: 10px;width: fit-content;padding: 10px;">
-                                                         <input type="checkbox" id="mirrorCB"  style="margin-left: 30px;">鏡面動作
-                                                     </div>
-                                                     まだ同じ画面で構いません
-                                                </div>
-                                                <div class="col-xs-12 col-sm-7">
-                                                    「鏡面動作」をチェックしてください。
-                                                    <h3>
-                                                        トレースの動きが上下反転します。
-                                                    </h3>
-                                                    この機能で鏡越しに手元に置かれた紙に書かれた線をトレースする機能を実現します、
-                                                </div>
+                            <div id="mirror_body" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="panel-body">
+                                    <div class="panel-group">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-2">
+                                                <div style="background-color: #eeeeee;font-size: large;margin: 10px;width: fit-content;padding: 10px;">
+                                                     <input type="checkbox" id="mirrorCB"  style="margin-left: 30px;">鏡面動作
+                                                 </div>
+                                                 まだ同じ画面で構いません
+                                            </div>
+                                            <div class="col-xs-12 col-sm-7">
+                                                「鏡面動作」をチェックしてください。
+                                                <h3>
+                                                    トレースの動きが上下反転します。
+                                                </h3>
+                                                この機能で鏡越しに手元に置かれた紙に書かれた線をトレースする機能を実現します、
+                                            </div>
 
-                                                <div class="col-xs-12 col-sm-3">
-                                                    <img src="mirror_p2.png" class="phorRes" style="width:50%;" align="top" alt="mirror_p2">
-                                                    <img src="mirror_p1.png" class="phorRes" style="width:50%;" align="top" alt="mirror_p1">
-                                                </div>
-                                             </div>
-                                        </div>
+                                            <div class="col-xs-12 col-sm-3">
+                                                <img src="mirror_p2.png" class="phorRes" style="width:75%;  margin-bottom: 5px;" align="top" alt="mirror_p2">
+                                                <img src="mirror_p1.png" class="phorRes" style="width:75%;" align="top" alt="mirror_p1">
+                                                <img src="close.png" class="phorRes" align="bottom" alt="qrcord" data-toggle="collapse" style="text-align: right;vertical-align:bottom;" data-target="#mirror_body" aria-expanded="true">
+                                            </div>
+                                         </div>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="row " id="other_screen">
-                    <div class="col-sm-12">
-                        <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
-                        <div class="panel-group">
-                            <div class="panel panel-default">
-                                <div class="panel-title">
-                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#other_screen_body" aria-expanded="true">
-                                        <h3>別画面からの操作で更に難易度を上げましょう</h3>
-                                    </div>
+            <div class="row " id="other_screen">
+                <div class="col-sm-12">
+                    <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-title">
+                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#other_screen_body" aria-expanded="true">
+                                    <h3>別画面からの操作で更に難易度を上げましょう</h3>
                                 </div>
+                            </div>
 
-                                <div id="other_screen_body" class="panel-collapse collapse in" aria-expanded="true">
-                                    <div class="panel-body">
-                                        <div class="panel-group">
-                                            <div class="row">
-                                                <div class="col-xs-8 col-sm-10">
-                                                    <div style="background-color: #eeeeee;font-size: large;margin: 10px;width: fit-content;padding: 10px;">
-                                                        操作側のブラウザにセットするURL≫  <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"> http://ec2- ・・・・.ap-northeast-1.compute.amazonaws.com:3080/?sesion=</span>
-                                                     </div>
-                                                    「操作側のブラウザにセットするUR」をクリックしてください。<br>
-                                                    <h3>
-                                                        マウスイベントがリンクした別ウィンドウを開きます。
-                                                    </h3>
-                                                    スマホは右上に表示されるQRコードで接続して下さい。
-                                                </div>
-
-
-                                             <div class="col-xs-4 col-sm-2">
+                            <div id="other_screen_body" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="panel-body">
+                                    <div class="panel-group">
+                                        <div class="row">
+                                            <div class="col-xs-10 col-sm-11">
+                                                <div style="background-color: #eeeeee;font-size: large;margin: 10px;width: fit-content;padding: 10px;">
+                                                    <div class="row" id="infoHead">
+                            							<input type="button"  value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;margin-left: 50px;">
+                            							 <span  style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
+                            							 >>スマホはQRコードで接続して下さい。
+                            						 </div>
+                                                 </div>
+                                                「操作画面をブラウザで開く」をクリックしてして下さい。<br>
+                                                <h3>
+                                                    マウスイベントがリンクした別ウィンドウを開きます。
+                                                </h3>
+                                                スマホは右上に表示されるQRコードで接続して下さい。
+                                                <h3>
+                                                    書き込みが行われる画面とトレースする手元に（視線を）分離すると難易度は更に上がります。
+                                                </h3>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-1">
                                                  <img src="qrcord.png" class="phorRes" style="width:100%;" align="top" alt="qrcord">
-                                             </div>
+                                                 <img src="close.png" class="phorRes" alt="close" data-toggle="collapse" style="text-align: right;vertical-align:bottom;" data-target="#other_screen_body" aria-expanded="true">
+                                            </div>
                                       </div>
-                                      <h3>
-                                          トレースする手元と、書き込みが行われる画面に視線を分離すると難易度は更に上がります。
-                                      </h3>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
 
             <div class="row " id="usage">
@@ -281,7 +292,7 @@
                             </div>
 
                             <div id="usage_body" class="panel-collapse collapse in" aria-expanded="true">
-                                <div class="row " id="jobSelect">
+                                <div class="row" id="jobSelect">
                                     <div class="col-sm-12">
                                         <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
                                         <div class="panel-group">
@@ -380,12 +391,6 @@
                                                                                     トレース元画像の読込みが完了した時点、もしくは作成して確定した時点でトレース元画像のピクセル配列を一旦記憶しています。「もう一度」を選択すると画面を消去して記録したピクセル配列を再度書き込みます。
                                                                                 </p>
                                                                             </li>
-                                                                            <li>
-                                                                                <h4>確定</h4>
-                                                                                「手書きで作成」を選択してトレース元画像の作成が完了したら、この機能で評価を開始できる状態にします。<br>
-                                                                                この操作でトレース元画像のピクセルを読み、トレース線の色と太さを確定します。
-
-                                                                            </li>
                                                                         </ol>
                                                                     </div>
                                                                 </div>
@@ -399,14 +404,14 @@
                                     </div>
                                 </div>
 
-                                <div class="row " id="editerAria">
+                                <div class="row" id="editerAria">
                                     <div class="col-sm-12">
                                         <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
                                         <div class="panel-group">
                                             <div class="panel panel-default">
                                                 <div class="panel-title">
                                                     <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#editerAria_body" aria-expanded="true" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
-                                                        手書きで作成で表示されるツール
+                                                        「手書きで作成」で表示されるツール
                                                     </div>
                                                 </div>
 
@@ -581,8 +586,9 @@
                                     </div>
                                 </div>
 
-
-
+                                <div class="row" style="width: 100%;margin-bottom: 5px;text-align: right;vertical-align:bottom;">
+                                    <img src="close.png" alt="close" data-toggle="collapse"  data-target="#usage_body" aria-expanded="true">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -592,7 +598,29 @@
 
 
     <script type="text/javascript">
-        $(function () {
+        var isDebug =true;
+        var isSmaphoDebug =false;
+        // var ua;
+        // var isMobile=false;				//現在使用しているのはスマホ
+        // var urlStr;
+
+        function myLog(dbMsg) {
+            if(isDebug){
+                console.log(dbMsg);
+                eventComent.innerHTML = dbMsg;
+            }
+        }
+
+        function mobileLog(dbMsg) {
+            if(isMobile & isSmaphoDebug){
+                alert(dbMsg);
+            }
+        }
+       /**
+        *全て折りたたむ
+        */
+        function collapseAll() {
+        // $(function () {
             $("#editerAria_body").collapse('hide'); //
             $("#jobSelect_body").collapse('hide'); //editerAria_body
             // $("#panelCollapse").collapse('show'); //デフォルトでオープン
@@ -601,9 +629,10 @@
             $("#mirror_body").collapse('hide');
             $("#other_screen_body").collapse('hide');
             $("#usage_body").collapse('hide'); //
-        });
+        }
 
-        $(function() {
+        function formatPage() {
+        // $(function() {
             var headerHight = $('#header').outerHeight(true); //ヘッダの高さ
             // console.log(headerHight);
             $('a[href^="#"]').click(function() {
@@ -615,6 +644,12 @@
                 }, 550, "swing");
                 return false;
             });
-        });
+        }
+
+        window.onload = function(){	// onload	;	ページ読み込み時に実行したい処理
+            var dbMsg = "[onload]";
+            collapseAll();
+            formatPage();
+        }
     </script>
 </body><!-- text below generated by geocities.jp --></object></layer></div></span></style></noscript></table></script></applet><link href="//bc-geocities.yahoo.co.jp/js/no.css" rel="stylesheet" type="text/css"><script language="javascript">var jps=382116061;var jpt=1532938409</script><script language="javascript" src="//bc-geocities.yahoo.co.jp/js/no.js"></script><script language="javascript" src="//bc-geocities.yahoo.co.jp/js/geov2.js"></script><script language="javascript">geovisit();</script>

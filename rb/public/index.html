@@ -73,19 +73,20 @@
 				<div class="row" id="urlInfoAria">
 					<div class="col-sm-10" id="urlDescriptionAria">
 						<div class="row" id="infoHead">
-							<div class="col-sm-10">
-								RECOVERY DOOR社のリカバリーブラインをアプリケーション化しました。<br>
-								こちら側の画面に表示される線や図形を、操作側の画面からなぞり、一致した度合いでスコアを表示します。<br>
-							</div>
 							<div class="col-sm-2">
 								<input type="button" id="about_bt" value="このページの使い方" style="border-radius: 4px">
 							</div>
+							<div class="col-sm-10">
+								<input type="button" id="pad_bt" value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;margin-left: 50px;">
+								 <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
+								 >>スマホはQRコードで接続して下さい。
+							</div>
 						</div>
-						<div class="row" id="infoHead">
+						<!-- <div class="row" id="infoHead">
 							<input type="button" id="pad_bt" value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;margin-left: 50px;">
 							 <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
 							 >>スマホはQRコードで接続して下さい。
-						 </div>
+						 </div> -->
 
 						 トレース元図形を確定にするとスコアの評価が始まります。
 						 <input type="checkbox" id="mirrorCB"  style="margin-left: 30px;">鏡面動作
@@ -99,7 +100,7 @@
 								<option value="fileSel">ファイルから読み込み</option>
 								<option value="make">手書きで作成</option>
 								<option value="again">もう一度</option>
-								<option value="comp">確定</option>
+								<!-- <option value="comp">確定</option> -->
 							</select>
 							<input type="file" id="files" name="files[]" />
 							<div id="scoreBrock" style="display: inline-block;margin-left: 30px;margin-right: 30px">
@@ -125,6 +126,7 @@
 									<option value="stamp">図形スタンプ</option>
 									<option value="erasre">消しゴム</option>
 									<option value="colorpic">カラーピッカー</option>
+									<option value="comp">確定</option>
 								</select>
 								<input type="color" id="colorPalet">
 								<span id="graficOptions">
@@ -195,14 +197,28 @@
     <script src="jquery.qrcode.min.js"></script>
 
 	<script type="text/javascript">
+		var socket = io();
 		var isDebug =true;
 		var isSmaphoDebug =false;
 		var ua;
 		var isMobile=false;				//現在使用しているのはスマホ
 		var urlStr;
 
+		function myLog(dbMsg) {
+			if(isDebug){
+				console.log(dbMsg);
+				eventComent.innerHTML = dbMsg;
+			}
+		}
+
+		function mobileLog(dbMsg) {
+			if(isMobile & isSmaphoDebug){
+				alert(dbMsg);
+			}
+		}
+
 		window.onload = function(){	// onload	;	ページ読み込み時に実行したい処理
-			var dbMsg = "[onload]";
+			var dbMsg = "[index.html.onload]";
 			var protocol = location.protocol
 			dbMsg += "　,protocol="+protocol;		//protocol=http:
 			urlStr = location.href +"";
@@ -232,47 +248,57 @@
 			}
 			// var targetUrl = urlStr.replace( path, ":3080" );
 			// dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
-			var reciverPostion =urlStr.indexOf('reciver');
-			// dbMsg += "　,reciverPostion="+reciverPostion + "/" + urlStr.length;
-			if(-1 == urlStr.indexOf('sesion')){
+			var sesionPostion =urlStr.indexOf('sesion');
+			dbMsg += "　,sesionPostion="+sesionPostion + "/" + urlStr.length;
+			if(-1 == sesionPostion ){			//セッションコード未定；アクセス直後
 				var now = new Date();
-				var UrlPparam =  "?sesion=" +  now.getYear() +(now.getMonth()+1)+now.getDate()+now.getHours()+now.getMinutes()+now.getSeconds();		// "?sesion="
-				dbMsg += "　,UrlPparam="+UrlPparam;			//,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10　//QR=http://http://192.168.3.10:3080/?sesion=11872218750?reciver="pad"
-				urlStr += UrlPparam;	//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
-				location.href=urlStr;
+				var s_time ="" +  now.getYear() +(now.getMonth()+1)+now.getDate()+now.getHours()+now.getMinutes()+now.getSeconds();		// "?sesion="
+				dbMsg += "　,s_time="+s_time;			//,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10
+				socket.emit('conect_start', {
+					nickname: s_time,
+					href:location.href +""
+				});
+
+
+				// var UrlPparam =  "?sesion=" +  s_time;		// "?sesion="
+				// 　//QR=http://http://192.168.3.10:3080/?sesion=11872218750?reciver="pad"
+				// urlStr += UrlPparam;	//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
+				// location.href=urlStr;
 			}
-			if(-1 <reciverPostion){
-				urlStr = urlStr.substring(0,reciverPostion-1);
-				dbMsg += ">urlStr>"+urlStr;
-				document.getElementById("urlInfoAria").style.display="none";				// $("#urlInfoAria").では使えない
-				//課題　；非表示にした分、描画範囲修正（上端）
-				// current.color= '#FF0000';						//課題；Canvaceを取得してカラー設定
-				// urlStr =urlStr.replace('?reciver=pad ', "");
-				// openWindow(urlStr);
-				// navigator.directions=0;			//this,window,document	>>cannat CET;0  	/	navigator,location >>無反応
-				// navigator.location = 0;
-			}else{
-				urlStr +='?reciver=pad';
-				var infoAria = document.getElementById("infoAria");
-					// infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank" >' + urlStr + '</a>';
-//   directions=no location=no
-					if(-1 < urlStr.indexOf('127.0.0.1')){						//xamppでのテスト中は
-						// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
-						// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
-						// dbmsg += "　,ipAddress="+ipAddress;
-						var wifiURL = '192.168.100.6';		//課題；取得方法；Javascriptでは取得できない
-						// var wifiURL = '192.168.3.10';		//自宅
-						dbMsg += "　,wifiURL="+wifiURL;
-						urlStr = urlStr.replace('127.0.0.1', wifiURL);				//'http://192.168.3.10:3080'
-					}else{
-						isDebug =false;
-					}
-					dbMsg += "　,QR="+urlStr;
-					$("#urlQR").html("");
-		        	$("#urlQR").qrcode({width:100,//横幅
-									    height:100,//高さ
-										text:urlStr});
-			}
+				var reciverPostion =urlStr.indexOf('reciver');
+				// dbMsg += "　,reciverPostion="+reciverPostion + "/" + urlStr.length;
+				if(-1 <reciverPostion  ){
+					urlStr = urlStr.substring(0,reciverPostion-1);
+					dbMsg += ">urlStr>"+urlStr;
+					document.getElementById("urlInfoAria").style.display="none";				// $("#urlInfoAria").では使えない
+					//課題　；非表示にした分、描画範囲修正（上端）
+					// current.color= '#FF0000';						//課題；Canvaceを取得してカラー設定
+					// urlStr =urlStr.replace('?reciver=pad ', "");
+					// openWindow(urlStr);
+					// navigator.directions=0;			//this,window,document	>>cannat CET;0  	/	navigator,location >>無反応
+					// navigator.location = 0;
+				}else if(-1 < sesionPostion ){
+					urlStr +='?reciver=pad';
+					var infoAria = document.getElementById("infoAria");
+						// infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank" >' + urlStr + '</a>';
+	//   directions=no location=no
+						if(-1 < urlStr.indexOf('127.0.0.1')){						//xamppでのテスト中は
+							// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
+							// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
+							// dbmsg += "　,ipAddress="+ipAddress;
+							var wifiURL = '192.168.100.6';		//課題；取得方法；Javascriptでは取得できない
+							// var wifiURL = '192.168.3.10';		//自宅
+							dbMsg += "　,wifiURL="+wifiURL;
+							urlStr = urlStr.replace('127.0.0.1', wifiURL);				//'http://192.168.3.10:3080'
+						}else{
+							isDebug =false;
+						}
+						dbMsg += "　,QR="+urlStr;
+						$("#urlQR").html("");
+			        	$("#urlQR").qrcode({width:100,//横幅
+										    height:100,//高さ
+											text:urlStr});
+				}
 			document.getElementById("scoreBrock").style.display="none";
 			// document.getElementById("useComp").style.display="none";
 			document.getElementById("editerAria").style.display="none";			 // 編集ツール表示
@@ -315,6 +341,18 @@
 			mobileLog(dbMsg)
 		}
 
+		socket.on('conect_start', function(data) {
+			var dbMsg = "[recive:conect_start]";
+			dbMsg += ",data="+data;
+			// var portName = ':3080';//課題；ポート取得
+			// urlStr = urlStr.replace(portName, "/" +  data +　portName);
+			var UrlPparam =  "?sesion=" +  data;		// "?sesion="
+			urlStr += UrlPparam;	//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
+			location.href=urlStr;										//再起動
+			myLog(dbMsg);
+		});
+
+
 		document.getElementById("pad_bt").onclick = function () {
 			var dbMsg = "[pad_bt]";
 			var optionVal = 'location=no,toolbar=no,menubar=no';
@@ -324,7 +362,7 @@
 		document.getElementById("about_bt").onclick = function () {
 			var dbMsg = "[about_bt]";
 			var optionVal = 'location=no,toolbar=no,menubar=no';
-			window.open('/about',"このページの説明" , optionVal);
+			window.open('/about',"このページの説明" );
 		}
 
 
@@ -336,18 +374,6 @@
 		//   window.close();
 		// }
 
-		function myLog(dbMsg) {
-			if(isDebug){
-				console.log(dbMsg);
-				eventComent.innerHTML = dbMsg;
-			}
-		}
-
-		function mobileLog(dbMsg) {
-			if(isMobile & isSmaphoDebug){
-				alert(dbMsg);
-			}
-		}
 
 	</script>
 	</body>

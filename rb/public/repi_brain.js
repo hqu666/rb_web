@@ -8,14 +8,14 @@
 	var isMobile=false;				//現在使用しているのはスマホ
 	var srcName="";																	//トレース元のファイル名
 	var canvas = document.getElementsByClassName('whiteboard')[0];				//描画領域
-	var typeSelect = document.getElementById('typeSelect');						//描画種別
-	var colorPalet = document.getElementById('colorPalet');						//カラーパレット
-	var editerAria = document.getElementById('editerAria');						//上記の編集パーツ
-	var scoreBrock = document.getElementById('scoreBrock');						//スコア表示
 	var jobSelect = document.getElementById('jobSelect');						//元データの作り方
 	jobSelect.options[0].disabled = true;										//>選択して下さい
     jobSelect.options[4].disabled = true;										//もう一度
-	jobSelect.options[5].disabled = true;										//確定
+	var typeSelect = document.getElementById('typeSelect');						//描画種別
+	typeSelect.options[6].disabled = true;										//確定
+	var colorPalet = document.getElementById('colorPalet');						//カラーパレット
+	var editerAria = document.getElementById('editerAria');						//上記の編集パーツ
+	var scoreBrock = document.getElementById('scoreBrock');						//スコア表示
 
 	var orgComp = document.getElementById('orgComp');							//元データの描画結果
 	var useComp = document.getElementById('useComp');							//判定ボタン；トレース後の描画結果
@@ -115,6 +115,12 @@
 		dbMsg += " ,isMobile="+isMobile;
 		isMirror = document.getElementById('mirrorCB').checked;
 		dbMsg += ",isMirror="+isMirror;
+		// dbMsg += ",socket="+socket.id;
+		//
+		// socket.emit('conect_start', {
+		// 	nickname: "nick",
+		// 	href:location.href +""
+		// });
 		// mobileLog(dbMsg);
 		myLog(dbMsg);
 	});
@@ -164,8 +170,8 @@
 			current.color =orgColor;			 								//元パターン用の色に戻す
 		}else if(currentjob == "again"){			//もう一度</option>
 			drowAgain();
-		}else if(currentjob == "comp"){			//確定</option>
-			orgComp.click();
+		// }else if(currentjob == "comp"){			//確定</option>
+		// 	orgComp.click();
 		}else{			// <option value="line">作成</option>
 			alert( '作成中です。');  //数値と文字の結合
 		}
@@ -226,6 +232,8 @@
 			if( res == true ) {
 			}else {
 			}
+		}else if(currenttype == "comp"){			//確定</option>
+			orgComp.click();
 		}else{
 			alert( '作成中です。');  //数値と文字の結合
 			texeOptions.style.display="none";
@@ -392,7 +400,7 @@
 		var dbMsg = "[onMouseDown]drawing=" + drawing;
 		drawing = true;
 		jobSelect.options[4].disabled = false;										//もう一度
-	 	jobSelect.options[5].disabled = false;										//確定
+		typeSelect.options[6].disabled = false;										//確定
 		canvasRect = document.getElementById('hitarea').getBoundingClientRect();
 		canvasX =canvasRect.left + window.pageXOffset;
 		canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
@@ -466,7 +474,7 @@
 		var dbMsg = "ontouchstart(" + drawing;
 		drawing = true;
 		jobSelect.options[4].disabled = false;										//もう一度
-	 	jobSelect.options[5].disabled = false;										//確定
+		typeSelect.options[6].disabled = false;										//確定
 
 		canvasRect = document.getElementById('hitarea').getBoundingClientRect();
 		canvasX =canvasRect.left + window.pageXOffset;
