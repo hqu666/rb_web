@@ -92,8 +92,9 @@ IPv4 パブリック IP		18.182.237.90
 
 	①	シェルで
 		cd C:\work\xampp\htdocs\recoverry_brain\rb
-			cd /d H:\
-			cd H:\develop\xampp\htdocs\repireBrain\rb
+			自宅では cd /d H:\  を付けて
+			cd /d H:\develop\xampp\htdocs\repireBrain\rb
+
 	②　node index.js
 	　start /b cmd /c & node index.js
 	start /b cmd /c & node C:\work\xampp\htdocs\recoverry_brain\rb\index.js

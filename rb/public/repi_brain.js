@@ -4,6 +4,7 @@
 	var isDebug =true;
 	var isSmaphoDebug =false;
 	var socket = io();
+	var room;				// = io.connect("http://localhost:3000/room1");
 	var ua =navigator.userAgent;
 	var isMobile=false;				//現在使用しているのはスマホ
 	var srcName="";																	//トレース元のファイル名
@@ -86,6 +87,7 @@
 			isDebug =false;
 			isSmaphoDebug =false;
 		}
+
 		if (window.File && window.FileReader && window.FileList && window.Blob) {		//ファイル読込みが可能な環境なら
 			dbMsg += ",ファイル読込み可能";
 			jobSelect.options[4].disabled = false;										//ファイルから読み込み　を有効化

@@ -217,6 +217,38 @@
 			}
 		}
 
+/**
+*2桁にして返す
+*/
+		function towFigures(iVal) {
+			var dbMsg = "[towFigures]"
+			dbMsg += ",iVal="+iVal;
+			var retStr="";
+			if(iVal<10){
+				retStr ="0" + iVal;
+			}else{
+				retStr =""+ iVal;
+			}
+			dbMsg += ",retStr="+retStr;
+			myLog(dbMsg);
+			return retStr;
+		}
+
+		function retNowStr() {
+			var dbMsg = "[retNowStr]";
+			var s_time ="";		// "?sesion="
+			var now = new Date();
+			var rInt = "" + now.getYear() ;
+			if("1"==rInt.substring(0,1)){
+				s_time +="20" + rInt.substring(1,rInt.length);
+			}
+
+			 s_time +="" +towFigures((now.getMonth()+1)) + towFigures(now.getDate()+0) + towFigures(now.getHours()) +
+			  				towFigures(now.getMinutes()) + towFigures(now.getSeconds());		// "?sesion="
+			dbMsg += "　,s_time="+s_time;			//,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10
+			return s_time;
+		}
+
 		window.onload = function(){	// onload	;	ページ読み込み時に実行したい処理
 			var dbMsg = "[index.html.onload]";
 			var protocol = location.protocol
@@ -248,15 +280,16 @@
 			}
 			// var targetUrl = urlStr.replace( path, ":3080" );
 			// dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
-			var sesionPostion =urlStr.indexOf('sesion');
+			var sesionPostion =urlStr.indexOf('room');
 			dbMsg += "　,sesionPostion="+sesionPostion + "/" + urlStr.length;
 			if(-1 == sesionPostion ){			//セッションコード未定；アクセス直後
 				var now = new Date();
 				var s_time ="" +  now.getYear() +(now.getMonth()+1)+now.getDate()+now.getHours()+now.getMinutes()+now.getSeconds();		// "?sesion="
 				dbMsg += "　,s_time="+s_time;			//,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10
+
 				socket.emit('conect_start', {
 					nickname: s_time,
-					href:location.href +""
+					href:location.href + s_time
 				});
 
 
@@ -344,9 +377,10 @@
 		socket.on('conect_start', function(data) {
 			var dbMsg = "[recive:conect_start]";
 			dbMsg += ",data="+data;
+				//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
 			// var portName = ':3080';//課題；ポート取得
 			// urlStr = urlStr.replace(portName, "/" +  data +　portName);
-			var UrlPparam =  "?sesion=" +  data;		// "?sesion="
+			var UrlPparam =  "?room=" +  retNowStr()+"?sessid="+  data;// "?sessid="+  data.socket.transport.sessid+"?transport="+socket.socket.transport.name;		// "?sesion="
 			urlStr += UrlPparam;	//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
 			location.href=urlStr;										//再起動
 			myLog(dbMsg);
@@ -382,6 +416,29 @@
 
 <!--
 https://github.com/socketio/socket.io/tree/master/examples/whiteboard
+
+/**
+https://socket.io/docs/server-api/
+個別セッション
+socket.ioで特定ユーザーにemitしたい時                http://nazomikan.hateblo.jp/entry/2014/06/05/031548
+Socket.ioを使ったチャットルーム ロジックの実装        https://qiita.com/ynunokawa/items/564757fe6dbe43d172f8
+Socket.ioでチャットルームを実現する方法               https://www.xmisao.com/2013/06/13/socketio-rooms.html
+socket.IOとHTML5 Canvasを用いた手書きチャットアプリを作ってみた      https://www.yoheim.net/blog.php?q=20120515
+8/2
+Socket.IOのネームスペース                           https://www.usagi1975.com/23sep1504141/
+を参考に
+index.js
+io.of("/room1").on("connection", function(socket){
+    socket.on("message", function(data){
+        socket.emit("message", "[room1]" + data.value);
+        socket.broadcast.emit("message", "[room1]" + data.value);
+    });
+
+   ここで
+   var room1 = io.connect("http://localhost:3000/room1");
+
+WebSocket(Socket.IO) で受け取った Data URL 形式の画像をダウンロードさせる    https://gist.github.com/hakobera/975762
+*/
 
 
 -->
