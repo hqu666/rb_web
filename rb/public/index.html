@@ -309,8 +309,8 @@
 						// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
 						// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
 						// dbmsg += "　,ipAddress="+ipAddress;
-						var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
-						// var wifiURL = '192.168.3.10';		//自宅
+						// var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
+						var wifiURL = '192.168.3.15';		//自宅
 						dbMsg += "　,wifiURL=" + wifiURL;
 						urlStr = urlStr.replace('127.0.0.1', wifiURL); //'http://192.168.3.10:3080'
 					} else {
@@ -372,7 +372,7 @@
 				//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
 				// var portName = ':3080';//課題；ポート取得
 				// urlStr = urlStr.replace(portName, "/" +  data +　portName);
-				var UrlPparam = "?room=" + retNowStr() + "?sessid=" + data; // "?sessid="+  data.socket.transport.sessid+"?transport="+socket.socket.transport.name;		// "?sesion="
+				var UrlPparam = "?room=" + data; // "?sessid="+  data.socket.transport.sessid+"?transport="+socket.socket.transport.name;		// "?sesion="
 				urlStr += UrlPparam; //		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
 				location.href = urlStr; //再起動
 				myLog(dbMsg);

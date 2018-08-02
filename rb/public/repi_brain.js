@@ -133,7 +133,7 @@
 			roomVal = getUrlParam("room", urlStr);
 			var params= urlStr.split('?');
 			var setStr = params[0] + roomVal;
-			dbMsg += ">>" + setStr;
+			dbMsg += ">io.connect>" + setStr;
 		 	room = io.connect(setStr);
 		}
 
@@ -378,7 +378,7 @@
 		dbMsg += ",room=" + roomVal;
 		allClear();
 		myLog(dbMsg);
-		socket.emit('allclear', {
+		socket.emit('allclear', {									//socket		room
 			room:"/"+roomVal
 		});
 	}
