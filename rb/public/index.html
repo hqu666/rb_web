@@ -1,17 +1,18 @@
 <!doctype html>
 <html lang="jp">
+
 	<head>
-	  <meta charset="UTF-8">
-	  <meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Recovery Brain web</title>
 		<!--<title>Socket.IO から nodes直下; whiteboard</title>-->
 		<link rel="stylesheet" href="style.css">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Cache-Control" content="no-cache">
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
-	    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 		<!-- <link type="text/css" rel="stylesheet"
 		  href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
@@ -21,39 +22,40 @@
 		  src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script> -->
 
 	</head>
+
 	<body style="overflow: hidden;">
 		<div class="modal fade" id="modal_box">
-		 	<div class="modal-dialog">
-		   		<div class="modal-content">
+			<div class="modal-dialog">
+				<div class="modal-content">
 					<div class="box_inner">
-						 <div class="modal-header">
-							 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 							  <i class="glyphicon glyphicon-remove"></i>
 							</button>
 							<div　class="modal-title" id="modalTitol">
 								タイトル
-							</div>
 						</div>
-						<div class="modal-body">
-							<div  class="row" id="modalComent">
-								コメント
-							</div>
-							<div  class="row" id="modalImgList">
-										<img class="col-sm-2"  src="/stereotype/st001.png" width="20%" height="20%">
-										<img class="col-sm-2" src="/stereotype/st002.png" width="20%" height="20%">
-										<img  class="col-sm-2" src="/stereotype/st003.png" width="20%" height="20%">
-										<img  class="col-sm-2" src="/stereotype/st004.png" width="20%" height="20%">
-										<img  class="col-sm-2" src="/stereotype/st005.png" width="20%" height="20%">
-							</div>
+					</div>
+					<div class="modal-body">
+						<div class="row" id="modalComent">
+							コメント
+						</div>
+						<div class="row" id="modalImgList">
+							<img class="col-sm-2" src="/stereotype/st001.png" width="20%" height="20%">
+							<img class="col-sm-2" src="/stereotype/st002.png" width="20%" height="20%">
+							<img class="col-sm-2" src="/stereotype/st003.png" width="20%" height="20%">
+							<img class="col-sm-2" src="/stereotype/st004.png" width="20%" height="20%">
+							<img class="col-sm-2" src="/stereotype/st005.png" width="20%" height="20%">
+						</div>
 
-							<div id="progressBase"  class="progress" style="margin: 5px;">
-				  				<div id="progressBs" class="progress-bar" role="progressbar" style="width: 0%;">
-				  					  0%
-				  				</div>
-			  			  	</div>
+						<div id="progressBase" class="progress" style="margin: 5px;">
+							<div id="progressBs" class="progress-bar" role="progressbar" style="width: 0%;">
+								0%
+							</div>
 						</div>
-						 <div class="modal-footer">
-							 <!-- <button class="btn btn-default" data-dismiss="modal">
+					</div>
+					<div class="modal-footer">
+						<!-- <button class="btn btn-default" data-dismiss="modal">
 					            data-dismiss="modal"
 					         </button>
 					         <button class="btn btn-danger" data-bind="click: close">
@@ -78,8 +80,7 @@
 							</div>
 							<div class="col-sm-10">
 								<input type="button" id="pad_bt" value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;margin-left: 50px;">
-								 <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
-								 >>スマホはQRコードで接続して下さい。
+								<span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span> >>スマホはQRコードで接続して下さい。
 							</div>
 						</div>
 						<!-- <div class="row" id="infoHead">
@@ -88,12 +89,12 @@
 							 >>スマホはQRコードで接続して下さい。
 						 </div> -->
 
-						 トレース元図形を確定にするとスコアの評価が始まります。
-						 <input type="checkbox" id="mirrorCB"  style="margin-left: 30px;">鏡面動作
-						 <input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 30px;">トレース後に自動判定
-			 		 	<input type="button" id="dlog_bt" value="モーダル表示確認" style="height: 24px;border-radius: 4px;margin-left: 50px;">
+						トレース元図形を確定にするとスコアの評価が始まります。
+						<input type="checkbox" id="mirrorCB" style="margin-left: 30px;">鏡面動作
+						<input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 30px;">トレース後に自動判定
+						<input type="button" id="dlog_bt" value="モーダル表示確認" style="height: 24px;border-radius: 4px;margin-left: 50px;">
 						<div id="scoreAria">
-							  トレース元図形
+							トレース元図形
 							<select id="jobSelect" size="1">
 								<option value="none">選択して下さい</option>
 								<option value="patranList">パターンリスト表示</option>
@@ -105,7 +106,7 @@
 							<input type="file" id="files" name="files[]" />
 							<div id="scoreBrock" style="display: inline-block;margin-left: 30px;margin-right: 30px">
 								スコア
-								<span id="scoreTF"  style="font-size: x-large">
+								<span id="scoreTF" style="font-size: x-large">
 									0
 								</span>点
 								<span id="compTF" style="margin-left: 30px">
@@ -191,226 +192,217 @@
 			<div id="footer">
 				<span id="eventComent" style="text-align: right;margin-left:  5px;"></span>
 			</div>
-	</div>
-	<script src="/socket.io/socket.io.js"></script>
-	<script src="/repi_brain.js"></script>
-    <script src="jquery.qrcode.min.js"></script>
+		</div>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/repi_brain.js"></script>
+		<script src="jquery.qrcode.min.js"></script>
 
-	<script type="text/javascript">
-		var socket = io();
-		var isDebug =true;
-		var isSmaphoDebug =false;
-		var ua;
-		var isMobile=false;				//現在使用しているのはスマホ
-		var urlStr;
+		<script type="text/javascript">
+			var socket = io();
+			var isDebug = true;
+			var isSmaphoDebug = false;
+			var ua;
+			var isMobile = false; //現在使用しているのはスマホ
+			var urlStr;
 
-		function myLog(dbMsg) {
-			if(isDebug){
-				console.log(dbMsg);
-				eventComent.innerHTML = dbMsg;
-			}
-		}
-
-		function mobileLog(dbMsg) {
-			if(isMobile & isSmaphoDebug){
-				alert(dbMsg);
-			}
-		}
-
-/**
-*2桁にして返す
-*/
-		function towFigures(iVal) {
-			var dbMsg = "[towFigures]"
-			dbMsg += ",iVal="+iVal;
-			var retStr="";
-			if(iVal<10){
-				retStr ="0" + iVal;
-			}else{
-				retStr =""+ iVal;
-			}
-			dbMsg += ",retStr="+retStr;
-			myLog(dbMsg);
-			return retStr;
-		}
-
-		function retNowStr() {
-			var dbMsg = "[retNowStr]";
-			var s_time ="";		// "?sesion="
-			var now = new Date();
-			var rInt = "" + now.getYear() ;
-			if("1"==rInt.substring(0,1)){
-				s_time +="20" + rInt.substring(1,rInt.length);
+			function myLog(dbMsg) {
+				if (isDebug) {
+					console.log(dbMsg);
+					eventComent.innerHTML = dbMsg;
+				}
 			}
 
-			 s_time +="" +towFigures((now.getMonth()+1)) + towFigures(now.getDate()+0) + towFigures(now.getHours()) +
-			  				towFigures(now.getMinutes()) + towFigures(now.getSeconds());		// "?sesion="
-			dbMsg += "　,s_time="+s_time;			//,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10
-			return s_time;
-		}
-
-		window.onload = function(){	// onload	;	ページ読み込み時に実行したい処理
-			var dbMsg = "[index.html.onload]";
-			var protocol = location.protocol
-			dbMsg += "　,protocol="+protocol;		//protocol=http:
-			urlStr = location.href +"";
-			dbMsg += ",urlStr=　"+urlStr;				//protocol + hostname + port + hash をまとめて取得
-			var host = location.hostname ;			//プロトコル情報を除外したURLを取得する(port情報なし)>>
-			dbMsg += "　,host="+host;						//host=127.0.0.1
-			var path = location.pathname ;				//URLでパスの部分を取得・設定する
-			dbMsg += "　,path="+path;							//path=/　,query=
-			var port = location.port;					//":3080/" ;
-			dbMsg += "　,port="+port;							//path=/　,query=
-			var search = location.search ;
-			dbMsg += "　,search="+search;
-			var query = location.query ;
-			dbMsg += "　,query="+query;
-			var hash = location.hash ;					//location.hash	URL内のハッシュ情報を抽出して取得する
-			dbMsg += "　,hash="+hash;
-			ua =navigator.userAgent;
-			dbMsg += ",ua="+ ua;
-			// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
-			// dbmsg += "　,ipAddress="+ipAddress;
-			var	tframe = document.getElementById("tframe");
-			var	titolAncar = document.getElementById("titolAncar");
-
-			if(-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')){
-				isDebug =false;
-				isSmaphoDebug =false;
+			function mobileLog(dbMsg) {
+				if (isMobile & isSmaphoDebug) {
+					alert(dbMsg);
+				}
 			}
-			// var targetUrl = urlStr.replace( path, ":3080" );
-			// dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
-			var sesionPostion =urlStr.indexOf('room');
-			dbMsg += "　,sesionPostion="+sesionPostion + "/" + urlStr.length;
-			if(-1 == sesionPostion ){			//セッションコード未定；アクセス直後
+
+			/**
+			 *2桁にして返す
+			 */
+			function towFigures(iVal) {
+				var dbMsg = "[towFigures]"
+				dbMsg += ",iVal=" + iVal;
+				var retStr = "";
+				if (iVal < 10) {
+					retStr = "0" + iVal;
+				} else {
+					retStr = "" + iVal;
+				}
+				dbMsg += ",retStr=" + retStr;
+				myLog(dbMsg);
+				return retStr;
+			}
+
+			function retNowStr() {
+				var dbMsg = "[retNowStr]";
+				var s_time = ""; // "?sesion="
 				var now = new Date();
-				var s_time ="" +  now.getYear() +(now.getMonth()+1)+now.getDate()+now.getHours()+now.getMinutes()+now.getSeconds();		// "?sesion="
-				dbMsg += "　,s_time="+s_time;			//,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10
-
-				socket.emit('conect_start', {
-					nickname: s_time,
-					href:location.href + s_time
-				});
-
-
-				// var UrlPparam =  "?sesion=" +  s_time;		// "?sesion="
-				// 　//QR=http://http://192.168.3.10:3080/?sesion=11872218750?reciver="pad"
-				// urlStr += UrlPparam;	//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
-				// location.href=urlStr;
+				var rInt = "" + now.getYear();
+				if ("1" == rInt.substring(0, 1)) {
+					s_time += "20" + rInt.substring(1, rInt.length);
+				}
+				s_time += "" + towFigures((now.getMonth() + 1)) + towFigures(now.getDate() + 0) + towFigures(now.getHours()) +
+					towFigures(now.getMinutes()) + towFigures(now.getSeconds()); // "?sesion="
+				dbMsg += "　,s_time=" + s_time; //,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10
+				return s_time;
 			}
-				var reciverPostion =urlStr.indexOf('reciver');
+
+			window.onload = function() { // onload	;	ページ読み込み時に実行したい処理
+				var dbMsg = "[index.html.onload]";
+				var protocol = location.protocol
+				dbMsg += "　,protocol=" + protocol; //protocol=http:
+				urlStr = location.href + "";
+				dbMsg += ",urlStr=　" + urlStr; //protocol + hostname + port + hash をまとめて取得
+				var host = location.hostname; //プロトコル情報を除外したURLを取得する(port情報なし)>>
+				dbMsg += "　,host=" + host; //host=127.0.0.1
+				var path = location.pathname; //URLでパスの部分を取得・設定する
+				dbMsg += "　,path=" + path; //path=/　,query=
+				var port = location.port; //":3080/" ;
+				dbMsg += "　,port=" + port; //path=/　,query=
+				var search = location.search;
+				dbMsg += "　,search=" + search;
+				var query = location.query;
+				dbMsg += "　,query=" + query;
+				var hash = location.hash; //location.hash	URL内のハッシュ情報を抽出して取得する
+				dbMsg += "　,hash=" + hash;
+				ua = navigator.userAgent;
+				dbMsg += ",ua=" + ua;
+				// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
+				// dbmsg += "　,ipAddress="+ipAddress;
+				var tframe = document.getElementById("tframe");
+				var titolAncar = document.getElementById("titolAncar");
+
+				if (-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')) {
+					isDebug = false;
+					isSmaphoDebug = false;
+				}
+				// var targetUrl = urlStr.replace( path, ":3080" );
+				// dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
+				var roomPostion = urlStr.indexOf('room');
+				dbMsg += "　,roomPostion=" + roomPostion + "/" + urlStr.length;
+				if (-1 == roomPostion) { //セッションコード未定；アクセス直後
+					socket.emit('conect_start', {
+						nickname: retNowStr(), //roomへ
+						href: location.href //この時点のhref
+					});
+				}
+				var reciverPostion = urlStr.indexOf('reciver');
 				// dbMsg += "　,reciverPostion="+reciverPostion + "/" + urlStr.length;
-				if(-1 <reciverPostion  ){
-					urlStr = urlStr.substring(0,reciverPostion-1);
-					dbMsg += ">urlStr>"+urlStr;
-					document.getElementById("urlInfoAria").style.display="none";				// $("#urlInfoAria").では使えない
+				if (-1 < reciverPostion) {
+					urlStr = urlStr.substring(0, reciverPostion - 1);
+					dbMsg += ">urlStr>" + urlStr;
+					document.getElementById("urlInfoAria").style.display = "none"; // $("#urlInfoAria").では使えない
 					//課題　；非表示にした分、描画範囲修正（上端）
 					// current.color= '#FF0000';						//課題；Canvaceを取得してカラー設定
 					// urlStr =urlStr.replace('?reciver=pad ', "");
 					// openWindow(urlStr);
 					// navigator.directions=0;			//this,window,document	>>cannat CET;0  	/	navigator,location >>無反応
 					// navigator.location = 0;
-				}else if(-1 < sesionPostion ){
-					urlStr +='?reciver=pad';
+				} else if (-1 < roomPostion) {
+					urlStr += '?reciver=pad';
 					var infoAria = document.getElementById("infoAria");
-						// infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank" >' + urlStr + '</a>';
-	//   directions=no location=no
-						if(-1 < urlStr.indexOf('127.0.0.1')){						//xamppでのテスト中は
-							// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
-							// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
-							// dbmsg += "　,ipAddress="+ipAddress;
-							var wifiURL = '192.168.100.6';		//課題；取得方法；Javascriptでは取得できない
-							// var wifiURL = '192.168.3.10';		//自宅
-							dbMsg += "　,wifiURL="+wifiURL;
-							urlStr = urlStr.replace('127.0.0.1', wifiURL);				//'http://192.168.3.10:3080'
-						}else{
-							isDebug =false;
-						}
-						dbMsg += "　,QR="+urlStr;
-						$("#urlQR").html("");
-			        	$("#urlQR").qrcode({width:100,//横幅
-										    height:100,//高さ
-											text:urlStr});
+					// infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank" >' + urlStr + '</a>';
+					//   directions=no location=no
+					if (-1 < urlStr.indexOf('127.0.0.1')) { //xamppでのテスト中は
+						// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
+						// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
+						// dbmsg += "　,ipAddress="+ipAddress;
+						var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
+						// var wifiURL = '192.168.3.10';		//自宅
+						dbMsg += "　,wifiURL=" + wifiURL;
+						urlStr = urlStr.replace('127.0.0.1', wifiURL); //'http://192.168.3.10:3080'
+					} else {
+						isDebug = false;
+					}
+					dbMsg += "　,QR=" + urlStr;
+					$("#urlQR").html("");
+					$("#urlQR").qrcode({
+						width: 100, //横幅
+						height: 100, //高さ
+						text: urlStr
+					});
 				}
-			document.getElementById("scoreBrock").style.display="none";
-			// document.getElementById("useComp").style.display="none";
-			document.getElementById("editerAria").style.display="none";			 // 編集ツール表示
-			// document.getElementById("editerAria").style.display="inline-block";			 // 編集ツール表示
-			document.getElementById("dlog_bt").style.display="none";
-			document.getElementById("allclear").click();								//リロード時の消去
+				document.getElementById("scoreBrock").style.display = "none";
+				// document.getElementById("useComp").style.display="none";
+				document.getElementById("editerAria").style.display = "none"; // 編集ツール表示
+				// document.getElementById("editerAria").style.display="inline-block";			 // 編集ツール表示
+				document.getElementById("dlog_bt").style.display = "none";
+				document.getElementById("allclear").click(); //リロード時の消去
 
-			var hitarea = document.getElementById('hitarea');
-			if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
-				 isMobile=true;				//現在使用しているのはスマホ
-			// openWindow(urlStr,"myWindow");
-				// // if (hitarea.requestFullscreen) {
-				//   hitarea.requestFullscreen();
-				// // }
+				var hitarea = document.getElementById('hitarea');
+				if (ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod') > -1 || ua.indexOf('Android') > -1 || ua.indexOf('Mobile') > -1) {
+					isMobile = true; //現在使用しているのはスマホ
+					// openWindow(urlStr,"myWindow");
+					// // if (hitarea.requestFullscreen) {
+					//   hitarea.requestFullscreen();
+					// // }
+				}
+
+				var canvasRect = hitarea.getBoundingClientRect();
+				var canvasX = canvasRect.left + window.pageXOffset;
+				var canvasY = canvasRect.top + window.pageYOffset; //canvasRect.top = 110
+				dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
+				var canvasWidth = canvasRect.width;
+				var canvasHeight = canvasRect.height;
+				dbMsg += "[" + canvasWidth + " × " + canvasHeight + "]";
+				//  canvasHeight = canvasWidth*9/16;
+				// dbMsg += ">>" + canvasHeight + "]";
+				// document.getElementById('hitarea').style.height = canvasHeight;
+				if (isMobile) {
+					canvasHeight = canvasHeight - canvasY - 80; //課題；アドレスバーの高さ
+					dbMsg += ">height>" + canvasHeight;
+					canvasWidth = canvasHeight * 16 / 9;
+					dbMsg += ">width>" + canvasWidth;
+					hitarea.width = canvasWidth;
+					hitarea.height = canvasHeight;
+					dbMsg += "[" + canvasWidth + " × " + canvasHeight + "]";
+				}
+				if (!dbMsg) {
+					document.getElementById("footer").style.display = "none";
+				}
+				myLog(dbMsg)
+				mobileLog(dbMsg)
 			}
 
-			var canvasRect = hitarea.getBoundingClientRect();
-			var canvasX =canvasRect.left + window.pageXOffset;
-			var canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
-			dbMsg += ",canvas("+ canvasX + " , " + canvasY + ")";
-		 	var canvasWidth = canvasRect.width;
-			var canvasHeight = canvasRect.height;
-			dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
-			//  canvasHeight = canvasWidth*9/16;
-			// dbMsg += ">>" + canvasHeight + "]";
-			// document.getElementById('hitarea').style.height = canvasHeight;
-			if(isMobile){
-				canvasHeight = canvasHeight-canvasY-80;				//課題；アドレスバーの高さ
-				dbMsg += ">height>" + canvasHeight ;
-				canvasWidth = canvasHeight*16/9;
-				dbMsg += ">width>" + canvasWidth ;
-				hitarea.width = canvasWidth;
-				hitarea.height = canvasHeight;
-				dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
-			}
-			if(! dbMsg){
-				document.getElementById("footer").style.display="none";
-			}
-			myLog(dbMsg)
-			mobileLog(dbMsg)
-		}
-
-		socket.on('conect_start', function(data) {
-			var dbMsg = "[recive:conect_start]";
-			dbMsg += ",data="+data;
+			socket.on('conect_start', function(data) {
+				var dbMsg = "[recive:conect_start]";
+				dbMsg += ",data=" + data;
 				//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
-			// var portName = ':3080';//課題；ポート取得
-			// urlStr = urlStr.replace(portName, "/" +  data +　portName);
-			var UrlPparam =  "?room=" +  retNowStr()+"?sessid="+  data;// "?sessid="+  data.socket.transport.sessid+"?transport="+socket.socket.transport.name;		// "?sesion="
-			urlStr += UrlPparam;	//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
-			location.href=urlStr;										//再起動
-			myLog(dbMsg);
-		});
+				// var portName = ':3080';//課題；ポート取得
+				// urlStr = urlStr.replace(portName, "/" +  data +　portName);
+				var UrlPparam = "?room=" + retNowStr() + "?sessid=" + data; // "?sessid="+  data.socket.transport.sessid+"?transport="+socket.socket.transport.name;		// "?sesion="
+				urlStr += UrlPparam; //		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
+				location.href = urlStr; //再起動
+				myLog(dbMsg);
+			});
 
 
-		document.getElementById("pad_bt").onclick = function () {
-			var dbMsg = "[pad_bt]";
-			var optionVal = 'location=no,toolbar=no,menubar=no';
-			window.open(urlStr,"操作画面" , optionVal);
-		}
+			document.getElementById("pad_bt").onclick = function() {
+				var dbMsg = "[pad_bt]";
+				var optionVal = 'location=no,toolbar=no,menubar=no';
+				window.open(urlStr, "操作画面", optionVal);
+			}
 
-		document.getElementById("about_bt").onclick = function () {
-			var dbMsg = "[about_bt]";
-			var optionVal = 'location=no,toolbar=no,menubar=no';
-			window.open('/about',"このページの説明" );
-		}
-
-
-		// function openWindow(url){
-		//   info = 'toolbar=no,location=no,directories=no,menubar=no' ;//+		   ',status=no,scrollbars=yes,left=0,top=0,resizable=yes,width=1014,height=740,title=no'
-		//   var window1 = window.open(url,info);
-		//   window1.moveTo(0, 0);
-		//   window.opener = self;
-		//   window.close();
-		// }
+			document.getElementById("about_bt").onclick = function() {
+				var dbMsg = "[about_bt]";
+				var optionVal = 'location=no,toolbar=no,menubar=no';
+				window.open('/about', "このページの説明");
+			}
 
 
-	</script>
+			// function openWindow(url){
+			//   info = 'toolbar=no,location=no,directories=no,menubar=no' ;//+		   ',status=no,scrollbars=yes,left=0,top=0,resizable=yes,width=1014,height=740,title=no'
+			//   var window1 = window.open(url,info);
+			//   window1.moveTo(0, 0);
+			//   window.opener = self;
+			//   window.close();
+			// }
+
+		</script>
 	</body>
+
 </html>
 
 
@@ -419,24 +411,15 @@ https://github.com/socketio/socket.io/tree/master/examples/whiteboard
 
 /**
 https://socket.io/docs/server-api/
+
 個別セッション
+https://qiita.com/akkun_choi/items/15af5e48cfd5e969a12a
 socket.ioで特定ユーザーにemitしたい時                http://nazomikan.hateblo.jp/entry/2014/06/05/031548
 Socket.ioを使ったチャットルーム ロジックの実装        https://qiita.com/ynunokawa/items/564757fe6dbe43d172f8
 Socket.ioでチャットルームを実現する方法               https://www.xmisao.com/2013/06/13/socketio-rooms.html
+
+ホワイトボード
 socket.IOとHTML5 Canvasを用いた手書きチャットアプリを作ってみた      https://www.yoheim.net/blog.php?q=20120515
-8/2
-Socket.IOのネームスペース                           https://www.usagi1975.com/23sep1504141/
-を参考に
-index.js
-io.of("/room1").on("connection", function(socket){
-    socket.on("message", function(data){
-        socket.emit("message", "[room1]" + data.value);
-        socket.broadcast.emit("message", "[room1]" + data.value);
-    });
-
-   ここで
-   var room1 = io.connect("http://localhost:3000/room1");
-
 WebSocket(Socket.IO) で受け取った Data URL 形式の画像をダウンロードさせる    https://gist.github.com/hakobera/975762
 */
 

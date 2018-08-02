@@ -4,7 +4,8 @@
 	var isDebug =true;
 	var isSmaphoDebug =false;
 	var socket = io();
-	var room;				// = io.connect("http://localhost:3000/room1");
+	var roomVal = "20180101010101";
+	var room =  socket.connect("127.0.0.1:3080/" + roomVal);				// = io.connect("http://localhost:3000/room1");
 	var ua =navigator.userAgent;
 	var isMobile=false;				//現在使用しているのはスマホ
 	var srcName="";																	//トレース元のファイル名
@@ -65,6 +66,45 @@
 	var originPixcel;
 
 
+	function myLog(dbMsg) {
+		if(isDebug){
+			console.log(dbMsg);
+			eventComent.innerHTML = dbMsg;
+		}
+	}
+
+	function mobileLog(dbMsg) {
+		if(isMobile & isSmaphoDebug){
+			alert(dbMsg);
+		}
+	}
+
+/**
+* URLのパラメータを取得
+* http://www-creators.com/archives/4463
+*/
+	function getUrlParam(name, url) {
+		var dbMsg = "[getUrlParam]";
+		var results="";
+		 dbMsg += "name=" + name;
+		 dbMsg += "を" + url + " から取得";
+	    if (!url) url = window.location.href;
+	    name = name.replace(/[\[\]]/g, "\\$&");
+		var params= url.split('?');
+		dbMsg += "," + params.length + "件";
+		for(var param of params){
+			dbMsg += ",param=" + param;
+			var rStrs = param.split('=');
+			if(rStrs[0] == name){
+				results = rStrs[1] ;
+				break;
+			}
+		}
+		dbMsg += ">>results>>" + results;
+		// myLog(dbMsg);
+		return results;
+	}
+
 	canvas.addEventListener('mousedown', onMouseDown, false);
 	canvas.addEventListener('mouseup', onMouseUp, false);
 	// canvas.addEventListener('mouseout', onMouseUp, false);
@@ -87,9 +127,18 @@
 			isDebug =false;
 			isSmaphoDebug =false;
 		}
+		var roomPostion = urlStr.indexOf('room');
+		dbMsg += "　,room:Postion=" + roomPostion + "/" + urlStr.length;
+		if (-1 < roomPostion) { //セッションコード済みなら
+			roomVal = getUrlParam("room", urlStr);
+			var params= urlStr.split('?');
+			var setStr = params[0] + roomVal;
+			dbMsg += ">>" + setStr;
+		 	room = io.connect(setStr);
+		}
 
 		if (window.File && window.FileReader && window.FileList && window.Blob) {		//ファイル読込みが可能な環境なら
-			dbMsg += ",ファイル読込み可能";
+			dbMsg += " ,ファイル読込み可能";
 			jobSelect.options[4].disabled = false;										//ファイルから読み込み　を有効化
 			document.getElementById('files').addEventListener('change', handleFileSelect, false);
 		} else {
@@ -246,32 +295,38 @@
 	}
 
 	colorPalet.onchange = function () {					 // カラーパレットからの移し替え
-		var dbMsg = "colorPalet;";
+		var dbMsg = "[colorPalet]";
+		dbMsg += ",room=" + roomVal;
 		current.color =this.value;			 // current.color = e.target.className.split(' ')[1];
 		dbMsg += ",selectColor="+ current.color;
 		socket.emit('changeColor', {
+			room : "/" + roomVal ,
 			color:current.color
 		});
 		myLog(dbMsg);
 	}
 
 	lineWidthSelect.onchange = function () {
-		var dbMsg = "lineWidthSelect;";
+		var dbMsg = "[lineWidthSelect]";
+		dbMsg += ",room=" + roomVal;
 		var selectWidth = this.value
 		currentWidth =  selectWidth;
 		dbMsg += ",selectWidth="+ currentWidth;
 		socket.emit('changeLineWidth', {
+			room : "/" + roomVal ,
 			width:currentWidth
 		});
 		myLog(dbMsg);
 	}
 
 	lineCapSelect.onchange = function () {				//先端形状
-		dbMsg = "lineCapSelect;";
+		dbMsg = "[lineCapSelect]";
+		dbMsg += ",room=" + roomVal;
 		var lineCap = this.value
 		currentLineCap =  lineCap;
 		dbMsg += ",lineCap="+ currentLineCap;
 		socket.emit('changeLineCap', {
+			room : "/" + roomVal ,
 			lineCap:currentLineCap
 		});
 		myLog(dbMsg);
@@ -279,10 +334,12 @@
 
 	document.getElementById('mirrorCB').onchange = function () {				//先端形状
 		var dbMsg = "[mirrorCB]";
+		dbMsg += ",room=" + roomVal;
 		isMirror = document.getElementById('mirrorCB').checked;
 		dbMsg += ",isMirror="+isMirror;
 		myLog(dbMsg);
 		socket.emit('setmirror', {
+			room : "/" + roomVal ,
 			bool:isMirror
 		});
 	}
@@ -292,6 +349,7 @@
 */
 	document.getElementById('autojudgeCB').onchange = function () {
 		var dbMsg = "[autojudgeCB]";
+		dbMsg += ",room=" + roomVal;
 		isAutoJudge = document.getElementById('autojudgeCB').checked;
 		dbMsg += ",isAutoJudge="+isAutoJudge;
 		if(isAutoJudge){
@@ -301,12 +359,14 @@
 		}
 		myLog(dbMsg);
 		socket.emit('setautojudge', {
+			room : "/" + roomVal ,
 			bool:isAutoJudge
 		});
 	}
 
 	document.getElementById('directionSelect').onchange = function () {				//回転方向
 		var dbMsg = "[typeSelect]";
+		dbMsg += ",room=" + roomVal;
 		directionVal = this.value
 		dbMsg += ",回転方向="+ directionVal;
 		// socket.emit('changeLineCap', currentLineCap);
@@ -314,12 +374,17 @@
 	}
 
 	document.getElementById("allclear").onclick = function() {
+		var dbMsg = "[allclear]";
+		dbMsg += ",room=" + roomVal;
 		allClear();
-		socket.emit('allclear', {});
+		myLog(dbMsg);
+		socket.emit('allclear', {
+			room:"/"+roomVal
+		});
 	}
 
 //socket.ioイベント受信////////////////////////////////////////////////////////////////////////////
-	socket.on('drawing', function(data) {
+	socket.on('drawing', function(data) {				//socket.on('drawing', function(data)
 		var dbMsg = "recive:drawing";
 		onDrawingEvent(data);
 		myLog(dbMsg);
@@ -440,7 +505,7 @@
 			current.y = eY;
 			dbMsg += ">>(" + current.x + " , " + current.y + ")";
 		}
-		myLog(dbMsg);
+		// myLog(dbMsg);
 	}
 
 	function onMouseUp(e) {
@@ -462,8 +527,11 @@
 			drawLine(currentX, currentY, current.x, current.y, current.color , currentWidth , currentLineCap , 2 , true);
 			dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
 			if(isComp && isAutoJudge){			//比較中
+				dbMsg += ",room=" + roomVal;
 				useComp.click();
-				socket.emit('drawend', {});
+				socket.emit('drawend', {
+					room:"/"+roomVal
+				});
 			}
 
 		}
@@ -540,7 +608,10 @@
 		}
 		dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
 		if(isComp && isAutoJudge){			//比較中
-			socket.emit('drawend', {});
+			dbMsg += ",room=" + roomVal;
+			socket.emit('drawend', {
+				room:"/"+roomVal
+			});
 		}
 		myLog(dbMsg);
 		// mobileLog(dbMsg);
@@ -576,7 +647,10 @@
 				dbMsg += ",isComp="+isComp;
 				// mobileLog(dbMsg);
 				if(isComp){			//比較中
-					socket.emit('drawend', {});
+					dbMsg += ",room=" + roomVal;
+					socket.emit('drawend', {
+						room:"/"+roomVal
+					});
 				}
 				break;
 		}
@@ -673,7 +747,9 @@
 		if (emit) {
 			var w = canvas.width;
 			var h = canvas.height;
+			dbMsg += ",room=" + roomVal;
 			socket.emit('drawing', {
+				room : "/" + roomVal ,
 				x0: x0 / w,
 				y0: y0 / h,
 				x1: x1 / w,
@@ -996,7 +1072,9 @@
 			dbMsg += ">>"+ currentWidth;
 			lineWidthSelect.value=currentWidth;
 			dbMsg += "；Y軸上"+widthrray[0].value+"個所";
+			dbMsg += ",room=" + roomVal;
 			socket.emit('changeLineWidth', {
+				room : "/" + roomVal ,
 				width:currentWidth
 			});
 		}
@@ -1067,7 +1145,9 @@
 		dbMsg += ">>"+ current.color+ "," +currentWidth+ "," +currentLineCap;
 		// dbMsg +=",emit=" + emit;
 		// if (emit) {
+		dbMsg += ",room=" + roomVal;
 			socket.emit('sendcomp', {
+				room : "/" + roomVal ,
 				color: compColor,
 				width: currentWidth,
 				lineCap:currentLineCap
@@ -1386,23 +1466,8 @@
 	// // // // });
 	// myLog(dbMsg);
 
-	function myLog(dbMsg) {
-		if(isDebug){
-			console.log(dbMsg);
-			eventComent.innerHTML = dbMsg;
-		}
-	}
-
-	function mobileLog(dbMsg) {
-		if(isMobile & isSmaphoDebug){
-			alert(dbMsg);
-		}
-	}
-
  }
 )();
-
-
 
 
 //Canvas とピクセル操作	https://developer.mozilla.org/ja/docs/Web/Guide/HTML/Canvas_tutorial/Pixel_manipulation_with_canvas

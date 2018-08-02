@@ -88,9 +88,11 @@ IPv4 パブリック IP		18.182.237.90
 		$ kill 25033
 
 /////////	xamppでのテスト	/////////////////
-	①XAMMPで
+	①XAMMPを起動して
+	①	シェルから　node index.js　でサーバプログラムを起動
+		node C:\work\xampp\htdocs\recoverry_brain\rb\index.js
+			node H:\develop\xampp\htdocs\repireBrain\rb\index.js
 
-	①	シェルで
 		cd C:\work\xampp\htdocs\recoverry_brain\rb
 			自宅では cd /d H:\  を付けて
 			cd /d H:\develop\xampp\htdocs\repireBrain\rb
@@ -98,8 +100,6 @@ IPv4 パブリック IP		18.182.237.90
 	②　node index.js
 	　start /b cmd /c & node index.js
 	start /b cmd /c & node C:\work\xampp\htdocs\recoverry_brain\rb\index.js
-		node H:\develop\xampp\htdocs\repireBrain\rb\index.js
-
 
 	Start-Job { & node index.js }
 	確認：デーモン化して起動
