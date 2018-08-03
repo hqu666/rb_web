@@ -4,8 +4,6 @@
 	var isDebug =true;
 	var isSmaphoDebug =false;
 	var socket = io();
-	var roomVal = "20180101010101";
-	var room =  socket.connect("127.0.0.1:3080/" + roomVal);				// = io.connect("http://localhost:3000/room1");
 	var ua =navigator.userAgent;
 	var isMobile=false;				//現在使用しているのはスマホ
 	var srcName="";																	//トレース元のファイル名
@@ -78,7 +76,76 @@
 			alert(dbMsg);
 		}
 	}
+	/**
+	 *2桁にして返す
+	 */
+	function towFigures(iVal) {
+		var dbMsg = "[towFigures]"
+		dbMsg += ",iVal=" + iVal;
+		var retStr = "";
+		if (iVal < 10) {
+			retStr = "0" + iVal;
+		} else {
+			retStr = "" + iVal;
+		}
+		dbMsg += ",retStr=" + retStr;
+		myLog(dbMsg);
+		return retStr;
+	}
 
+	function retNowStr() {
+		var dbMsg = "[retNowStr]";
+		var s_time = ""; // "?sesion="
+		var now = new Date();
+		var rInt = "" + now.getYear();
+		if ("1" == rInt.substring(0, 1)) {
+			s_time += "20" + rInt.substring(1, rInt.length);
+		}
+		s_time += "" + towFigures((now.getMonth() + 1)) + towFigures(now.getDate() + 0) + towFigures(now.getHours()) +
+			towFigures(now.getMinutes()) + towFigures(now.getSeconds()); // "?sesion="
+		dbMsg += "　,s_time=" + s_time; //,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10
+		return s_time;
+	}
+	var roomVal = retNowStr();
+	var room =  socket.connect("127.0.0.1:3080/" + roomVal);				// = io.connect("http://localhost:3000/room1");
+	/**
+	*連想配列の既存位置検索
+	*/
+	function getArryPosition(fArray ,fal ){
+	    var dbMsg = "[getArryPosition]" ;
+	     dbMsg += "fArray=" + fArray.length +"件";
+	     dbMsg += "で" + fal +"を検索";
+	    var sPosition = -1;
+	    for(var i=0 ;i< fArray.length-1;i++){
+	        if( fArray[i].name == fal){
+	            sPosition = i;
+	            break;
+	        }
+	    }
+	    dbMsg += ">>" + sPosition +"件目";
+	       // myLog(dbMsg);
+	    return sPosition;
+	}
+	/**
+	*room配列をsocket.idで検索し、無ければ追加
+	*/
+	function getArrayVal(fArray,fal ,rVal ){
+	    var dbMsg = "[getArrayVal]fal=" + fal;
+	    dbMsg += ",roomVal=" + rVal;
+	    var sPosition = getArryPosition(fArray ,fal );
+	    dbMsg += "(" + sPosition +")";
+	    if(-1 < sPosition){
+	        rVal = fArray[sPosition].value;			//rgb2hex("rgb("+ oRed + ", " + oGreen + ", " + oGreen +")");
+	        dbMsg += "既存";
+	    } else if(rVal != ""){
+	        fArray[fArray.length]={ name:fal, value:rVal };		//カウント付きの連想配列にも要素追加
+	        dbMsg += ">追加" + fArray.length + "件目" ;
+	    }else{
+	        dbMsg += ">skip" ;
+	    }
+	    // myLog(dbMsg);
+	    return rVal;
+	}
 /**
 * URLのパラメータを取得
 * http://www-creators.com/archives/4463
@@ -243,7 +310,7 @@
 		scoreStart();
 		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 
-		jobSelect.value = 'comp';
+		jobSelect.value = 'none';											//none		comp
 	}
 
 	/**
@@ -263,7 +330,7 @@
 		scoreDrow();
 		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 
-		jobSelect.value = 'comp';
+		jobSelect.value = 'none';			//none		comp
 	}
 
 //編集ツール//////////////////////////////////////////////////////////////////
@@ -895,7 +962,7 @@
 			canvasSubstitution(canvas ,directionVal);
 			originPixcel = new Array();				//
 			stereoTypeCheck(canvas)
-			jobSelect.value = 'comp';
+			jobSelect.value = 'none';					//none		comp
 			// scoreStart();
 			// document.getElementById('header').style.display = "block";
 	    }

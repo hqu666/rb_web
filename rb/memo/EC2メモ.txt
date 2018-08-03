@@ -105,10 +105,10 @@ IPv4 パブリック IP		18.182.237.90
 	確認：デーモン化して起動
 			sudo forever start node index.js
 			node index.js			//	node http-server-simple.js
-
-
-
 	③ブラウザで
+
+Microsoft Edgeでlocalhostが動かない場合、はコマンドプロンプト（管理者）で
+	CheckNetIsolation LoopbackExempt -a -n="Microsoft.MicrosoftEdge_8wekyb3d8bbwe"
 
 
 ///	web管理	FileZillaで操作 ////////////////////////////////////////////
