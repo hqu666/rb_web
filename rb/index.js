@@ -6,8 +6,11 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);                                         //
 const port = process.env.PORT || 3080;
 dbMsg += ",http="+ http+",io="+ io+",port="+ port;
-var roomVal;
+// var roomVal;
 var roomArray = new Array();
+var clientID =  0;
+app.use(express.static(__dirname + '/public'));                                 //コンテンツの在処
+var store = {};
 
 var isDebug =true;                                                              //console出力
 function myLog(dbMsg) {
@@ -16,24 +19,44 @@ function myLog(dbMsg) {
     }
 }
 
-app.use(express.static(__dirname + '/public'));                                 //コンテンツの在処
-var store = {};
-
+/**
+*連想配列の既存位置検索
+*/
+function getArryPosition(fArray ,fal ){
+    var dbMsg = "[getArryPosition]" ;
+     dbMsg += "fArray=" + fArray.length +"件";
+     dbMsg += "で" + fal +"を検索";
+    var sPosition = -1;
+    for(var i=0 ;i< fArray.length-1;i++){
+        if( roomArray[i].name == fal){
+            sPosition = i;
+            break;
+        }
+    }
+    dbMsg += ">>" + sPosition +"件目";
+       // myLog(dbMsg);
+    return sPosition;
+}
 /**
 *room配列をsocket.idで検索し、無ければ追加
 */
-function getRoomVal(sid ,roomVal ){
-    var dbMsg = "[getRoomVal]socket=" + sid;
-    dbMsg += ",roomVal=" + roomVal;
-  if(-1 < roomArray.indexOf(sid)){
-        roomVal = roomArray[roomArray.indexOf(sid)].value;			//rgb2hex("rgb("+ oRed + ", " + oGreen + ", " + oGreen +")");
-        dbMsg += ",roomVal=" + roomVal;
-    } else if(roomVal){
-        roomArray[roomArray.length]={ name:sid, value:roomVal };		//カウント付きの連想配列にも要素追加
-        dbMsg += ",roomArray=" + roomArray.length + "件目追加" ;
+function getRoomVal(sID ,rVal ){
+    var dbMsg = "[getRoomVal]socket=" + sID;
+    dbMsg += ",roomVal=" + rVal;
+    var sPosition = getArryPosition(roomArray ,sID );
+    dbMsg += "(" + sPosition +")";
+    if(-1 < sPosition){
+        // if(-1 < roomArray.indexOf(sid)){
+        rVal = roomArray[sPosition].value;			//rgb2hex("rgb("+ oRed + ", " + oGreen + ", " + oGreen +")");
+        dbMsg += "既存";
+    } else if(rVal != ""){
+        roomArray[roomArray.length]={ name:sID, value:rVal };		//カウント付きの連想配列にも要素追加
+        dbMsg += ">追加" + roomArray.length + "件目" ;
+    }else{
+        dbMsg += ">skip" ;
     }
-    myLog(dbMsg);
-    return roomVal;
+    // myLog(dbMsg);
+    return rVal;
 }
 /**
 *各種接続処理
@@ -42,81 +65,111 @@ var socketId;
 function onConnection(socket){
     var dbMsg = "[onConnection]socket=" + socket.id;          //ukTPEyxXW_HOx_eoAAAAなど
     socketId=socket.id;
-   roomVal = getRoomVal(socket.id ,"" );
-    // if(-1 < roomArray.indexOf(socket.id)){
-    //     roomVal = roomArray[roomArray.indexOf(socket.id)].value;			//rgb2hex("rgb("+ oRed + ", " + oGreen + ", " + oGreen +")");
-    // }
+    var roomVal = getRoomVal(socket.id ,"" );
     dbMsg += ",roomVal=" + roomVal;
-
-     // var rRoom = io.sockets.manager.roomClients[socket.id];
-    // var dbMsg = ",room=" + rRoom;          //ukTPEyxXW_HOx_eoAAAAなど
-    // socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));                 //socket.on(
-    socket.on('drawing', (data) => {                          //room　connect？
-        var dbMsg = "[drawing]room=" + data.room;
-        roomVal = getRoomVal(socketId ,data.room);
-        dbMsg += ",roomVal=" + roomVal + "追加";
-           // myLog(dbMsg);
-        // var chat = io.of(data.room);
-        // chat.emit('drawing', data);
-        // socket.to(data.room).json.emit('drawing', data);
-        // io.sockets.in(data.room+"").emit('drawing', data);
-        // socket.broadcast.to(data.room).emit('drawing', data);
-        socket.broadcast.emit('drawing', data);
-    });
-    // socket.on('sendcomp', (data) => socket.broadcast.emit('sendcomp', data));
-    socket.on('sendcomp', (data) => {                          //room　connect？
-        var dbMsg = "[sendcomp]room=" + data.room;
-        myLog(dbMsg);
-        io.sockets.in(data.room).emit('sendcomp', data);
-    });
-       // socket.on('drawend', (data) => socket.broadcast.emit('drawend', data));
-   socket.on('drawend', (data) => {                          //room　connect？
-       var dbMsg = "[drawend]room=" + data.room;
-       myLog(dbMsg);
-       io.sockets.in(data.room).emit('drawend', data);
-   });
-    // socket.on('changeColor', (data) => socket.broadcast.emit('changeColor', data));           //線の色
-    socket.on('changeColor', (data) => {                          //room　connect？
-        var dbMsg = "[changeColor]room=" + data.room;
-        myLog(dbMsg);
-        socket.broadcast.to(data.room).emit('changeColor', data);
-    });
-    // socket.on('changeLineWidth', (data) => socket.broadcast.emit('changeLineWidth', data));   //線の太さ
-    socket.on('changeLineWidth', (data) => {                          //room　connect？
-        var dbMsg = "[changeLineWidth]room=" + data.room;
-        myLog(dbMsg);
-        socket.broadcast.to(data.room).emit('changeLineWidth', data);
-    });
-    // socket.on('changeLineCap', (data) => socket.broadcast.emit('changeLineCap', data));   //先端形状
-    socket.on('changeLineCap', (data) => {                          //room　connect？
-        var dbMsg = "[changeLineCap]room=" + data.room;
-        myLog(dbMsg);
-        socket.broadcast.to(data.room).emit('changeLineCap', data);
-    });
-    // socket.on('setmirror', (data) => socket.broadcast.emit('setmirror', data));
-    socket.on('setmirror', (data) => {                          //room　connect？
-        var dbMsg = "[setmirror]room=" + data.room;
-        myLog(dbMsg);
-        socket.broadcast.to(data.room).emit('setmirror', data);
-    });
-    // socket.on('setautojudge', (data) => socket.broadcast.emit('setautojudge', data));
-    socket.on('setautojudge', (data) => {                          //room　connect？
-        var dbMsg = "[setautojudge]room=" + data.room;
-        myLog(dbMsg);
-        socket.broadcast.to(data.room).emit('setautojudge', data);
-    });
-    // socket.on('allclear', (data) => socket.broadcast.emit('allclear', data));		       		//全消去
-    socket.on('allclear', (data) => {                          //room　connect？
-        dbMsg += "[allclear]room=" + data.room;
-        roomVal = getRoomVal(socketId ,data.room);
-        dbMsg += ",roomVal=" + roomVal + "追加";
-     myLog(dbMsg);
-        // var chat = io.of(data.room);
-        // chat.emit('allclear', data);
-        // socket.to(data.room).json.emit('allclear', data);
-        // io.sockets.in(data.room+"").emit('allclear', data)
-        socket.broadcast.emit('allclear', data);
-    });
+    // if(roomVal != ""){
+    //     dbMsg += "既存";
+    //     socket.join(roomVal);
+    //     io.of(roomVal).on('drawing', function (data) {
+    //          dbMsg += "[drawing]";
+    //         // myLog(dbMsg);
+    //         // io.of(roomVal).emit('drawing', data);
+    //         dbMsg ="";
+    //         socket.broadcast.emit('drawing', data);
+    //     });
+    //     io.of(roomVal).on('allclear', function (data) {
+    //          dbMsg += "[allclear]";
+    //         myLog(dbMsg);
+    //         // io.of(roomVal).emit('allclear', data);
+    //         socket.broadcast.emit('allclear', data);
+    //         dbMsg ="";
+    //     });
+    // }else{
+        dbMsg += roomArray.length+ "件中room不明";
+        // socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));                 //socket.on(
+        socket.on('drawing', (data) => {                          //room　connect？
+            dbMsg += "[socket.drawing]" + socket.id+",room=" + data.room;
+            var roomVal = getRoomVal(socket.id ,data.room);
+            dbMsg += ",roomVal=" + roomVal;
+            socket.join(roomVal)
+            io.sockets.in(roomVal).emit('drawing', data);                        //③指定のルームに属するクライアントに送る
+            // socket.broadcast.to(roomVal).emit('drawing', data);          //①emitを行ったソケット以外の、指定のルームに属するクライアントに送る
+            // socket.broadcast.emit('drawing', data);                          //②emitしたソケット以外の全クライアントに送る
+            // io.sockets.emit('drawing', data);                                //④全クライアントに送る
+            // var room = io.of(roomVal); // roomもまたServerインスタンスになる
+            // room.emit('drawing', data);
+            dbMsg ="";
+        });
+        // socket.on('sendcomp', (data) => socket.broadcast.emit('sendcomp', data));
+        socket.on('sendcomp', (data) => {                          //room　connect？
+            var dbMsg = "[sendcomp]room=" + data.room;
+            var roomVal = data.room;
+            dbMsg += ",roomVal=" + roomVal;
+            socket.join(roomVal)
+            io.sockets.in(roomVal).emit('sendcomp', data);                        //③指定のルームに属するクライアントに送る
+        });
+           // socket.on('drawend', (data) => socket.broadcast.emit('drawend', data));
+       socket.on('drawend', (data) => {                          //room　connect？
+           var dbMsg = "[drawend]room=" + data.room;
+           var roomVal = data.room;
+           dbMsg += ",roomVal=" + roomVal;
+           socket.join(roomVal)
+           io.sockets.in(roomVal).emit('drawend', data);                        //③指定のルームに属するクライアントに送る
+       });
+        socket.on('changeColor', (data) => {                          //room　connect？
+            var dbMsg = "[changeColor]room=" + data.room;
+            var roomVal = data.room;
+            dbMsg += ",roomVal=" + roomVal;
+            socket.join(roomVal)
+            io.sockets.in(roomVal).emit('changeColor', data);                        //③指定のルームに属するクライアントに送る
+        });
+        socket.on('changeLineWidth', (data) => {                          //room　connect？
+            var dbMsg = "[changeLineWidth]room=" + data.room;
+            var roomVal = data.room;
+            dbMsg += ",roomVal=" + roomVal;
+            socket.join(roomVal)
+            io.sockets.in(roomVal).emit('changeLineWidth', data);                        //③指定のルームに属するクライアントに送る
+        });
+        socket.on('changeLineCap', (data) => {                          //room　connect？
+            var dbMsg = "[changeLineCap]room=" + data.room;
+            var roomVal =data.room;
+            dbMsg += ",roomVal=" + roomVal;
+            socket.join(roomVal)
+            io.sockets.in(roomVal).emit('changeLineCap', data);                        //③指定のルームに属するクライアントに送る
+        });
+        // socket.on('setmirror', (data) => socket.broadcast.emit('setmirror', data));
+        socket.on('setmirror', (data) => {                          //room　connect？
+            var dbMsg = "[setmirror]room=" + data.room;
+            var roomVal = data.room;
+            dbMsg += ",roomVal=" + roomVal;
+            socket.join(roomVal)
+            io.sockets.in(roomVal).emit('setmirror', data);                        //③指定のルームに属するクライアントに送る
+        });
+        // socket.on('setautojudge', (data) => socket.broadcast.emit('setautojudge', data));
+        socket.on('setautojudge', (data) => {                          //room　connect？
+            var dbMsg = "[setautojudge]room=" + data.room;
+            var roomVal = data.room;
+            dbMsg += ",roomVal=" + roomVal;
+            socket.join(roomVal)
+            io.sockets.in(roomVal).emit('setautojudge', data);                        //③指定のルームに属するクライアントに送る
+        });
+        // socket.on('allclear', (data) => socket.broadcast.emit('allclear', data));		       		//全消去
+        socket.on('allclear', (data) => {                          //room　connect？
+            dbMsg += "[socket.allclear]" + socket.id+",room=" + data.room;
+            var roomVal =data.room;
+            dbMsg += ",roomVal=" + roomVal;
+            myLog(dbMsg);
+            socket.join(roomVal)
+            io.sockets.in(roomVal).emit('allclear', data);                        //③指定のルームに属するクライアントに送る
+        // socket.broadcast.to(roomVal).emit('allclear', data);          //①emitを行ったソケット以外の、指定のルームに属するクライアントに送る
+            // socket.broadcast.emit('allclear', data);                          //②emitしたソケット以外の全クライアントに送る
+            // io.sockets.emit('allclear', data);                                //④全クライアントに送る
+            // var room = io.of(roomVal); // roomもまたServerインスタンスになる
+            // room.emit('allclear', data);
+        });
+        // dbMsg += "(" + roomArray.length + ")"+ "追加";
+        // dbMsg ="";
+    // }
 
     socket.on('connection', (socket) => {                          //room　connect？
         var dbMsg = "[connection]socket=" + socket.id;          //ukTPEyxXW_HOx_eoAAAAなど
@@ -126,29 +179,36 @@ function onConnection(socket){
     socket.on('conect_start', (config) => {             //game-start
         var dbMsg = "[conect_start]nickname=" + config.nickname;                //タイムスタンプ
         dbMsg += ",socket=" + socket.id;
-      roomVal = "/" + config.nickname;
-        // socket.join(config.nickname, () => {
-        //   let rooms = Object.keys(socket.rooms);
-        //   console.log(rooms); // [ <socket.id>, 'room 237' ]=[ 'F95r51aMRyUHIeo8AAAI', '20180802175106' ]
-        // });
-        roomArray[roomArray.length]={ name:socket.id, value:roomVal };		//カウント付きの連想配列にも要素追加
-        dbMsg += ",roomArray=" + roomArray.length + "件目";
-      var urlStr = config.href;                                               //この時点のhref
+        var roomVal = "/" + config.nickname;                                        //
+        roomVal = getRoomVal(socket.id ,roomVal);
+        dbMsg += ",roomVal=" + roomVal;
+        // socket.join(roomVal)
+        var urlStr = config.href;                                               //この時点のhref
         dbMsg += ",href=" + urlStr;
         // room= io.connect(urlStr);
         // room = socket.connect(urlStr + config.nickname);
         if(-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')){ //xamppでのテストで無ければ
             isDebug =false;                                                     //デバッグログを吐かせない
         }
-
-
         socket.emit('conect_start', config.nickname);
         myLog(dbMsg);
     });
 
     socket.on('disconnect', () => {
         var dbMsg = "[disconnect]" ;
-        dbMsg += ",socket=" + socket.id;
+        var sID =  socket.id;
+        dbMsg += ",socket=" + sID;
+        dbMsg += ",roomArray=" + Object.keys(roomArray).length + "件" ;
+        var sPosition = getArryPosition(roomArray ,sID );
+        dbMsg += ",index=" + sPosition;
+        if(-1 < sPosition){
+            dbMsg += "," +roomArray[sPosition].value;
+            // delete roomArray[sPosition];
+            delete roomArray[sID];
+            dbMsg += ">削除後は" +  Object.keys(roomArray).length + "件" ;
+        }else{
+            dbMsg += ">削除無し";
+        }
         myLog(dbMsg);
     });
     myLog(dbMsg);

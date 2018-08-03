@@ -54,7 +54,7 @@
 	colorPalet.value=orgColor;
 	lineWidthSelect.value= 10;				//currentWidth;
 	currentWidth =  lineWidthSelect.value;
-	currentLineCap =  "round";
+	// currentLineCap =  "round";
 
 	texeOptions.style.display="none";
 	var drawing = false;
@@ -320,7 +320,7 @@
 	}
 
 	lineCapSelect.onchange = function () {				//先端形状
-		dbMsg = "[lineCapSelect]";
+		var dbMsg = "[lineCapSelect]";
 		dbMsg += ",room=" + roomVal;
 		var lineCap = this.value
 		currentLineCap =  lineCap;
@@ -369,7 +369,6 @@
 		dbMsg += ",room=" + roomVal;
 		directionVal = this.value
 		dbMsg += ",回転方向="+ directionVal;
-		// socket.emit('changeLineCap', currentLineCap);
 		myLog(dbMsg);
 	}
 
@@ -528,7 +527,6 @@
 			dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
 			if(isComp && isAutoJudge){			//比較中
 				dbMsg += ",room=" + roomVal;
-				useComp.click();
 				socket.emit('drawend', {
 					room:"/"+roomVal
 				});
@@ -748,7 +746,7 @@
 			var w = canvas.width;
 			var h = canvas.height;
 			dbMsg += ",room=" + roomVal;
-			socket.emit('drawing', {
+			socket.emit('drawing', {						//socket.emit('drawing', {
 				room : "/" + roomVal ,
 				x0: x0 / w,
 				y0: y0 / h,
