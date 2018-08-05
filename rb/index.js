@@ -6,11 +6,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);                                         //
 const port = process.env.PORT || 3080;
 dbMsg += ",http="+ http+",io="+ io+",port="+ port;
-// var roomVal;
-// var roomArray = new Array();
-// var clientID =  0;
 app.use(express.static(__dirname + '/public'));                                 //コンテンツの在処
-var store = {};
 
 var isDebug =true;                                                              //console出力
 function myLog(dbMsg) {
@@ -21,7 +17,6 @@ function myLog(dbMsg) {
 
 
 /**
-*各種接続処理
 */
 var socketId;
 function onConnection(socket){
@@ -82,7 +77,14 @@ function onConnection(socket){
         socket.join(roomVal)
         io.sockets.in(roomVal).emit('setmirror', data);                        //③指定のルームに属するクライアントに送る
     });
-    socket.on('setautojudge', (data) => {                          //room　connect？
+    socket.on('setmirror_h', (data) => {                          //room　connect？
+        var dbMsg = "[setmirror_h]room=" + data.room;
+        var roomVal = data.room;
+        dbMsg += ",roomVal=" + roomVal;
+        socket.join(roomVal)
+        io.sockets.in(roomVal).emit('setmirror_h', data);                        //③指定のルームに属するクライアントに送る
+    });
+   socket.on('setautojudge', (data) => {                          //room　connect？
         var dbMsg = "[setautojudge]room=" + data.room;
         var roomVal = data.room;
         dbMsg += ",roomVal=" + roomVal;
@@ -129,10 +131,10 @@ function onConnection(socket){
 io.on('connection', onConnection);          //onConnectionのソースを送る
 //urlの取得
 // http.listen(port, () => console.log('EC2>>> ec2-52-197-173-40.ap-northeast-1.compute.amazonaws.com:' + port));
-//☆ここで    var urlStr = location.href;　　は取得できない
-// var now = new Date();
-// var s_time = "" + now.getYear() +(now.getMonth()+1)+now.getDate()+now.getHours()+now.getMinutes()+now.getSeconds();		// "?sesion="
-// dbMsg += "　,s_time="+s_time;			//,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10
+// var urlinfo = require('url').parse( request.url , true );
+// console.log( urlinfo );
+// var urlStr = req.protocol + '://' + req.headers.host + req.url;     //☆Nodeで    var urlStr = location.href;　　は取得できない
+
 
 var respo =  http.listen(port, () => console.log('web>>> '+  "http://127.0.0.1" +':' + port));   // クライアントの接続を待つ(IPアドレスとポート番号を結びつけます)
 dbMsg += "　,http.listen="+respo;

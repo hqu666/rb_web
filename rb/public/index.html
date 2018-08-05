@@ -1,4 +1,7 @@
 <!doctype html>
+<?php
+	 echo $_SERVER['REMOTE_ADDR'];
+?>
 <html lang="jp">
 
 	<head>
@@ -13,13 +16,8 @@
 		<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<script src="/socket.io/socket.io.js"></script>
 
-		<!-- <link type="text/css" rel="stylesheet"
-		  href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
-		<script type="text/javascript"
-		  src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-		<script type="text/javascript"
-		  src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script> -->
 
 	</head>
 
@@ -81,18 +79,21 @@
 							<div class="col-sm-10">
 								<input type="button" id="pad_bt" value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;margin-left: 50px;">
 								<span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span> >>スマホはQRコードで接続して下さい。
+								<span id="wifiAdress" style="border-color: blue;border-bottom-color: aqua;color: crimson;">
+									<?php echo $_SERVER['REMOTE_ADDR']; ?>
+								</span>
 							</div>
 						</div>
-						<!-- <div class="row" id="infoHead">
-							<input type="button" id="pad_bt" value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;margin-left: 50px;">
-							 <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
-							 >>スマホはQRコードで接続して下さい。
-						 </div> -->
+						<div class="row" style="margin-left: 2px;margin-top: 8px;margin-bottom: 12px;">
+							<span style="border-width: thick;border-style: ridge;padding: 5px;">
+								<span style="margin-left: 3px;margin-top: -8px;">鏡面動作</span>
+								<input type="checkbox" id="mirrorCB">上下
+								<input type="checkbox" id="mirror_h_CB" style="margin-left: 30px;">左右
+							</span>
+							<input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 30px;">トレース後に自動判定
+							<input type="button" id="dlog_bt" value="モーダル表示確認" style="height: 24px;border-radius: 4px;margin-left: 50px;">
 
-						トレース元図形を確定にするとスコアの評価が始まります。
-						<input type="checkbox" id="mirrorCB" style="margin-left: 30px;">鏡面動作
-						<input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 30px;">トレース後に自動判定
-						<input type="button" id="dlog_bt" value="モーダル表示確認" style="height: 24px;border-radius: 4px;margin-left: 50px;">
+						</div>
 						<div id="scoreAria">
 							トレース元図形
 							<select id="jobSelect" size="1">
@@ -103,6 +104,9 @@
 								<option value="again">もう一度</option>
 								<!-- <option value="comp">確定</option> -->
 							</select>
+							<span id="compInfo" style="color: darkgreen;">
+								トレース元図形を確定にするとスコアの評価が始まります。
+							</span>
 							<input type="file" id="files" name="files[]" />
 							<div id="scoreBrock" style="display: inline-block;margin-left: 30px;margin-right: 30px">
 								スコア
@@ -168,10 +172,12 @@
 								<input type="button" id="allclear" value="消去" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
 								<input type="button" id="orgComp" value="確定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
 							</div>
+
 						</div>
 					</div>
 					<div class="col-sm-2" id="urlQR" style="text-align: right;padding-right: 20px;border: crimson;border-width: thin;">
 					</div>
+
 				</div>
 				<!-- <div class="progress" id="progressFleam" style="margin: 5px;">
 					<div id="progressBs" class="progress-bar" role="progressbar" style="width: 0%;">
@@ -190,13 +196,16 @@
 			</div>
 
 			<div id="footer">
-				<span id="eventComent" style="text-align: right;margin-left:  5px;"></span>
+				<span id="eventComent" style="text-align: right;margin-left:  5px;">
+				</span>
+
 			</div>
 		</div>
-		<script src="/socket.io/socket.io.js"></script>
-		<script src="/repi_brain.js"></script>
-		<script src="jquery.qrcode.min.js"></script>
 
+		<script type="text/javascript" src="jquery.qrcode.min.js"></script>
+		<script type="text/javascript" src="repi_brain.js"></script>
+		<!-- <script type="text/javascript" src="IpCheck.php"></script> -->
+		<!-- <script type="text/javascript" src="/repireBrain/rb/public/IpCheck.php"></script> -->
 		<script type="text/javascript">
 			var socket = io();
 			var isDebug = true;
@@ -307,10 +316,9 @@
 					//   directions=no location=no
 					if (-1 < urlStr.indexOf('127.0.0.1')) { //xamppでのテスト中は
 						// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
-						// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
-						// dbmsg += "　,ipAddress="+ipAddress;
+						var wifiURL ;		//='<?php echo $_SERVER['REMOTE_ADDR']; ?>';
 						// var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
-						var wifiURL = '192.168.3.14';		//自宅
+ 						wifiURL= '192.168.3.14';		//自宅
 						dbMsg += "　,wifiURL=" + wifiURL;
 						urlStr = urlStr.replace('127.0.0.1', wifiURL); //'http://192.168.3.10:3080'
 					} else {

@@ -27,7 +27,7 @@
 
 	var texeOptions = document.getElementById('texeOptions');					//テキスト設定
 	var eventComent = document.getElementById("eventComent");
-	eventComent.innerHTML = "";				//"Drow OK";
+	// eventComent.innerHTML = "";				//"Drow OK";
 	var $document = $(document);
 	var $hitarea = $('#whiteboard');
 	var context = canvas.getContext('2d');
@@ -36,7 +36,8 @@
 		width:'1',
 		lineCap:"round"										//butt, round, square
 	};
-	var isMirror=false;				//鏡面動作
+	var isMirror=false;				//上下鏡面動作
+	var is_h_Mirror=false;				//左右鏡面動作
 	var isAutoJudge=true;				//トレース後に自動判定
 	var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
 	var orgCount=0;
@@ -106,6 +107,7 @@
 		dbMsg += "　,s_time=" + s_time; //,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10
 		return s_time;
 	}
+
 	var roomVal = retNowStr();
 	var room =  socket.connect("127.0.0.1:3080/" + roomVal);				// = io.connect("http://localhost:3000/room1");
 	/**
@@ -233,6 +235,7 @@
 		dbMsg += " ,isMobile="+isMobile;
 		isMirror = document.getElementById('mirrorCB').checked;
 		dbMsg += ",isMirror="+isMirror;
+		document.getElementById('compInfo').style.display="none";					//手書き完了後表示
 		// dbMsg += ",socket="+socket.id;
 		//
 		// socket.emit('conect_start', {
@@ -270,6 +273,7 @@
 		scoreBrock.style.display="none";
 		editerAria.style.display="none";
 		document.getElementById('files').style.display="none";
+		document.getElementById('compInfo').style.display="none";					//手書き完了後表示
 		myLog(dbMsg);
 		if(currentjob == "none"){
 		}else if(currentjob == "fileSel"){										//ファイルから読み込み
@@ -286,6 +290,7 @@
 			document.getElementById("allclear").click();						//画面を初期化して
 			editerAria.style.display="inline-block";							//編集ツール表示
 			current.color =orgColor;			 								//元パターン用の色に戻す
+			document.getElementById('compInfo').style.display="inline-block";					//手書き完了後表示
 		}else if(currentjob == "again"){			//もう一度</option>
 			drowAgain();
 		// }else if(currentjob == "comp"){			//確定</option>
@@ -311,6 +316,9 @@
 		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 
 		jobSelect.value = 'none';											//none		comp
+		document.getElementById('compInfo').style.display="none";					//手書き完了後表示
+		document.getElementById('editerAria').style.display="none";					//手書きツールパレット
+
 	}
 
 	/**
@@ -403,11 +411,23 @@
 		var dbMsg = "[mirrorCB]";
 		dbMsg += ",room=" + roomVal;
 		isMirror = document.getElementById('mirrorCB').checked;
-		dbMsg += ",isMirror="+isMirror;
+		dbMsg += ",上下鏡面="+isMirror;
 		myLog(dbMsg);
 		socket.emit('setmirror', {
 			room : "/" + roomVal ,
 			bool:isMirror
+		});
+	}
+
+	document.getElementById('mirror_h_CB').onchange = function () {				//先端形状
+		var dbMsg = "[mirror_h_CB]";
+		dbMsg += ",room=" + roomVal;
+		is_h_Mirror = document.getElementById('mirror_h_CB').checked;
+		dbMsg += ",左右鏡面="+is_h_Mirror;
+		myLog(dbMsg);
+		socket.emit('setmirror_h', {
+			room : "/" + roomVal ,
+			bool:is_h_Mirror
 		});
 	}
 
@@ -467,6 +487,15 @@
 		isMirror = data.bool;
 		dbMsg += ",isMirror="+isMirror;
 		document.getElementById('mirrorCB').checked=isMirror;
+		myLog(dbMsg);
+		mobileLog(dbMsg);
+	});
+
+	socket.on('setmirror_h', function(data) {
+		var dbMsg = "recive[setmirror_h]";
+		is_h_Mirror = data.bool;
+		dbMsg += ",左右鏡面="+is_h_Mirror;
+		document.getElementById('mirror_h_CB').checked=is_h_Mirror;
 		myLog(dbMsg);
 		mobileLog(dbMsg);
 	});
@@ -543,25 +572,36 @@
 		dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
 		current.x = e.clientX - canvasX;
 		current.y = e.clientY - canvasY;
-		dbMsg += ",Mouse(" + current.x + " , " + current.y + ")isMirror="+isMirror;
+		dbMsg += ",Mouse(" + current.x + " , " + current.y + ")";
+		dbMsg += ",is_h_Mirror="+is_h_Mirror;
+		if(is_h_Mirror){
+			current.x = canvasWidth-current.x;
+			dbMsg += ">x>" + current.x;
+		}
+		dbMsg += ",isMirror="+isMirror;
 		if(isMirror){
 			current.y = canvasHeight-current.y;
 			dbMsg += ">y>" + current.y ;
 		}
 		drawLine( current.x,  current.y, current.x, current.y, current.color , currentWidth , currentLineCap , 0 , true);
-          //htmlの場合は不要、Androidネイティブは書き出しでパスを生成するので必要
-          //一点しかないので始点終点とも同じ座標を渡すし
+          //htmlの場合は不要、Androidネイティブは書き出しでパスを生成するので必要    //一点しかないので始点終点とも同じ座標を渡すし
 		myLog(dbMsg);
 	}
 
 	function onMouseMove(e) {
 		var dbMsg = "[onMouseMove]drawing=" + drawing;
 		if (drawing) {
-			dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
+			dbMsg += ",color=" + current.color+ ",width=" + canvasWidth + "×" + canvasHeight + "]";
 			dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
 			var eX = e.clientX - canvasX;
 			var eY = e.clientY- canvasY;
-			dbMsg += ",Mouse(" + eX + " , " + eY + ")isMirror="+isMirror;
+			dbMsg += ",Mouse(" + eX + " , " + eY + ")";
+			dbMsg += ",is_h_Mirror="+is_h_Mirror;
+			if(is_h_Mirror){
+				eX = canvasWidth-eX;
+				dbMsg += ">x>" + eX;
+			}
+			dbMsg += ",isMirror="+isMirror;
 			if(isMirror){
 				eY = canvasHeight-eY;
 				dbMsg += ">y>" + eY;
@@ -571,7 +611,7 @@
 			current.y = eY;
 			dbMsg += ">>(" + current.x + " , " + current.y + ")";
 		}
-		// myLog(dbMsg);
+		myLog(dbMsg);
 	}
 
 	function onMouseUp(e) {
@@ -584,7 +624,13 @@
 			dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
 			current.x = e.clientX - canvasX;
 			current.y = e.clientY- canvasY;
-			dbMsg += ",Mouse(" + current.x + " , " + current.y + ")isMirror="+isMirror;
+			dbMsg += ",Mouse(" + current.x + " , " + current.y + ")";
+			dbMsg += ",is_h_Mirror="+is_h_Mirror;
+			if(is_h_Mirror){
+				current.x = canvasWidth-current.x;
+				dbMsg += ">x>" + current.x;
+			}
+			dbMsg += ",isMirror="+isMirror;
 			if(isMirror){
 				current.y = canvasHeight-current.y;
 				dbMsg += ">y>" + current.y ;
@@ -768,7 +814,7 @@
 		dbMsg += ",isComp="+ isComp;
 		if(isComp){			//比較中
 			_color = compColor;
-			// var imagedata = context.getImageData(x0, y0,  x1, y1,);				//  指定座標のImageDataオブジェクトの取得
+		// var imagedata = context.getImageData(x0, y0,  x1, y1,);				//  指定座標のImageDataオブジェクトの取得
 			// //  RGBAの取得
 			// var cRed = imagedata.data[0];
 			// var cGreen = imagedata.data[1];
@@ -835,9 +881,9 @@
 
 	function allClear() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		var dbMsg = "allClear";
+		var dbMsg = "[allClear]";
 		orgCount=0;
-		myLog(dbMsg);
+		// myLog(dbMsg);
 	}
 
 	function colorPick() {
