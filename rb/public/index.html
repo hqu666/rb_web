@@ -74,7 +74,7 @@
 					<div class="col-sm-10" id="urlDescriptionAria">
 						<div class="row" id="infoHead">
 							<div class="col-sm-2">
-								<input type="button" id="about_bt" value="このページの使い方" style="border-radius: 4px">
+								<input type="button" id="about_bt" value="このページの使い方" style="margin-left: 5px;border-radius: 4px">
 							</div>
 							<div class="col-sm-10">
 								<input type="button" id="pad_bt" value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;margin-left: 50px;">
@@ -85,12 +85,12 @@
 							</div>
 						</div>
 						<div class="row" style="margin-left:1px;margin-top: 8px;margin-bottom: 12px;">
-							<span style="border-width: thick;border-style: ridge;padding: 5px;">
+							<span style="border-width: thick;border-style: ridge;padding: 7px;">
 								<span style="margin-left: 3px;margin-top: -8px;">鏡面動作</span>
 								<input type="checkbox" id="mirrorCB">上下
-								<input type="checkbox" id="mirror_h_CB" style="margin-left: 30px;">左右
+								<input type="checkbox" id="mirror_h_CB" style="margin-left: 20px;">左右
 							</span>
-							<input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 30px;">トレース後に自動判定
+							<input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 5px;">トレース後に自動判定
 							<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 30px;">
 							<input type="button" id="dlog_bt" value="モーダル表示確認" style="height: 24px;border-radius: 4px;margin-left: 50px;">
 						</div>
@@ -104,24 +104,35 @@
 								<option value="again">もう一度</option>
 								<!-- <option value="comp">確定</option> -->
 							</select>
+							<span id="makeAfter">
+								表示
+								<select id="directionSelect" size="1">
+									<option value="0">オリジナル</option>
+									<!-- <option value="1">右へ90度</option>
+									<option value="2">左へ90度</option>
+									<option value="4">180度回転</option> -->
+									<option value="8">上下反転</option>
+									<option value="16">左右反転</option>
+								</select>
+							</span>
 							<span id="compInfo" style="color: darkgreen;">
 								トレース元図形を確定にするとスコアの評価が始まります。
 							</span>
 							<input type="file" id="files" name="files[]" />
-							<div id="scoreBrock" style="display: inline-block;margin-left: 30px;margin-right: 30px">
+							<span id="scoreBrock" style="display: inline-block;margin-left: 10px;margin-right:10px">
 								スコア
 								<span id="scoreTF" style="font-size: x-large">
 									0
 								</span>点
-								<span id="compTF" style="margin-left: 30px">
+								<span id="compTF" style="margin-left:10px">
 									0
 								</span>/
 								<span id="orgTF">
 									0
 								</span>ピクセル
-								<span id="scoreComent" style="color: white;">
-								</span>
-							</div>
+							</span>
+							<span id="scoreComent" style="color: white;">
+							</span>
 							<div id="editerAria">
 								<select id="typeSelect" size="1">
 									<option value="free">フリーハンド</option>
@@ -147,15 +158,6 @@
 										<option value="round">丸</option>
 										<option value="square">四角</option>
 										<option value="butt">無し</option>
-									</select>
-									方向
-									<select id="directionSelect" size="1">
-										<option value="0">そのまま</option>
-										<!-- <option value="1">右へ90度</option>
-										<option value="2">左へ90度</option>
-										<option value="4">180度回転</option> -->
-										<option value="8">上下反転(鏡面)</option>
-										<!-- <option value="16">左右反転</option> -->
 									</select>
 								</span>
 								<span id="texeOptions">
@@ -195,9 +197,10 @@
 			</div>
 
 			<div id="footer">
+				<!-- <span id="scoreComent" style="color: white;">
+				</span> -->
 				<span id="eventComent" style="text-align: right;margin-left:  5px;">
 				</span>
-
 			</div>
 		</div>
 

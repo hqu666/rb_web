@@ -27,6 +27,7 @@
 
 	var texeOptions = document.getElementById('texeOptions');					//テキスト設定
 	var eventComent = document.getElementById("eventComent");
+	document.getElementById("makeAfter").style.display="none";			 //トレース元画像の表示方向
 	// eventComent.innerHTML = "";				//"Drow OK";
 	var $document = $(document);
 	var $hitarea = $('#whiteboard');
@@ -468,6 +469,7 @@
 		dbMsg += ",room=" + roomVal;
 		directionVal = this.value
 		dbMsg += ",回転方向="+ directionVal;
+		canvasSubstitution(canvas ,directionVal) ;
 		myLog(dbMsg);
 	}
 
@@ -1051,12 +1053,14 @@
 	* @param {*} direction 置換え方向　0：そのまま　、　1;鏡面（上下）
 	*/
 	function canvasSubstitution(canvas ,direction) {
-	    var tag = "[canvasSubstitution]";
-		var dbMsg = tag + "[" +  canvas.width +"×" + canvas.width + "]direction="+direction;
+	    var dbMsg = "[canvasSubstitution]";
+		var cWidth = canvas.width;
+		var cHeight = canvas.height;
+		dbMsg += "["+ cWidth + "×"+ cHeight +  + "]direction="+direction;
 		var context = canvas.getContext('2d');
-		var canvasImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+		var canvasImageData = context.getImageData(0, 0, cWidth, cHeight);
 		var canvasRGBA = canvasImageData.data;
-		var newImageData = context.createImageData(canvas.width, canvas.height);
+		var newImageData = context.createImageData(cWidth, cHeight);
 		var newRGBA = newImageData.data;
 		var colorArray = new Array();
 		oRed = 255;
@@ -1065,15 +1069,24 @@
 
 		context.lineWidth=0;
 		var lineWidthMax = 0
-		for (var yPos = 0;yPos < canvas.height;yPos++) {
-			for (var xPos = 0;xPos < canvas.width;xPos++) {
-				var carentPos =(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4);
-				var mirrorInversion = (xPos * 4) + (yPos * canvas.width * 4);								//鏡面反転
+		for (var yPos = 0;yPos < cHeight;yPos++) {
+			for (var xPos = 0;xPos < cWidth;xPos++) {
+				var carentPos =	(xPos * 4) + (yPos*(cWidth*4)) ;
+				var mirrorInversion =(xPos * 4) + ((cHeight - 1 - yPos) * cWidth * 4);
+				// var mirrorInversion = (xPos * 4) + (yPos * cWidth * 4);								//鏡面反転
 				switch (direction) {
-                    case 0:
+                    case 0:												//オリジナル
 						mirrorInversion = carentPos;
 						break;
-					case 8:
+					case 1:			//右へ90度
+						break;
+					case 2:			//左へ90度
+						break;
+					case 4:			//180度回転
+						break;
+					case 8:			//上下反転
+						break;
+					case 16:			//左右反転
 						break;
 					}
 				//org; newRGBA[(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4)] = canvasRGBA[(xPos * 4) + (yPos * canvas.width * 4)];
@@ -1220,7 +1233,6 @@
 			});
 		}
 		scoreStartRady();
-		myLog(dbMsg);
 		if(isDebug){
 			document.getElementById('scoreComent').innerHTML = colorArray.length +"色中 対象 "+orgColor + " ;線＝" + lineWidth +"PX";
 			var rgba = 'rgba(' + oRed + ',' +oGreen +',' + oBule + ',' + (255 / 255) + ')';
@@ -1233,6 +1245,7 @@
 		}else {
 			useComp.style.display="inline-block";												//判定ボタン
 		}
+		myLog(dbMsg);
 	}
 
 	function drowAgain() {				//やり直し
@@ -1266,6 +1279,7 @@
 		originPixcel = new Array();				//
 		editerAria.style.display="none";
 		scoreBrock.style.display="inline-block";
+		document.getElementById("makeAfter").style.display="inline-block";			 //トレース元画像の表示方向
 		if(isAutoJudge){
 			useComp.style.display="none";												//判定ボタン
 		}else {
@@ -1471,6 +1485,10 @@
 		// removeLoading();
 //			document.getElementById("progressFleam").style.display="none";			 // ここでstyleは無効
 		dbMsg += ">>>dCount=" + dCount +"/" + checkCount;
+		// if(0 < originPixcel.length){
+			document.getElementById("makeAfter").style.display="inline-block";			 //トレース元画像の表示方向
+			jobSelect.options[4].disabled = false;										//もう一度
+		// }
 		myLog(dbMsg);
 		return dCount;
 		// return onSuccess(dCount);
