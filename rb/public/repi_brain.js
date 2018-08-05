@@ -235,6 +235,8 @@
 		dbMsg += " ,isMobile="+isMobile;
 		isMirror = document.getElementById('mirrorCB').checked;
 		dbMsg += ",isMirror="+isMirror;
+		is_h_Mirror = document.getElementById('mirror_h_CB').checked;
+		dbMsg += ",is_h_Mirror="+is_h_Mirror;
 		document.getElementById('compInfo').style.display="none";					//手書き完了後表示
 		// dbMsg += ",socket="+socket.id;
 		//
@@ -242,6 +244,13 @@
 		// 	nickname: "nick",
 		// 	href:location.href +""
 		// });
+		var roomPostion = urlStr.indexOf('room');
+		dbMsg += "　,roomPostion=" + roomPostion + "/" + urlStr.length;
+		if (-1 < roomPostion) { //セッションコード未定；アクセス直後
+			srcName ="/stereotype/st001.png";			 // current.color = e.target.className.split(' ')[1];
+			dbMsg += ",src=" + srcName;
+		   bitmapRead(srcName);
+		}
 		// mobileLog(dbMsg);
 		myLog(dbMsg);
 	});
@@ -284,6 +293,9 @@
 			stereoTypeStart();
 		}else if(currentjob == "make"){											//"手書きで作成の場合
 		 	isComp=false;														//比較中解除
+			if(is_h_Mirror){														//鏡面動作になっていたら
+				document.getElementById('mirror_h_CB').click();					//解除
+			}
 			if(isMirror){														//鏡面動作になっていたら
 				document.getElementById('mirrorCB').click();					//解除
 			}
@@ -666,12 +678,16 @@
 		dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
 		var toucheX = event.touches[0].pageX-canvasX; //タッチしている湯便の本数文、イベントは発生する
 		var toucheY = event.touches[0].pageY;
-		dbMsg += "(" + toucheX + " , " + toucheY + ")isMirror="+isMirror;
+		dbMsg += "(" + toucheX + " , " + toucheY + ")";
+		if(is_h_Mirror){
+			toucheX = canvasWidth-toucheX;
+			dbMsg += ">x>" +toucheX;
+		}
+		dbMsg += ",isMirror="+isMirror;
 		if(isMirror){
 			toucheY = canvasHeight-toucheY;
 			dbMsg += ">y>" + toucheY ;
 		}
-
 		current.x = toucheX;
 		current.y = toucheY;
 		drawLine( current.x,  current.y, current.x, current.y, current.color , currentWidth , currentLineCap , 0 , true);
@@ -684,7 +700,13 @@
 			event.preventDefault(); // 画面のスクロールを防止する
 			var toucheX = event.touches[0].pageX-canvasX;
 			var toucheY = event.touches[0].pageY;
-			dbMsg += "(" + toucheX + " , " + toucheY + ")isMirror="+isMirror;
+			dbMsg += "(" + toucheX + " , " + toucheY + ")";
+			dbMsg += ",is_h_Mirror="+is_h_Mirror;
+			if(is_h_Mirror){
+				toucheX = canvasWidth-toucheX;
+				dbMsg += ">x>" + toucheX;
+			}
+			dbMsg += ",isMirror="+isMirror;
 			if(isMirror){
 				toucheY = canvasHeight-toucheY;
 				dbMsg += ">y>" + toucheY ;
@@ -706,7 +728,13 @@
 			dbMsg += "(" + currentX + " , " + currentY + ")";
 			var toucheX = event.touches[0].pageX-canvasX;
 			var toucheY = event.touches[0].pageY;
-			dbMsg += "～(" + toucheX + " , " + toucheY+ ")isMirror="+isMirror;
+			dbMsg += "～(" + toucheX + " , " + toucheY+ ")";
+			dbMsg += ",is_h_Mirror="+is_h_Mirror;
+			if(is_h_Mirror){
+				toucheX= canvasWidth-toucheX;
+				dbMsg += ">x>" + toucheX;
+			}
+			dbMsg += ",isMirror="+isMirror;
 			if(isMirror){
 				toucheY = canvasHeight-toucheY;
 				dbMsg += ">y>" + toucheY ;
@@ -965,7 +993,7 @@
 	 * @param {*} srcName 型の画像ファイル名
 	 */
 	function bitmapRead(srcName) {
-	    var tag = "[bitmapRead]";
+	    var tag = "[bitmapRead]srcName="+srcName;
 	    var img = new Image();
 	    img.src = srcName;
 	    var dbMsg = tag + ",src=" + img.src;
@@ -1012,6 +1040,8 @@
 			// scoreStart();
 			// document.getElementById('header').style.display = "block";
 	    }
+		myLog(dbMsg);
+
 	}
 
 	/**

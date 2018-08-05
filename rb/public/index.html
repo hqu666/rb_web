@@ -84,15 +84,15 @@
 								</span>
 							</div>
 						</div>
-						<div class="row" style="margin-left: 2px;margin-top: 8px;margin-bottom: 12px;">
+						<div class="row" style="margin-left:1px;margin-top: 8px;margin-bottom: 12px;">
 							<span style="border-width: thick;border-style: ridge;padding: 5px;">
 								<span style="margin-left: 3px;margin-top: -8px;">鏡面動作</span>
 								<input type="checkbox" id="mirrorCB">上下
 								<input type="checkbox" id="mirror_h_CB" style="margin-left: 30px;">左右
 							</span>
 							<input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 30px;">トレース後に自動判定
+							<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 30px;">
 							<input type="button" id="dlog_bt" value="モーダル表示確認" style="height: 24px;border-radius: 4px;margin-left: 50px;">
-
 						</div>
 						<div id="scoreAria">
 							トレース元図形
@@ -121,7 +121,6 @@
 								</span>ピクセル
 								<span id="scoreComent" style="color: white;">
 								</span>
-								<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 30px;">
 							</div>
 							<div id="editerAria">
 								<select id="typeSelect" size="1">
@@ -337,7 +336,7 @@
 				document.getElementById("editerAria").style.display = "none"; // 編集ツール表示
 				// document.getElementById("editerAria").style.display="inline-block";			 // 編集ツール表示
 				document.getElementById("dlog_bt").style.display = "none";
-				document.getElementById("allclear").click(); //リロード時の消去
+				// document.getElementById("allclear").click(); //リロード時の消去
 
 				var hitarea = document.getElementById('hitarea');
 				if (ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod') > -1 || ua.indexOf('Android') > -1 || ua.indexOf('Mobile') > -1) {
@@ -370,6 +369,7 @@
 				if (!dbMsg) {
 					document.getElementById("footer").style.display = "none";
 				}
+
 				myLog(dbMsg)
 				mobileLog(dbMsg)
 			}
