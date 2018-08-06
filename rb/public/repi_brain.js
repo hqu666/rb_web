@@ -696,6 +696,7 @@
 			}
 		};
 	}
+
 	canvas.addEventListener('mousedown', onMouseDown, false);
 	canvas.addEventListener('mouseup', onMouseUp, false);
 	canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
@@ -1115,14 +1116,16 @@
 				var mirrorInversion =carentPos
 				// var mirrorInversion = (xPos * 4) + (yPos * cWidth * 4);								//鏡面反転
 				switch (direction) {
-					case 1:												//右へ90度
-						mirrorInversion = (xPos *(cWidth*4)) - (cHeight - 1 - yPos)*4*2;	//1/4下がる
-						// mirrorInversion = (xPos *(cWidth*4)) + (yPos*4) * 2 ;		// 1/4余計に繰り返す
+					case 1:	//右へ90度;(x,y) => (w/2+y , x)
+						// mirrorInversion = (cWidth/2) * ( yPos * 4 )  + (xPos*4);
+						mirrorInversion = (xPos *(cWidth*4)) - (cHeight - 1 - yPos)*4*2;	//1/4下がり反転
+				//		mirrorInversion =  (xPos * 4) + (yPos * cWidth * 4) * 2 ;		//高さ半減
 						// mirrorInversion = (xPos *(cWidth*4)) + (yPos*4)/2 ;		//高さが倍になる
 						break;
-					case 2:			//左へ90度
-						mirrorInversion = (xPos *(cWidth*4)) + (cHeight  + yPos )* 4 *2;	//1/4上がる
-						// mirrorInversion = (xPos *(cWidth*4)) + (cHeight - 1 - yPos) * 4 * 2;	//1/4下がる
+					case 2:	//左へ90度;(x,y) => (w/2-y , -x)
+						mirrorInversion = (xPos *(cWidth*4)) + ( yPos * 4 )*2;	//1/4上がりy軸反転
+						// mirrorInversion =  (xPos *(cWidth*4)) - (cHeight  + yPos )* 4 *2;	//1/4上がって左回り
+					// mirrorInversion = (xPos *(cWidth*4)) + (cHeight - 1 - yPos) * 4 * 2;	//1/4下がる
 						break;
 					case 4:			//180度回転
 						mirrorInversion = ( cWidth -3 - xPos * 4) - (cWidth - 3) + ((cHeight - 1 - yPos) * cWidth * 4);

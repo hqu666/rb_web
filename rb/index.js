@@ -35,6 +35,7 @@ function onConnection(socket){
         // room.emit('drawing', data);
         dbMsg ="";
     });
+
     socket.on('sendcomp', (data) => {                          //room　connect？
         var dbMsg = "[sendcomp]room=" + data.room;
         var roomVal = data.room;
@@ -42,13 +43,15 @@ function onConnection(socket){
         socket.join(roomVal)
         io.sockets.in(roomVal).emit('sendcomp', data);                        //③指定のルームに属するクライアントに送る
     });
-   socket.on('drawend', (data) => {                          //room　connect？
+
+    socket.on('drawend', (data) => {                          //room　connect？
        var dbMsg = "[drawend]room=" + data.room;
        var roomVal = data.room;
        dbMsg += ",roomVal=" + roomVal;
        socket.join(roomVal)
        io.sockets.in(roomVal).emit('drawend', data);                        //③指定のルームに属するクライアントに送る
    });
+
     socket.on('changeColor', (data) => {                          //room　connect？
         var dbMsg = "[changeColor]room=" + data.room;
         var roomVal = data.room;
@@ -56,6 +59,7 @@ function onConnection(socket){
         socket.join(roomVal)
         io.sockets.in(roomVal).emit('changeColor', data);                        //③指定のルームに属するクライアントに送る
     });
+
     socket.on('changeLineWidth', (data) => {                          //room　connect？
         var dbMsg = "[changeLineWidth]room=" + data.room;
         var roomVal = data.room;
@@ -63,6 +67,7 @@ function onConnection(socket){
         socket.join(roomVal)
         io.sockets.in(roomVal).emit('changeLineWidth', data);                        //③指定のルームに属するクライアントに送る
     });
+
     socket.on('changeLineCap', (data) => {                          //room　connect？
         var dbMsg = "[changeLineCap]room=" + data.room;
         var roomVal =data.room;
@@ -70,6 +75,7 @@ function onConnection(socket){
         socket.join(roomVal)
         io.sockets.in(roomVal).emit('changeLineCap', data);                        //③指定のルームに属するクライアントに送る
     });
+
     socket.on('setmirror', (data) => {                          //room　connect？
         var dbMsg = "[setmirror]room=" + data.room;
         var roomVal = data.room;
@@ -77,6 +83,7 @@ function onConnection(socket){
         socket.join(roomVal)
         io.sockets.in(roomVal).emit('setmirror', data);                        //③指定のルームに属するクライアントに送る
     });
+
     socket.on('setmirror_h', (data) => {                          //room　connect？
         var dbMsg = "[setmirror_h]room=" + data.room;
         var roomVal = data.room;
@@ -84,13 +91,15 @@ function onConnection(socket){
         socket.join(roomVal)
         io.sockets.in(roomVal).emit('setmirror_h', data);                        //③指定のルームに属するクライアントに送る
     });
-   socket.on('setautojudge', (data) => {                          //room　connect？
+
+    socket.on('setautojudge', (data) => {                          //room　connect？
         var dbMsg = "[setautojudge]room=" + data.room;
         var roomVal = data.room;
         dbMsg += ",roomVal=" + roomVal;
         socket.join(roomVal)
         io.sockets.in(roomVal).emit('setautojudge', data);                        //③指定のルームに属するクライアントに送る
     });
+
     socket.on('allclear', (data) => {                          //room　connect？
         dbMsg += "[socket.allclear]" + socket.id+",room=" + data.room;
         var roomVal =data.room;
