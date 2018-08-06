@@ -60,11 +60,11 @@
 	var drawing = false;
 	var canvasRect = document.getElementById('hitarea').getBoundingClientRect();
 	var canvasX =canvasRect.left + window.pageXOffset;
-	var canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
+	var canvasY = canvasRect.top+ window.pageYOffset;							//canvasRect.top = 110
 	var canvasWidth = canvasRect.width;
 	var canvasHeight = canvasRect.height;
-	var originPixcel;
-
+	var originalCanvas;
+	var originPixcel;															//読込み、作成確定直後の;scoreStartRadyで初期化
 
 	function myLog(dbMsg) {
 		if(isDebug){
@@ -175,10 +175,6 @@
 		return results;
 	}
 
-	canvas.addEventListener('mousedown', onMouseDown, false);
-	canvas.addEventListener('mouseup', onMouseUp, false);
-	// canvas.addEventListener('mouseout', onMouseUp, false);
-	canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
 	// if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
 	// 	isMobile = true;
 	// 	// canvas.addEventListener('touchend', ontouchend, false);
@@ -191,6 +187,8 @@
 
 	window.addEventListener('load', function() {
 		var dbMsg = "[repi_brain/onload]";
+		scoreBrock.style.display="none";
+		editerAria.style.display="none";
 		var urlStr = location.href +"";
 		dbMsg += ",urlStr=　"+urlStr;				//protocol + hostname + port + hash をまとめて取得
 		if(-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')){
@@ -465,11 +463,34 @@
 	}
 
 	document.getElementById('directionSelect').onchange = function () {				//回転方向
-		var dbMsg = "[typeSelect]";
+		var dbMsg = "[directionSelect]";
 		dbMsg += ",room=" + roomVal;
-		directionVal = this.value
+		directionVal = this.value *1;
 		dbMsg += ",回転方向="+ directionVal;
-		canvasSubstitution(canvas ,directionVal) ;
+		switch (directionVal) {
+			case 0:												//オリジナル
+				dbMsg += ",originPixcel="+ originPixcel.length;
+				if(0 < originPixcel.length){						//再選択時は
+					context.putImageData(originalCanvas, 0, 0);			// コピーしたピクセル情報をCanvasに転送
+				 }
+				break;
+			case 1:												//右へ90度
+			case 2:												//左へ90度
+			case 4:			//180度回転
+			case 8:			//上下反転
+			case 16:			//左右反転
+			case 32:			//横いっぱいに広げる
+			case 64:			//縦いっぱいに広げる
+				canvasSubstitution(canvas ,directionVal) ;
+				break;
+			case 128:			//オリジナルにする
+				setOriginPixcel()
+				break;
+			case 265:			//保存
+			 // default:
+				alert( '作成中です。');  //数値と文字の結合
+				break;
+			}
 		myLog(dbMsg);
 	}
 
@@ -664,6 +685,20 @@
 		mobileLog(dbMsg);
 
 	}
+	function throttle(callback, delay) {
+		var previousCall = new Date().getTime();
+		return function() {
+			var time = new Date().getTime();
+
+			if ((time - previousCall) >= delay) {
+				previousCall = time;
+				callback.apply(null, arguments);
+			}
+		};
+	}
+	canvas.addEventListener('mousedown', onMouseDown, false);
+	canvas.addEventListener('mouseup', onMouseUp, false);
+	canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
 
 	canvas.ontouchstart = function(event) { //画面に指が触れた
 		var dbMsg = "ontouchstart(" + drawing;
@@ -820,17 +855,6 @@
 	}
 
 	///実働部///////////////////////////////////////////////////////////////////////
-	function throttle(callback, delay) {
-		var previousCall = new Date().getTime();
-		return function() {
-			var time = new Date().getTime();
-
-			if ((time - previousCall) >= delay) {
-				previousCall = time;
-				callback.apply(null, arguments);
-			}
-		};
-	}
 
 //自画面のcanvaseに書き込み、指定が有れば送信
 	function drawLine(x0, y0, x1, y1, _color ,_width ,_lineCap,action, emit) {
@@ -959,6 +983,23 @@
 		myLog(dbMsg);
 	}
 
+	/**
+	*現在canvasに在るピクセル配列を保持する
+	*/
+	function setOriginPixcel() {
+	    var dbMsg = "[setOriginPixcel]";
+		// dbMsg += "originPixcel="+originPixcel.length;
+		var cWidth = canvas.width;
+		var cHeight = canvas.height;
+		dbMsg += "["+ cWidth + "×"+ cHeight +  "]";
+		var context = canvas.getContext('2d');
+		originalCanvas = context.getImageData(0, 0, cWidth, cHeight);
+		originPixcel = new Array();											//原版の保持領域初期化
+		originPixcel = originalCanvas.data;					//ファイルから読み込まれたピクセル配列を保持
+		dbMsg += ">>"+originPixcel.length;
+		myLog(dbMsg);
+	}
+
  /**
 * 定型パターンを画像で読込む（選択機構）
 */
@@ -1036,7 +1077,6 @@
 	        context.drawImage(this, shiftX, shiftY, dstWidth, dstHeight);
 			// document.getElementById('header').style.display = "none";
 			canvasSubstitution(canvas ,directionVal);
-			originPixcel = new Array();				//
 			stereoTypeCheck(canvas)
 			jobSelect.value = 'none';					//none		comp
 			// scoreStart();
@@ -1056,7 +1096,7 @@
 	    var dbMsg = "[canvasSubstitution]";
 		var cWidth = canvas.width;
 		var cHeight = canvas.height;
-		dbMsg += "["+ cWidth + "×"+ cHeight +  + "]direction="+direction;
+		dbMsg += "["+ cWidth + "×"+ cHeight +  "]direction="+direction;
 		var context = canvas.getContext('2d');
 		var canvasImageData = context.getImageData(0, 0, cWidth, cHeight);
 		var canvasRGBA = canvasImageData.data;
@@ -1072,23 +1112,41 @@
 		for (var yPos = 0;yPos < cHeight;yPos++) {
 			for (var xPos = 0;xPos < cWidth;xPos++) {
 				var carentPos =	(xPos * 4) + (yPos*(cWidth*4)) ;
-				var mirrorInversion =(xPos * 4) + ((cHeight - 1 - yPos) * cWidth * 4);
+				var mirrorInversion =carentPos
 				// var mirrorInversion = (xPos * 4) + (yPos * cWidth * 4);								//鏡面反転
 				switch (direction) {
-                    case 0:												//オリジナル
-						mirrorInversion = carentPos;
-						break;
-					case 1:			//右へ90度
+					case 1:												//右へ90度
+						mirrorInversion = (xPos *(cWidth*4)) - (cHeight - 1 - yPos)*4*2;	//1/4下がる
+						// mirrorInversion = (xPos *(cWidth*4)) + (yPos*4) * 2 ;		// 1/4余計に繰り返す
+						// mirrorInversion = (xPos *(cWidth*4)) + (yPos*4)/2 ;		//高さが倍になる
 						break;
 					case 2:			//左へ90度
+						mirrorInversion = (xPos *(cWidth*4)) + (cHeight  + yPos )* 4 *2;	//1/4上がる
+						// mirrorInversion = (xPos *(cWidth*4)) + (cHeight - 1 - yPos) * 4 * 2;	//1/4下がる
 						break;
 					case 4:			//180度回転
+						mirrorInversion = ( cWidth -3 - xPos * 4) - (cWidth - 3) + ((cHeight - 1 - yPos) * cWidth * 4);
 						break;
 					case 8:			//上下反転
+						mirrorInversion =(xPos * 4) + ((cHeight - 1 - yPos) * cWidth * 4);			//http://www.programmingmat.jp/webhtml_lab/canvas_image.html
 						break;
 					case 16:			//左右反転
+						mirrorInversion = ( cWidth -3 - xPos * 4) - (cWidth - 3) + (yPos * cWidth * 4 );
+						// mirrorInversion = ( cWidth -3 - xPos * 4) + (cWidth - 3) + (yPos*(cWidth*4));	//始点が+ｘ/2ズレる
+						// ( cWidth -3 - xPos * 4) * 2 + (yPos*(cWidth*4)) もしくは (xPos * 4)*2 + (yPos*(cWidth*4)) ;	//2周する
+						// mirrorInversion = cWidth - 3 - (xPos * 4)*2 + (yPos*(cWidth*4)) ;	//2州する
+						// mirrorInversion = cWidth -3 - (xPos * 4) + (yPos*(cWidth*4)) ;	//始点が-ｘ/4ズレる
+					// mirrorInversion =(cWidth + 1 + xPos * 4) + (yPos*(cWidth*4)) ;	//始点が-ｘ/4ズレる
+						// mirrorInversion =(cWidth - 2- xPos * 4 ) + (yPos*(cWidth*4)) ;	//cWidth - 2も：始点がｘ/4ズレて色もBが水色。線の高さが減少
+						// mirrorInversion =(cWidth -  xPos * 4 ) + (yPos*(cWidth*4)) ;	//cWidth - 8も：始点がｘ/4ズレて色もBがRに
+						// mirrorInversion = cWidth - 5 - (xPos * 4) + (yPos*(cWidth*4)) ;	//線になる
 						break;
-					}
+					// case 32:			//横いっぱいに広げる
+					// 	break;
+					case 64:			//縦いっぱいに広げる
+						mirrorInversion = ( xPos * 4) + (yPos*(cWidth * 4)/2) ;
+						break;
+				}
 				//org; newRGBA[(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4)] = canvasRGBA[(xPos * 4) + (yPos * canvas.width * 4)];
 				newRGBA[carentPos] = canvasRGBA[mirrorInversion];
 				newRGBA[1 + carentPos] = canvasRGBA[1 + mirrorInversion];
@@ -1097,6 +1155,9 @@
 			}
 		}
 		context.putImageData(newImageData, 0, 0);					// コピーしたピクセル情報をCanvasに転送
+		if(direction == 0){								//読込み直後は
+			setOriginPixcel();
+		}
 		myLog(dbMsg);
 	}
 	// 上下反転		http://www.programmingmat.jp/webhtml_lab/canvas_image.html
@@ -1276,7 +1337,7 @@
 	function scoreStartRady() {
 		var dbMsg = "[scoreStartRady]";
 		isComp=true;				//比較中
-		originPixcel = new Array();				//
+		// originPixcel = new Array();				//
 		editerAria.style.display="none";
 		scoreBrock.style.display="inline-block";
 		document.getElementById("makeAfter").style.display="inline-block";			 //トレース元画像の表示方向
@@ -1433,6 +1494,7 @@
 		var canvasImageData = context.getImageData(0, 0, cWidth, cHeight);
 		var canvasRGBA = canvasImageData.data;
 		if(originPixcel){
+			dbMsg += ",originPixcel="+originPixcel.length;
 			if(0==originPixcel.length){
 				 originPixcel = canvasImageData.data;
 			}

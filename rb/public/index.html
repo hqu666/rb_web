@@ -2,7 +2,7 @@
 <?php
 	 echo $_SERVER['REMOTE_ADDR'];
 ?>
-<html lang="jp">
+	<html lang="jp">
 
 	<head>
 		<meta charset="UTF-8">
@@ -87,8 +87,8 @@
 						<div class="row" style="margin-left:1px;margin-top: 8px;margin-bottom: 12px;">
 							<span style="border-width: thick;border-style: ridge;padding: 7px;">
 								<span style="margin-left: 3px;margin-top: -8px;">鏡面動作</span>
-								<input type="checkbox" id="mirrorCB">上下
-								<input type="checkbox" id="mirror_h_CB" style="margin-left: 20px;">左右
+							<input type="checkbox" id="mirrorCB">上下
+							<input type="checkbox" id="mirror_h_CB" style="margin-left: 20px;">左右
 							</span>
 							<input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 5px;">トレース後に自動判定
 							<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 30px;">
@@ -105,14 +105,18 @@
 								<!-- <option value="comp">確定</option> -->
 							</select>
 							<span id="makeAfter">
-								表示
+								変形
 								<select id="directionSelect" size="1">
 									<option value="0">オリジナル</option>
-									<!-- <option value="1">右へ90度</option>
-									<option value="2">左へ90度</option>
-									<option value="4">180度回転</option> -->
+									<option value="1">右へ90度回転</option>
+									<option value="2">左へ90度回転</option>
+									<option value="4">180度回転</option>
 									<option value="8">上下反転</option>
 									<option value="16">左右反転</option>
+									<option value="32">横いっぱいに広げる</option>
+									<option value="64">縦いっぱいに広げる</option>
+									<option value="128">オリジナルにする</option>
+									<option value="256">保存</option>
 								</select>
 							</span>
 							<span id="compInfo" style="color: darkgreen;">
@@ -124,15 +128,15 @@
 								<span id="scoreTF" style="font-size: x-large">
 									0
 								</span>点
-								<span id="compTF" style="margin-left:10px">
+							<span id="compTF" style="margin-left:10px">
 									0
 								</span>/
-								<span id="orgTF">
+							<span id="orgTF">
 									0
 								</span>ピクセル
 							</span>
-							<span id="scoreComent" style="color: white;">
-							</span>
+							<!-- <span id="scoreComent" style="color: white;">
+							</span> -->
 							<div id="editerAria">
 								<select id="typeSelect" size="1">
 									<option value="free">フリーハンド</option>
@@ -197,8 +201,8 @@
 			</div>
 
 			<div id="footer">
-				<!-- <span id="scoreComent" style="color: white;">
-				</span> -->
+				<span id="scoreComent" style="color: white;">
+				</span>
 				<span id="eventComent" style="text-align: right;margin-left:  5px;">
 				</span>
 			</div>
@@ -318,9 +322,9 @@
 					//   directions=no location=no
 					if (-1 < urlStr.indexOf('127.0.0.1')) { //xamppでのテスト中は
 						// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
-						var wifiURL ;		//='<?php echo $_SERVER['REMOTE_ADDR']; ?>';
+						var wifiURL; //='<?php echo $_SERVER['REMOTE_ADDR']; ?>';
 						// var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
- 						wifiURL= '192.168.3.14';		//自宅
+						wifiURL = '192.168.3.14'; //自宅
 						dbMsg += "　,wifiURL=" + wifiURL;
 						urlStr = urlStr.replace('127.0.0.1', wifiURL); //'http://192.168.3.10:3080'
 					} else {
@@ -414,10 +418,10 @@
 		</script>
 	</body>
 
-</html>
+	</html>
 
 
-<!--
+	<!--
 https://github.com/socketio/socket.io/tree/master/examples/whiteboard
 
 /**
