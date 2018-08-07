@@ -479,17 +479,19 @@
 			case 4:			//180度回転
 			case 8:			//上下反転
 			case 16:			//左右反転
-			case 32:			//横いっぱいに広げる
-			case 64:			//縦いっぱいに広げる
+			// case 32:			//縮小
+			// case 64:			//拡大
 				canvasSubstitution(canvas ,directionVal) ;
 				break;
 			case 128:			//オリジナルにする
 				setOriginPixcel()
 				break;
 			case 265:			//保存
-			 // default:
-				alert( '作成中です。');  //数値と文字の結合
+				bitmapSave();
 				break;
+				// default:
+				// alert( '作成中です。');  //数値と文字の結合
+				// break;
 			}
 		myLog(dbMsg);
 	}
@@ -1112,26 +1114,22 @@
 		var lineWidthMax = 0
 		for (var yPos = 0;yPos < cHeight;yPos++) {
 			for (var xPos = 0;xPos < cWidth;xPos++) {
-				var carentPos =	(xPos * 4) + (yPos*(cWidth*4)) ;
+				var carentPos =	4 * xPos +  4 * cWidth * yPos ;			//(x,y) = 4x+4wy
 				var mirrorInversion =carentPos
-				// var mirrorInversion = (xPos * 4) + (yPos * cWidth * 4);								//鏡面反転
 				switch (direction) {
-					case 1:	//右へ90度;(x,y) => (w/2+y , x)
-						// mirrorInversion = (cWidth/2) * ( yPos * 4 )  + (xPos*4);
-						mirrorInversion = (xPos *(cWidth*4)) - (cHeight - 1 - yPos)*4*2;	//1/4下がり反転
-				//		mirrorInversion =  (xPos * 4) + (yPos * cWidth * 4) * 2 ;		//高さ半減
-						// mirrorInversion = (xPos *(cWidth*4)) + (yPos*4)/2 ;		//高さが倍になる
+					case 1:		//右へ90度;(x,y) => (w/2-(h/2-y) , h/2+(w/2-x))
+						mirrorInversion = (cWidth/2 - (cHeight/2 - yPos) )*4 + (cHeight/2 + (cWidth/2-xPos)) * 4 * cWidth;	//要縮小？
 						break;
-					case 2:	//左へ90度;(x,y) => (w/2-y , -x)
-						mirrorInversion = (xPos *(cWidth*4)) + ( yPos * 4 )*2;	//1/4上がりy軸反転
-						// mirrorInversion =  (xPos *(cWidth*4)) - (cHeight  + yPos )* 4 *2;	//1/4上がって左回り
-					// mirrorInversion = (xPos *(cWidth*4)) + (cHeight - 1 - yPos) * 4 * 2;	//1/4下がる
+					case 2:		//左へ90度;(x,y) => (w/2+(h/2-y) , h/2+w/2-x)
+						mirrorInversion = (cWidth/2 + (cHeight/2 - yPos) )*4 + (cHeight/2 - (cWidth/2-xPos)) * 4 * cWidth;	//左右反転
 						break;
 					case 4:			//180度回転
-						mirrorInversion = ( cWidth -3 - xPos * 4) - (cWidth - 3) + ((cHeight - 1 - yPos) * cWidth * 4);
+						mirrorInversion = (cHeight - yPos)*(cWidth*4) - (xPos * 4) ;
+						// mirrorInversion = ( cWidth -3 - xPos * 4) - (cWidth - 3) + ((cHeight - 1 - yPos) * cWidth * 4);
 						break;
 					case 8:			//上下反転
-						mirrorInversion =(xPos * 4) + ((cHeight - 1 - yPos) * cWidth * 4);			//http://www.programmingmat.jp/webhtml_lab/canvas_image.html
+						mirrorInversion =(xPos * 4) + ((cHeight - 1 - yPos) * cWidth * 4);			//org	http://www.programmingmat.jp/webhtml_lab/canvas_image.html
+						// mirrorInversion = (xPos * 4) + (cHeight - yPos)*(cWidth*4) ;			//上下反転
 						break;
 					case 16:			//左右反転
 						mirrorInversion = ( cWidth -3 - xPos * 4) - (cWidth - 3) + (yPos * cWidth * 4 );
@@ -1144,13 +1142,7 @@
 						// mirrorInversion =(cWidth -  xPos * 4 ) + (yPos*(cWidth*4)) ;	//cWidth - 8も：始点がｘ/4ズレて色もBがRに
 						// mirrorInversion = cWidth - 5 - (xPos * 4) + (yPos*(cWidth*4)) ;	//線になる
 						break;
-					// case 32:			//横いっぱいに広げる
-					// 	break;
-					case 64:			//縦いっぱいに広げる
-						mirrorInversion = ( xPos * 4) + (yPos*(cWidth * 4)/2) ;
-						break;
 				}
-				//org; newRGBA[(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4)] = canvasRGBA[(xPos * 4) + (yPos * canvas.width * 4)];
 				newRGBA[carentPos] = canvasRGBA[mirrorInversion];
 				newRGBA[1 + carentPos] = canvasRGBA[1 + mirrorInversion];
 				newRGBA[2 + carentPos] = canvasRGBA[2 + mirrorInversion];
@@ -1164,6 +1156,105 @@
 		myLog(dbMsg);
 	}
 	// 上下反転		http://www.programmingmat.jp/webhtml_lab/canvas_image.html
+
+/**
+*canvasに書込まれているピクセル配列を
+*
+*https://st40.xyz/one-run/article/133/
+*/
+	function bitmapSave() {
+	    var dbMsg = "[bitmapSave]";
+			// if(saveType === "jpeg"){
+		var imageType = "image/ping";			//"image/jpeg";
+		var fileName = retNowStr() + ".png";			//
+		// }
+		// var canvas = document.getElementById("myCanvas");
+		var base64 = canvas.toDataURL(imageType);				// base64エンコードされたデータを取得 「data:image/png;base64,iVBORw0k～」
+		var blob = Base64toBlob(base64);								// base64データをblobに変換
+		saveBlob(blob, fileName);		// blobデータをa要素を使ってダウンロード
+
+
+	    // var img = new Image();
+	    // img.src = srcName;
+	    // var dbMsg = tag + ",src=" + img.src;
+	    // img.crossOrigin = "Anonymous"; //XAMPP必要；file;//ではcrossdomeinエラー発生
+	    // img.onload = function(event) {
+	    //     var dbMsg = tag + "[stereoTypeRead.onload]";
+	    //     var dstWidth = this.width;
+	    //     var dstHeight = this.height;
+	    //     dbMsg = dbMsg + ",読み込んだ画像[" + dstWidth + "×" + dstHeight + "]Aspect=" + (dstWidth / dstHeight);
+		// 	var canvasRect = document.getElementById('hitarea').getBoundingClientRect();
+		// 	var canvasX =canvasRect.left + window.pageXOffset;
+		// 	var canvasY = 0;// + window.pageYOffset;			//canvasRect.top = 110
+		// 	dbMsg = dbMsg + ",tbCanvas(" + canvasX + " , " + canvasY + ")[" + canvasRect.width + "×" + canvasRect.height +"]";
+	    //     var tbCanvasWidth = canvas.width;
+	    //     var tbCanvasHeight = canvas.height;
+	    //     dbMsg = dbMsg + "[" + tbCanvasWidth + "×" + tbCanvasHeight + "]";
+	    //     var scaleWidth =  tbCanvasWidth/dstWidth;		//dstWidth / tbCanvasWidth;
+	    //     var scaleHeight = tbCanvasHeight/dstHeight;	//dstHeight / tbCanvasHeight;
+	    //     dbMsg = dbMsg + ",scale[" + scaleWidth + "×" + scaleHeight + "%]";	//"更に" + tileBaceSize + "%";
+	    //     var biScale = scaleWidth;
+	    //     if (scaleHeight < scaleWidth) {
+	    //         biScale = scaleHeight;
+	    //     }
+	    //     dbMsg = dbMsg + ",拡大；" + biScale + "%";
+	    //     dstWidth = dstWidth * biScale;
+	    //     dstHeight = dstHeight * biScale;
+	    //     dbMsg = dbMsg + ",表示[" + dstWidth + "×" + dstHeight + "]=" + (dstWidth / dstHeight);
+	    //     var shiftX =( canvasX+tbCanvasWidth - dstWidth) / 2;				// (winW - dstWidth) / 2;
+	    //     var shiftY = (canvasY+tbCanvasHeight - dstHeight) / 2;				//(winH - dstHeight) / 2;
+		// 	dbMsg += "directionVal=" + directionVal;
+		// 	if(directionVal == 8){
+		// 		dbMsg += "上下反転";
+		// 		shiftY =0;				//(winH - dstHeight) / 2;
+		// 	}
+		//
+	    //     dbMsg = dbMsg + ",(" + shiftX + "," + shiftY + ")";
+		// 	myLog(dbMsg);
+	    //     context.drawImage(this, shiftX, shiftY, dstWidth, dstHeight);
+		// 	// document.getElementById('header').style.display = "none";
+		// 	canvasSubstitution(canvas ,directionVal);
+		// 	stereoTypeCheck(canvas)
+		// 	jobSelect.value = 'none';					//none		comp
+		// 	// scoreStart();
+		// 	// document.getElementById('header').style.display = "block";
+	    // }
+		myLog(dbMsg);
+
+	}
+
+	// Base64データをBlobデータに変換
+	function Base64toBlob(base64){
+		var dbMsg = "[Base64toBlob]";
+	    // カンマで分割して以下のようにデータを分ける
+	    // tmp[0] : データ形式（data:image/png;base64）
+	    // tmp[1] : base64データ（iVBORw0k～）
+	    var tmp = base64.split(',');
+	    var data = atob(tmp[1]);											    // base64データの文字列をデコード
+		var mime = tmp[0].split(':')[1].split(';')[0];	    					// tmp[0]の文字列（data:image/png;base64）からコンテンツタイプ（image/png）部分を取得
+		var buf = new Uint8Array(data.length);	    							//  1文字ごとにUTF-16コードを表す 0から65535 の整数を取得
+		for (var i = 0; i < data.length; i++) {
+	        buf[i] = data.charCodeAt(i);
+	    }
+		var blob = new Blob([buf], { type: mime });	    // blobデータを作成
+		myLog(dbMsg);
+	    return blob;
+	}
+
+	// 画像のダウンロード
+	function saveBlob(blob, fileName){
+		var dbMsg = "[saveBlob]";
+	    var url = (window.URL || window.webkitURL);
+	    var dataUrl = url.createObjectURL(blob);	    // ダウンロード用のURL作成
+	    var event = document.createEvent("MouseEvents");	    // イベント作成
+	    event.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	    var a = document.createElementNS("http://www.w3.org/1999/xhtml", "a");	    // a要素を作成
+	    a.href = dataUrl;	    // ダウンロード用のURLセット
+	    a.download = fileName;	    // ファイル名セット
+	    a.dispatchEvent(event);	    // イベントの発火
+		myLog(dbMsg);
+	}
+
 	var bColor;
 	/**
 	* 使用されている色と線幅を取得
