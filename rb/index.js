@@ -15,8 +15,24 @@ function myLog(dbMsg) {
     }
 }
 
+/**
+*転送処理
+*/
+function sendSocet(emName ,socket, data){
+    var dbMsg = "[sendSocet]emName=" + emName;          //ukTPEyxXW_HOx_eoAAAAなど
+    var roomVal = data.room;
+    dbMsg += ",roomVal=" + roomVal;
+    if(roomVal != ""){                                                  //room指定
+        socket.join(roomVal)
+        io.sockets.in(roomVal).emit(emName, data);                        //③指定のルームに属するクライアントに送る
+    }else{                                                              //何も指定が無ければ
+        socket.emit(emName, data);                                      //全員にブロードキャスト
+        myLog(dbMsg);
+    }
+}
 
 /**
+*接続する機能の中継；受信して振り分け
 */
 var socketId;
 function onConnection(socket){
@@ -24,89 +40,53 @@ function onConnection(socket){
     socketId=socket.id;
     socket.on('drawing', (data) => {                          //room　connect？
         dbMsg += "[socket.drawing]" + socket.id+",room=" + data.room;
-        var roomVal = data.room;            // = getRoomVal(socket.id ,data.room);
-        dbMsg += ",roomVal=" + roomVal;
-        socket.join(roomVal)
-        io.sockets.in(roomVal).emit('drawing', data);                        //③指定のルームに属するクライアントに送る
-        // socket.broadcast.to(roomVal).emit('drawing', data);          //①emitを行ったソケット以外の、指定のルームに属するクライアントに送る
-        // socket.broadcast.emit('drawing', data);                          //②emitしたソケット以外の全クライアントに送る
-        // io.sockets.emit('drawing', data);                                //④全クライアントに送る
-        // var room = io.of(roomVal); // roomもまたServerインスタンスになる
-        // room.emit('drawing', data);
+         sendSocet('drawing' ,socket, data);
         dbMsg ="";
     });
 
     socket.on('sendcomp', (data) => {                          //room　connect？
         var dbMsg = "[sendcomp]room=" + data.room;
-        var roomVal = data.room;
-        dbMsg += ",roomVal=" + roomVal;
-        socket.join(roomVal)
-        io.sockets.in(roomVal).emit('sendcomp', data);                        //③指定のルームに属するクライアントに送る
+        sendSocet('sendcomp' , socket , data);
     });
 
-    socket.on('drawend', (data) => {                          //room　connect？
-       var dbMsg = "[drawend]room=" + data.room;
-       var roomVal = data.room;
-       dbMsg += ",roomVal=" + roomVal;
-       socket.join(roomVal)
-       io.sockets.in(roomVal).emit('drawend', data);                        //③指定のルームに属するクライアントに送る
-   });
+    socket.on('drawend', (data) => {
+        var dbMsg = "[drawend]";
+        sendSocet('drawend' , socket , data);
+    });
 
     socket.on('changeColor', (data) => {                          //room　connect？
         var dbMsg = "[changeColor]room=" + data.room;
-        var roomVal = data.room;
-        dbMsg += ",roomVal=" + roomVal;
-        socket.join(roomVal)
-        io.sockets.in(roomVal).emit('changeColor', data);                        //③指定のルームに属するクライアントに送る
+        sendSocet('changeColor' , socket , data);
     });
 
     socket.on('changeLineWidth', (data) => {                          //room　connect？
         var dbMsg = "[changeLineWidth]room=" + data.room;
-        var roomVal = data.room;
-        dbMsg += ",roomVal=" + roomVal;
-        socket.join(roomVal)
-        io.sockets.in(roomVal).emit('changeLineWidth', data);                        //③指定のルームに属するクライアントに送る
+        sendSocet('changeLineWidth' , socket , data);
     });
 
     socket.on('changeLineCap', (data) => {                          //room　connect？
         var dbMsg = "[changeLineCap]room=" + data.room;
-        var roomVal =data.room;
-        dbMsg += ",roomVal=" + roomVal;
-        socket.join(roomVal)
-        io.sockets.in(roomVal).emit('changeLineCap', data);                        //③指定のルームに属するクライアントに送る
+        sendSocet('changeLineCap' , socket , data);
     });
 
     socket.on('setmirror', (data) => {                          //room　connect？
         var dbMsg = "[setmirror]room=" + data.room;
-        var roomVal = data.room;
-        dbMsg += ",roomVal=" + roomVal;
-        socket.join(roomVal)
-        io.sockets.in(roomVal).emit('setmirror', data);                        //③指定のルームに属するクライアントに送る
+        sendSocet('setmirror' , socket , data);
     });
 
     socket.on('setmirror_h', (data) => {                          //room　connect？
         var dbMsg = "[setmirror_h]room=" + data.room;
-        var roomVal = data.room;
-        dbMsg += ",roomVal=" + roomVal;
-        socket.join(roomVal)
-        io.sockets.in(roomVal).emit('setmirror_h', data);                        //③指定のルームに属するクライアントに送る
+        sendSocet('setmirror_h' , socket , data);
     });
 
     socket.on('setautojudge', (data) => {                          //room　connect？
         var dbMsg = "[setautojudge]room=" + data.room;
-        var roomVal = data.room;
-        dbMsg += ",roomVal=" + roomVal;
-        socket.join(roomVal)
-        io.sockets.in(roomVal).emit('setautojudge', data);                        //③指定のルームに属するクライアントに送る
+        sendSocet('setautojudge' , socket , data);
     });
 
     socket.on('allclear', (data) => {                          //room　connect？
         dbMsg += "[socket.allclear]" + socket.id+",room=" + data.room;
-        var roomVal =data.room;
-        dbMsg += ",roomVal=" + roomVal;
-        myLog(dbMsg);
-        socket.join(roomVal)
-        io.sockets.in(roomVal).emit('allclear', data);                        //③指定のルームに属するクライアントに送る
+        sendSocet('allclear' , socket , data);
     });
 
     socket.on('connection', (socket) => {                          //room　connect？
@@ -116,15 +96,15 @@ function onConnection(socket){
 
     socket.on('conect_start', (config) => {             //game-start
         var dbMsg = "[conect_start]nickname=" + config.nickname;                //タイムスタンプ
-        dbMsg += ",socket=" + socket.id;
-        var roomVal = "/" + config.nickname;                                        //
-        dbMsg += ",roomVal=" + roomVal;
-        var urlStr = config.href;                                               //この時点のhref
-        dbMsg += ",href=" + urlStr;
-         if(-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')){ //xamppでのテストで無ければ
-            isDebug =false;                                                     //デバッグログを吐かせない
-        }
-        socket.emit('conect_start', config.nickname);
+        // dbMsg += ",socket=" + socket.id;
+        // var roomVal = "/" + config.nickname;                                        //
+        // dbMsg += ",roomVal=" + roomVal;
+        // var urlStr = config.href;                                               //この時点のhref
+        // dbMsg += ",href=" + urlStr;
+        //  if(-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')){ //xamppでのテストで無ければ
+        //     isDebug =false;                                                     //デバッグログを吐かせない
+        // }
+       sendSocet('conect_start',socket, config.nickname);
         myLog(dbMsg);
     });
 
@@ -132,7 +112,6 @@ function onConnection(socket){
         var dbMsg = "[disconnect]" ;
         var sID =  socket.id;
         dbMsg += ",socket=" + sID;
-
         myLog(dbMsg);
     });
     myLog(dbMsg);

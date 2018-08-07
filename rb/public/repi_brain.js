@@ -469,10 +469,7 @@
 		dbMsg += ",回転方向="+ directionVal;
 		switch (directionVal) {
 			case 0:												//オリジナル
-				dbMsg += ",originPixcel="+ originPixcel.length;
-				if(0 < originPixcel.length){						//再選択時は
-					context.putImageData(originalCanvas, 0, 0);			// コピーしたピクセル情報をCanvasに転送
-				 }
+				redrowOrigin();
 				break;
 			case 1:												//右へ90度
 			case 2:												//左へ90度
@@ -486,7 +483,7 @@
 			case 128:			//オリジナルにする
 				setOriginPixcel()
 				break;
-			case 265:			//保存
+			case 256:			//保存
 				bitmapSave();
 				break;
 				// default:
@@ -1003,6 +1000,17 @@
 		myLog(dbMsg);
 	}
 
+	/**
+	*保持したピクセル配列をcanvasに戻す
+	*/
+	function redrowOrigin() {
+	    var dbMsg = "[redrowOrigin]";
+		dbMsg += ",originPixcel="+ originPixcel.length;
+		if(0 < originPixcel.length){						//再選択時は
+			context.putImageData(originalCanvas, 0, 0);			// コピーしたピクセル情報をCanvasに転送
+		 }
+	}
+
  /**
 * 定型パターンを画像で読込む（選択機構）
 */
@@ -1158,84 +1166,40 @@
 	// 上下反転		http://www.programmingmat.jp/webhtml_lab/canvas_image.html
 
 /**
-*canvasに書込まれているピクセル配列を
+*canvasに書込まれているピクセル配列をファイルに保存する
 *
-*https://st40.xyz/one-run/article/133/
+*	https://st40.xyz/one-run/article/133/
 */
 	function bitmapSave() {
 	    var dbMsg = "[bitmapSave]";
-			// if(saveType === "jpeg"){
 		var imageType = "image/ping";			//"image/jpeg";
 		var fileName = retNowStr() + ".png";			//
-		// }
-		// var canvas = document.getElementById("myCanvas");
+		dbMsg += "fileName=" + fileName;
+		setOriginPixcel();									//保存前の状態を保存する
 		var base64 = canvas.toDataURL(imageType);				// base64エンコードされたデータを取得 「data:image/png;base64,iVBORw0k～」
+		dbMsg += "base64=" + base64.length;
 		var blob = Base64toBlob(base64);								// base64データをblobに変換
+		dbMsg += ",blob=" + blob.length;
 		saveBlob(blob, fileName);		// blobデータをa要素を使ってダウンロード
-
-
-	    // var img = new Image();
-	    // img.src = srcName;
-	    // var dbMsg = tag + ",src=" + img.src;
-	    // img.crossOrigin = "Anonymous"; //XAMPP必要；file;//ではcrossdomeinエラー発生
-	    // img.onload = function(event) {
-	    //     var dbMsg = tag + "[stereoTypeRead.onload]";
-	    //     var dstWidth = this.width;
-	    //     var dstHeight = this.height;
-	    //     dbMsg = dbMsg + ",読み込んだ画像[" + dstWidth + "×" + dstHeight + "]Aspect=" + (dstWidth / dstHeight);
-		// 	var canvasRect = document.getElementById('hitarea').getBoundingClientRect();
-		// 	var canvasX =canvasRect.left + window.pageXOffset;
-		// 	var canvasY = 0;// + window.pageYOffset;			//canvasRect.top = 110
-		// 	dbMsg = dbMsg + ",tbCanvas(" + canvasX + " , " + canvasY + ")[" + canvasRect.width + "×" + canvasRect.height +"]";
-	    //     var tbCanvasWidth = canvas.width;
-	    //     var tbCanvasHeight = canvas.height;
-	    //     dbMsg = dbMsg + "[" + tbCanvasWidth + "×" + tbCanvasHeight + "]";
-	    //     var scaleWidth =  tbCanvasWidth/dstWidth;		//dstWidth / tbCanvasWidth;
-	    //     var scaleHeight = tbCanvasHeight/dstHeight;	//dstHeight / tbCanvasHeight;
-	    //     dbMsg = dbMsg + ",scale[" + scaleWidth + "×" + scaleHeight + "%]";	//"更に" + tileBaceSize + "%";
-	    //     var biScale = scaleWidth;
-	    //     if (scaleHeight < scaleWidth) {
-	    //         biScale = scaleHeight;
-	    //     }
-	    //     dbMsg = dbMsg + ",拡大；" + biScale + "%";
-	    //     dstWidth = dstWidth * biScale;
-	    //     dstHeight = dstHeight * biScale;
-	    //     dbMsg = dbMsg + ",表示[" + dstWidth + "×" + dstHeight + "]=" + (dstWidth / dstHeight);
-	    //     var shiftX =( canvasX+tbCanvasWidth - dstWidth) / 2;				// (winW - dstWidth) / 2;
-	    //     var shiftY = (canvasY+tbCanvasHeight - dstHeight) / 2;				//(winH - dstHeight) / 2;
-		// 	dbMsg += "directionVal=" + directionVal;
-		// 	if(directionVal == 8){
-		// 		dbMsg += "上下反転";
-		// 		shiftY =0;				//(winH - dstHeight) / 2;
-		// 	}
-		//
-	    //     dbMsg = dbMsg + ",(" + shiftX + "," + shiftY + ")";
-		// 	myLog(dbMsg);
-	    //     context.drawImage(this, shiftX, shiftY, dstWidth, dstHeight);
-		// 	// document.getElementById('header').style.display = "none";
-		// 	canvasSubstitution(canvas ,directionVal);
-		// 	stereoTypeCheck(canvas)
-		// 	jobSelect.value = 'none';					//none		comp
-		// 	// scoreStart();
-		// 	// document.getElementById('header').style.display = "block";
-	    // }
 		myLog(dbMsg);
-
 	}
 
 	// Base64データをBlobデータに変換
 	function Base64toBlob(base64){
 		var dbMsg = "[Base64toBlob]";
-	    // カンマで分割して以下のようにデータを分ける
+    // カンマで分割して以下のようにデータを分ける
 	    // tmp[0] : データ形式（data:image/png;base64）
 	    // tmp[1] : base64データ（iVBORw0k～）
+		dbMsg += ",base64=" + base64.length;
 	    var tmp = base64.split(',');
 	    var data = atob(tmp[1]);											    // base64データの文字列をデコード
 		var mime = tmp[0].split(':')[1].split(';')[0];	    					// tmp[0]の文字列（data:image/png;base64）からコンテンツタイプ（image/png）部分を取得
+		dbMsg += ",mime=" +mime;
 		var buf = new Uint8Array(data.length);	    							//  1文字ごとにUTF-16コードを表す 0から65535 の整数を取得
 		for (var i = 0; i < data.length; i++) {
 	        buf[i] = data.charCodeAt(i);
 	    }
+		dbMsg += ",buf=" +buf.length;
 		var blob = new Blob([buf], { type: mime });	    // blobデータを作成
 		myLog(dbMsg);
 	    return blob;
@@ -1244,14 +1208,19 @@
 	// 画像のダウンロード
 	function saveBlob(blob, fileName){
 		var dbMsg = "[saveBlob]";
-	    var url = (window.URL || window.webkitURL);
+		dbMsg += "fileName=" + fileName;
+		dbMsg += ",blob=" + blob.length;
+    	var url = (window.URL || window.webkitURL);
+		dbMsg += ",url=" + url;
 	    var dataUrl = url.createObjectURL(blob);	    // ダウンロード用のURL作成
+		dbMsg += ",dataUrl=" + dataUrl;
 	    var event = document.createEvent("MouseEvents");	    // イベント作成
 	    event.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 	    var a = document.createElementNS("http://www.w3.org/1999/xhtml", "a");	    // a要素を作成
 	    a.href = dataUrl;	    // ダウンロード用のURLセット
 	    a.download = fileName;	    // ファイル名セット
 	    a.dispatchEvent(event);	    // イベントの発火
+		 redrowOrigin(); 
 		myLog(dbMsg);
 	}
 
