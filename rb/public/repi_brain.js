@@ -47,6 +47,7 @@
 	var currentLineCap="round";
 	var directionVal = 0;														//回転宝庫儒
 	var orgColor='#00ff00';
+	var stdColor=orgColor;
 	var compColor='#ffffff';
 	var oRed;
 	var oGreen;
@@ -58,6 +59,7 @@
 
 	texeOptions.style.display="none";
 	var drawing = false;
+	var drowMode ="";											//描きで何を行うか
 	var canvasRect = document.getElementById('hitarea').getBoundingClientRect();
 	var canvasX =canvasRect.left + window.pageXOffset;
 	var canvasY = canvasRect.top+ window.pageYOffset;							//canvasRect.top = 110
@@ -65,6 +67,8 @@
 	var canvasHeight = canvasRect.height;
 	var originalCanvas;
 	var originPixcel;															//読込み、作成確定直後の;scoreStartRadyで初期化
+	var startX =0;
+	var startY =0;
 
 	function myLog(dbMsg) {
 		if(isDebug){
@@ -225,6 +229,8 @@
 		// document.getElementById('hitarea').style.height = canvasHeight;
 		if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
 			isMobile=true;				//現在使用しているのはスマホ
+			canvas.addEventListener('touchstart', touchHandler, false);
+			canvas.addEventListener('touchmove', touchHandler, false);
 			canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
 			// window.directions=0;			//this,window	>>cannat CET;0
 			// window.location = 0;
@@ -300,7 +306,8 @@
 			}
 			document.getElementById("allclear").click();						//画面を初期化して
 			editerAria.style.display="inline-block";							//編集ツール表示
-			current.color =orgColor;			 								//元パターン用の色に戻す
+			current.color = stdColor;			 								//元パターン用の色に戻す
+			colorPalet.value = current.color ;
 			document.getElementById('compInfo').style.display="inline-block";					//手書き完了後表示
 		}else if(currentjob == "again"){			//もう一度</option>
 			drowAgain();
@@ -354,29 +361,38 @@
 
 //編集ツール//////////////////////////////////////////////////////////////////
 	typeSelect.onchange = function () {					 //描画する種類を変更
-		var dbMsg = "typeSelect;";
+		var dbMsg = "[typeSelect]";
 		var currenttype =this.value;			 // current.color = e.target.className.split(' ')[1];
 		dbMsg += ",typeSelect="+ currenttype;
-		if(currenttype == "free"){
-			texeOptions.style.display="none";
-			graficOptions.style.display="border-box";
-		}else if(currenttype == "colorpic"){				//			<option value="">カラーピッカー</option>
-			colorPick();
-		}else if(currenttype == "text"){
-			// graficOptions.style.display="none";
-			// texeOptions.style.display="border-box";
-			var res = confirm('作成中です。');
-			if( res == true ) {
-			}else {
-			}
-		}else if(currenttype == "comp"){			//確定</option>
-			orgComp.click();
-		}else{
-			alert( '作成中です。');  //数値と文字の結合
-			texeOptions.style.display="none";
-			graficOptions.style.display="border-box";
+		switch (currenttype) {
+			case "free":												//自由曲線
+				drowMode ="";											//描きで何を行うか
+				texeOptions.style.display="none";
+				graficOptions.style.display="border-box";
+				break;
+			case "line":												//直線
+			case "trigone":											//三角
+			case "rect":												//矩形
+			case "oval":												//楕円
+			case "select_del":												//選択範囲を消去
+				drowMode =currenttype;
+				break;
+			case "text":												//テキスト
+				drowText();
+				// var res = confirm('作成中です。');
+				// if( res == true ) {
+				// }else {
+				// }
+				break;
+			case "comp":												//確定
+				orgComp.click();
+				break;
+			default:
+				alert( '作成中です。');  //数値と文字の結合
+				texeOptions.style.display="none";
+				graficOptions.style.display="border-box";
+				break;
 		}
-		typeSelect.value =  "free";
 		myLog(dbMsg);
 	}
 
@@ -592,43 +608,52 @@
 	});
 
 //イベント反映
-	function onMouseDown(e) {
-		var dbMsg = "[onMouseDown]drawing=" + drawing;
+	/**
+	*mousedown/touchstartポイントの動作
+	*/
+	function moveStart(eX,eY) {
+		var dbMsg = "[moveStart]drowMode=" + drowMode + ",drawing=" + drawing;;
 		drawing = true;
 		jobSelect.options[4].disabled = false;										//もう一度
 		typeSelect.options[6].disabled = false;										//確定
 		canvasRect = document.getElementById('hitarea').getBoundingClientRect();
-		canvasX =canvasRect.left + window.pageXOffset;
-		canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
-		dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
+		// canvasX =canvasRect.left + window.pageXOffset;
+		// canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
+		// dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
 		canvasWidth = canvasRect.width;
 		canvasHeight = canvasRect.height;
 		dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
-		current.x = e.clientX - canvasX;
-		current.y = e.clientY - canvasY;
-		dbMsg += ",Mouse(" + current.x + " , " + current.y + ")";
-		dbMsg += ",is_h_Mirror="+is_h_Mirror;
-		if(is_h_Mirror){
-			current.x = canvasWidth-current.x;
-			dbMsg += ">x>" + current.x;
+		current.x = eX;
+		current.y = eY;
+		startX =eX;
+		startY =eY;
+		dbMsg += ",Mouse(" + eX+ " , " + eY + ")";
+		if(drowMode == ''){
+			dbMsg += ",is_h_Mirror="+is_h_Mirror;
+			if(is_h_Mirror){
+				eX = canvasWidth - eX;
+				dbMsg += ">x>" + eX;
+			}
+			dbMsg += ",isMirror="+isMirror;
+			if(isMirror){
+				eY = canvasHeight-eY;
+				dbMsg += ">y>" + eY ;
+			}
+			drawLine( eX,  eY, eX, eY, current.color , currentWidth , currentLineCap , 0 , true);
+	          //htmlの場合は不要、Androidネイティブは書き出しでパスを生成するので必要    //一点しかないので始点終点とも同じ座標を渡すし
+		}else{
+			context.beginPath();     // 1.Pathで描画を開始する
 		}
-		dbMsg += ",isMirror="+isMirror;
-		if(isMirror){
-			current.y = canvasHeight-current.y;
-			dbMsg += ">y>" + current.y ;
-		}
-		drawLine( current.x,  current.y, current.x, current.y, current.color , currentWidth , currentLineCap , 0 , true);
-          //htmlの場合は不要、Androidネイティブは書き出しでパスを生成するので必要    //一点しかないので始点終点とも同じ座標を渡すし
 		myLog(dbMsg);
 	}
 
-	function onMouseMove(e) {
-		var dbMsg = "[onMouseMove]drawing=" + drawing;
-		if (drawing) {
-			dbMsg += ",color=" + current.color+ ",width=" + canvasWidth + "×" + canvasHeight + "]";
-			dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
-			var eX = e.clientX - canvasX;
-			var eY = e.clientY- canvasY;
+	/**
+	*mousemove/touchendポイントの動作
+	*/
+	function moveOccasion (eX,eY) {
+		var dbMsg = "[moveOccasion]drowMode=" + drowMode;
+		if (drawing && drowMode == '') {
+			dbMsg += ",color=" + current.color+ ",width=" + currentWidth + ",LineCap=" + currentLineCap;
 			dbMsg += ",Mouse(" + eX + " , " + eY + ")";
 			dbMsg += ",is_h_Mirror="+is_h_Mirror;
 			if(is_h_Mirror){
@@ -648,29 +673,27 @@
 		myLog(dbMsg);
 	}
 
-	function onMouseUp(e) {
-		var dbMsg = "[onMouseUp]drawing=" + drawing;
-		if (drawing) {
-			drawing = false;
-			var currentX = current.x;
-			var currentY = current.y;
-			dbMsg = "(" + currentX + " , " + currentY + ")";
-			dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
-			current.x = e.clientX - canvasX;
-			current.y = e.clientY- canvasY;
-			dbMsg += ",Mouse(" + current.x + " , " + current.y + ")";
+	/**
+	*mouseup/touchendポイントの動作
+	*/
+	function moveEnd(currentX,currentY,endX,endY) {
+		var dbMsg = "[moveEnd]drowMode=" + drowMode;
+		dbMsg += "(" + currentX + " , " + currentY + ")～(" + endX + " , " + endY + ")";
+		dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
+		if (drawing && drowMode == '') {
+			// drawing = false;
 			dbMsg += ",is_h_Mirror="+is_h_Mirror;
 			if(is_h_Mirror){
-				current.x = canvasWidth-current.x;
-				dbMsg += ">x>" + current.x;
+				endX = canvasWidth-endX;
+				dbMsg += ">x>" + endX;
 			}
 			dbMsg += ",isMirror="+isMirror;
 			if(isMirror){
-				current.y = canvasHeight-current.y;
-				dbMsg += ">y>" + current.y ;
+				endY = canvasHeight-endY;
+				dbMsg += ">y>" + endY ;
 			}
 			dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
-			drawLine(currentX, currentY, current.x, current.y, current.color , currentWidth , currentLineCap , 2 , true);
+			drawLine(currentX, currentY, endX, endY, current.color , currentWidth , currentLineCap , 2 , true);
 			dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
 			if(isComp && isAutoJudge){			//比較中
 				dbMsg += ",room=" + roomVal;
@@ -678,12 +701,103 @@
 					room:"/"+roomVal
 				});
 			}
-
+		}else if(drowMode == 'select_del'){									//選択範囲を消去
+			context.clearRect(startX,startY ,endX-startX, endY-startY);
+		}else{
+			context.strokeStyle = current.color;
+			dbMsg += ">>color=" + context.strokeStyle;
+			context.lineWidth = currentWidth;
+			dbMsg += ",width=" + context.lineWidth;
+			context.lineCap = currentLineCap;
+			dbMsg += ",lineCap=" + context.lineCap ;
+			if(drowMode == 'line'){
+				context.moveTo(startX,startY);									// 2.描画する位置を指定する
+				context.lineTo(endX,endY); 								// 3.指定座標まで線を引く
+				context.stroke();        											// 4.Canvas上に描画する
+			}else if(drowMode == 'trigone'){									//三角
+				context.lineWidth = currentWidth;
+				context.beginPath();
+				context.moveTo(startX+(endX-startX)/2,startY); 								// 3.指定座標まで線を引く
+				context.lineTo(startX,endY);									// 2.描画する位置を指定する
+				context.lineTo(endX,endY); 								// 3.指定座標まで線を引く
+				context.closePath();  //moveTo()で指定した始点に向けて線を引き、領域を閉じます。
+				context.strokeStyle = current.color; //枠線の色
+				context.stroke();
+				context.fillStyle='rgba(255,255,255,1)';//塗りつぶしの色
+				context.fill();
+			}else if(drowMode == 'rect'){										//矩形
+				context.strokeRect(startX, startY, endX-startX, endY-startY);
+			}else if(drowMode == 'oval'){										//楕円
+				var oxWidth = Math.abs(endX-startX);
+				var oxHight = Math.abs(endY-startY);
+				dbMsg += "範囲[" + oxWidth + "×" + oxHight + "]";
+				var radius= Math.max(oxWidth,oxHight)/2;
+				dbMsg += ",radius=" + radius;
+				var Aspect= oxHight/oxWidth;
+				dbMsg += ",Aspect=" + Aspect;
+				context.save();
+				if(Aspect < 1){
+					context.scale(1,Aspect);		//oxHight/oxWidth
+				}else{
+					Aspect= oxWidth/oxHight;
+					dbMsg += ">>" + Aspect;
+					context.scale(Aspect,1);		//oxHight/oxWidth
+				}
+				context.beginPath();
+				startX = Math.min(endX,startX);
+				startY = Math.min(endY,startY);
+				var stX = startX + oxWidth/2;
+				var stY = startY + oxHight/2;
+				dbMsg += "(" + stX + "," + stY + ")";
+				context.arc( stX , stY , radius, 0,  Math.PI*2, false);// x , y , 半径 , 開始角度 , 終了角度 , 時計回り
+				context.restore();
+			    context.stroke();
+			}
 		}
+		drawing = false;
 		myLog(dbMsg);
 		mobileLog(dbMsg);
-
 	}
+
+
+	function onMouseDown(event) {
+		var dbMsg = "[onMouseDown]drowMode=" + drowMode + ",drawing=" + drawing;;
+		canvasRect = document.getElementById('hitarea').getBoundingClientRect();
+		canvasX =canvasRect.left + window.pageXOffset;
+		canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
+		dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
+		current.x = event.clientX - canvasX;
+		current.y = event.clientY - canvasY;
+		dbMsg += ",Mouse(" + current.x + " , " + current.y + ")";
+		moveStart(current.x ,current.y);
+	}
+
+	function onMouseMove(event) {
+		var dbMsg = "[onMouseMove]drawing=" + drawing;
+			dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
+			var eX = event.clientX - canvasX;
+			var eY = event.clientY- canvasY;
+			dbMsg += ",Mouse(" + eX + " , " + eY + ")";
+			moveOccasion (eX,eY);
+	}
+
+	function onMouseUp(event) {
+		var dbMsg = "[onMouseUp]drawing=" + drawing;
+		var currentX = current.x;
+		var currentY = current.y;
+		dbMsg += "Mouse(" + currentX + " , " + currentY + ")";
+		var endX = event.clientX - canvasX;
+		var endY = event.clientY - canvasY;
+		// if(drowMode == 'select_del' || drowMode == 'rect' ){
+		// 	endX = event.clientX;
+		// 	endY = event.clientY;
+		// }
+
+		dbMsg += "～(" + endX + " , " + endY + ")";
+		myLog(dbMsg);
+		moveEnd(currentX,currentY,endX,endY);
+	}
+
 	function throttle(callback, delay) {
 		var previousCall = new Date().getTime();
 		return function() {
@@ -700,98 +814,102 @@
 	canvas.addEventListener('mouseup', onMouseUp, false);
 	canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
 
-	canvas.ontouchstart = function(event) { //画面に指が触れた
-		var dbMsg = "ontouchstart(" + drawing;
-		drawing = true;
-		jobSelect.options[4].disabled = false;										//もう一度
-		typeSelect.options[6].disabled = false;										//確定
+	// canvas.ontouchstart = function(event) { //画面に指が触れた
+	// 	var dbMsg = "ontouchstart(" + drawing;
+	// 	// drawing = true;
+	// 	// jobSelect.options[4].disabled = false;										//もう一度
+	// 	// typeSelect.options[6].disabled = false;										//確定
+	//
+	// 	canvasRect = document.getElementById('hitarea').getBoundingClientRect();
+	// 	canvasX =canvasRect.left + window.pageXOffset;
+	// 	canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
+	// 	dbMsg += ",canvas("+ canvasX + " , " + canvasY + ")";
+	// 	// canvasWidth = canvasRect.width;
+	// 	// canvasHeight = canvasRect.height;
+	// 	// dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
+	// 	var toucheX = event.touches[0].pageX-canvasX; //タッチしている湯便の本数文、イベントは発生する
+	// 	var toucheY = event.touches[0].pageY;
+	// 	dbMsg += "(" + toucheX + " , " + toucheY + ")";
+	// 	moveStart(toucheX,toucheY);
+	//
+	// 	// if(is_h_Mirror){
+	// 	// 	toucheX = canvasWidth-toucheX;
+	// 	// 	dbMsg += ">x>" +toucheX;
+	// 	// }
+	// 	// dbMsg += ",isMirror="+isMirror;
+	// 	// if(isMirror){
+	// 	// 	toucheY = canvasHeight-toucheY;
+	// 	// 	dbMsg += ">y>" + toucheY ;
+	// 	// }
+	// 	// current.x = toucheX;
+	// 	// current.y = toucheY;
+	// 	// drawLine( current.x,  current.y, current.x, current.y, current.color , currentWidth , currentLineCap , 0 , true);
+	// 	mobileLog(dbMsg);
+	// };
+	//
+	// canvas.ontouchmove = function(event) { //画面に指を触れたまま動かした
+	// 	var dbMsg = "[ontouchmove]drawing=" + drawing;
+	// 	if (drawing) {
+	// 		event.preventDefault(); // 画面のスクロールを防止する
+	// 		var toucheX = event.touches[0].pageX-canvasX;
+	// 		var toucheY = event.touches[0].pageY;
+	// 		dbMsg += "(" + toucheX + " , " + toucheY + ")";
+	// 		moveOccasion (toucheX,toucheY);
+	// 		// dbMsg += ",is_h_Mirror="+is_h_Mirror;
+	// 		// if(is_h_Mirror){
+	// 		// 	toucheX = canvasWidth-toucheX;
+	// 		// 	dbMsg += ">x>" + toucheX;
+	// 		// }
+	// 		// dbMsg += ",isMirror="+isMirror;
+	// 		// if(isMirror){
+	// 		// 	toucheY = canvasHeight-toucheY;
+	// 		// 	dbMsg += ">y>" + toucheY ;
+	// 		// }
+	// 		// dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
+	// 		// drawLine(current.x, current.y, toucheX, toucheY, current.color, currentWidth , currentLineCap , 2,true);
+	// 		// current.x = toucheX;
+	// 		// current.y = toucheY;
+	// 	}
+	// 	mobileLog(dbMsg);
+	// };
 
-		canvasRect = document.getElementById('hitarea').getBoundingClientRect();
-		canvasX =canvasRect.left + window.pageXOffset;
-		canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
-		dbMsg += ",canvas("+ canvasX + " , " + canvasY + ")";
-		canvasWidth = canvasRect.width;
-		canvasHeight = canvasRect.height;
-		dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
-		var toucheX = event.touches[0].pageX-canvasX; //タッチしている湯便の本数文、イベントは発生する
-		var toucheY = event.touches[0].pageY;
-		dbMsg += "(" + toucheX + " , " + toucheY + ")";
-		if(is_h_Mirror){
-			toucheX = canvasWidth-toucheX;
-			dbMsg += ">x>" +toucheX;
-		}
-		dbMsg += ",isMirror="+isMirror;
-		if(isMirror){
-			toucheY = canvasHeight-toucheY;
-			dbMsg += ">y>" + toucheY ;
-		}
-		current.x = toucheX;
-		current.y = toucheY;
-		drawLine( current.x,  current.y, current.x, current.y, current.color , currentWidth , currentLineCap , 0 , true);
-		myLog(dbMsg);
-	};
-
-	canvas.ontouchmove = function(event) { //画面に指を触れたまま動かした
-		var dbMsg = "[ontouchmove]drawing=" + drawing;
-		if (drawing) {
-			event.preventDefault(); // 画面のスクロールを防止する
-			var toucheX = event.touches[0].pageX-canvasX;
-			var toucheY = event.touches[0].pageY;
-			dbMsg += "(" + toucheX + " , " + toucheY + ")";
-			dbMsg += ",is_h_Mirror="+is_h_Mirror;
-			if(is_h_Mirror){
-				toucheX = canvasWidth-toucheX;
-				dbMsg += ">x>" + toucheX;
-			}
-			dbMsg += ",isMirror="+isMirror;
-			if(isMirror){
-				toucheY = canvasHeight-toucheY;
-				dbMsg += ">y>" + toucheY ;
-			}
-			dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
-			drawLine(current.x, current.y, toucheX, toucheY, current.color, currentWidth , currentLineCap , 2,true);
-			current.x = toucheX;
-			current.y = toucheY;
-		}
-		myLog(dbMsg);
-	};
-
-	canvas.ontouchend = function(event) { //画面から指を離した
-		var dbMsg = "[ontouchend]drawing=" + drawing;
-		if (drawing) {
-			drawing = false;
-			var currentX = current.x;
-			var currentY = current.y;
-			dbMsg += "(" + currentX + " , " + currentY + ")";
-			var toucheX = event.touches[0].pageX-canvasX;
-			var toucheY = event.touches[0].pageY;
-			dbMsg += "～(" + toucheX + " , " + toucheY+ ")";
-			dbMsg += ",is_h_Mirror="+is_h_Mirror;
-			if(is_h_Mirror){
-				toucheX= canvasWidth-toucheX;
-				dbMsg += ">x>" + toucheX;
-			}
-			dbMsg += ",isMirror="+isMirror;
-			if(isMirror){
-				toucheY = canvasHeight-toucheY;
-				dbMsg += ">y>" + toucheY ;
-			}
-			current.x = toucheX;
-			current.y = toucheY;
-			dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
-			drawLine(currentX, currentY, current.x, current.y, current.color,currentWidth , currentLineCap ,1, true);
-			// scoreDrow();
-		}
-		dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
-		if(isComp && isAutoJudge){			//比較中
-			dbMsg += ",room=" + roomVal;
-			socket.emit('drawend', {
-				room:"/"+roomVal
-			});
-		}
-		myLog(dbMsg);
-		// mobileLog(dbMsg);
-	};
+	// canvas.ontouchend = function(event) { //画面から指を離した
+	// 	var dbMsg = "[ontouchend]drawing=" + drawing;
+	// 	// if (drawing) {
+	// 	// 	drawing = false;
+	// 		var currentX = current.x;
+	// 		var currentY = current.y;
+	// 		dbMsg += "(" + currentX + " , " + currentY + ")";
+	// 		var toucheX = event.touches[0].pageX-canvasX;
+	// 		var toucheY = event.touches[0].pageY;
+	// 		dbMsg += "～(" + toucheX + " , " + toucheY+ ")";
+	// 		moveEnd(currentX,currentY,toucheX,toucheY);
+	// 	// 	dbMsg += ",is_h_Mirror="+is_h_Mirror;
+	// 	// 	if(is_h_Mirror){
+	// 	// 		toucheX= canvasWidth-toucheX;
+	// 	// 		dbMsg += ">x>" + toucheX;
+	// 	// 	}
+	// 	// 	dbMsg += ",isMirror="+isMirror;
+	// 	// 	if(isMirror){
+	// 	// 		toucheY = canvasHeight-toucheY;
+	// 	// 		dbMsg += ">y>" + toucheY ;
+	// 	// 	}
+	// 	// 	current.x = toucheX;
+	// 	// 	var endY = toucheY;
+	// 	// 	dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
+	// 	// 	drawLine(currentX, currentY, current.x, endY, current.color,currentWidth , currentLineCap ,1, true);
+	// 	// 	// scoreDrow();
+	// 	// }
+	// 	// dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
+	// 	// if(isComp && isAutoJudge){			//比較中
+	// 	// 	dbMsg += ",room=" + roomVal;
+	// 	// 	socket.emit('drawend', {
+	// 	// 		room:"/"+roomVal
+	// 	// 	});
+	// 	// }
+	// 	// myLog(dbMsg);
+	// 	mobileLog(dbMsg);
+	// };
 
 	function touchHandler(evennt) {
 		var dbMsg = "[touchHandler]";
@@ -799,35 +917,51 @@
 		dbMsg += "type="+evennt.type;
 		switch (evennt.type) {
 			case "touchstart" :
+				canvasRect = document.getElementById('hitarea').getBoundingClientRect();
+				canvasX =canvasRect.left + window.pageXOffset;
+				canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
+				dbMsg += ",canvas("+ canvasX + " , " + canvasY + ")";
+				var toucheX = event.touches[0].pageX-canvasX; //タッチしている湯便の本数文、イベントは発生する
+				var toucheY = event.touches[0].pageY;
+				dbMsg += "(" + toucheX + " , " + toucheY + ")";
+				moveStart(toucheX,toucheY);
 				break;
 			case "touchmove" :
+				if (drawing) {
+					event.preventDefault(); // 画面のスクロールを防止する
+					var toucheX = event.touches[0].pageX-canvasX;
+					var toucheY = event.touches[0].pageY;
+					dbMsg += "(" + toucheX + " , " + toucheY + ")";
+					moveOccasion (toucheX,toucheY);
+				}
 				break;
 			case "touchcancel" :
 				break;
 			case "touchend" :
-				// var touches = evennt.changedTouches;
-				if (drawing) {
-					drawing = false;
-					var currentX = current.x;
-					var currentY = current.y;
-					dbMsg += "(" + currentX + " , " + currentY + ")";
-					var toucheX = event.touches[0].pageX;
-					var toucheY = event.touches[0].pageY-canvasX;
-					dbMsg += "～(" + toucheX + " , " + toucheY + ")";
-					current.x = toucheX;
-					current.y = toucheY;
-					dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
-					drawLine(currentX, currentY, current.x, current.y, current.color,currentWidth , currentLineCap ,1, true);
-					// scoreDrow();
-				}
-				dbMsg += ",isComp="+isComp;
-				// mobileLog(dbMsg);
-				if(isComp){			//比較中
-					dbMsg += ",room=" + roomVal;
-					socket.emit('drawend', {
-						room:"/"+roomVal
-					});
-				}
+				var touches = evennt.changedTouches;
+				// if (drawing) {
+				// 	drawing = false;
+				var currentX = current.x;
+				var currentY = current.y;
+				dbMsg += "(" + currentX + " , " + currentY + ")";
+				var toucheX = event.touches[0].pageX;
+				var toucheY = event.touches[0].pageY-canvasX;
+				dbMsg += "～(" + toucheX + " , " + toucheY + ")";
+				moveEnd(currentX,currentY,toucheX,toucheY);
+							// 	current.x = toucheX;
+				// 	current.y = toucheY;
+				// 	dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
+				// 	drawLine(currentX, currentY, current.x, current.y, current.color,currentWidth , currentLineCap ,1, true);
+				// 	// scoreDrow();
+				// }
+				// dbMsg += ",isComp="+isComp;
+				// // mobileLog(dbMsg);
+				// if(isComp){			//比較中
+				// 	dbMsg += ",room=" + roomVal;
+				// 	socket.emit('drawend', {
+				// 		room:"/"+roomVal
+				// 	});
+				// }
 				break;
 		}
 	}
@@ -844,7 +978,14 @@
 		if ( data.y0 != data.y1 ) {
 			dbMsg += "," + (data.y0 - data.y1) + ")";
 		}
-		dbMsg += ",color=" + data.color+ ",width=" + data.width+ ",lineCap=" + data.lineCap+ ",action=" + data.action;
+		dbMsg += ",color=" + data.color+ ",width=" + data.width+ ",lineCap=" + data.lineCap+ ",action=" + data.action+ ",autojudge=" + data.autojudge;
+		current.color= data.color;
+		context.strokeStyle= data.color;
+		currentWidth= data.width;
+		context.lineCap= data.lineCap;
+		currentLineCap= data.lineCap;
+		isAutoJudge= data.autojudge;
+
 		drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color , data.width , data.lineCap , data.action , false);
 		// if( data.action==1){
 		// 	scoreStart();
@@ -898,11 +1039,11 @@
 
 		dbMsg += ",width=" + _width;
 		context.lineWidth = _width;
-		dbMsg += ">>context=" + context.lineWidth;
+		dbMsg += ">>_width=" + context.lineWidth;
 
 		dbMsg += ",lineCap=" + _lineCap;
 		context.lineCap = _lineCap;
-		dbMsg += ">>context=" + context.lineCap ;
+		dbMsg += ">>_lineCap=" + context.lineCap ;
 
 		dbMsg +=",action=" + action;
 		context.stroke();
@@ -921,8 +1062,9 @@
 				y1: y1 / h,
 				color: context.strokeStyle,
 				width: currentWidth,
-				lineCap:context.lineCap,
-				action:action
+				lineCap:currentLineCap,				//context.lineCap,
+				action:action,
+				autojudge:isAutoJudge
 			});
 		}
 		// if( action==1){
@@ -933,12 +1075,32 @@
 		}
 	}
 
+	/**
+	*全画面消去
+	*/
 	function allClear() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		var dbMsg = "[allClear]";
 		orgCount=0;
 		// myLog(dbMsg);
 	}
+
+	/**
+	*範囲選択開始
+	**/
+	function startAriaSelect() {
+		var dbMsg = "[startAriaSelect]";
+		myLog(dbMsg);
+	}
+
+	/**
+	*文字書込み
+	*/
+	function drowText() {
+		var dbMsg = "[drowText]";
+		myLog(dbMsg);
+	}
+
 
 	function colorPick() {
 		canvas.addEventListener('mousemove', colorPickBody);
@@ -1184,7 +1346,9 @@
 		myLog(dbMsg);
 	}
 
-	// Base64データをBlobデータに変換
+	/**
+	* Base64データをBlobデータに変換
+	*/
 	function Base64toBlob(base64){
 		var dbMsg = "[Base64toBlob]";
     // カンマで分割して以下のようにデータを分ける
@@ -1205,7 +1369,9 @@
 	    return blob;
 	}
 
-	// 画像のダウンロード
+	/**
+	* 画像のダウンロード
+	*/
 	function saveBlob(blob, fileName){
 		var dbMsg = "[saveBlob]";
 		dbMsg += "fileName=" + fileName;
@@ -1220,7 +1386,7 @@
 	    a.href = dataUrl;	    // ダウンロード用のURLセット
 	    a.download = fileName;	    // ファイル名セット
 	    a.dispatchEvent(event);	    // イベントの発火
-		 redrowOrigin(); 
+		 redrowOrigin();
 		myLog(dbMsg);
 	}
 

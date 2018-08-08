@@ -87,9 +87,9 @@
 						<div class="row" style="margin-left:1px;margin-top: 8px;margin-bottom: 12px;">
 							<span style="border-width: thick;border-style: ridge;padding: 7px;">
 								<span style="margin-left: 3px;margin-top: -8px;">鏡面動作</span>
-									<input type="checkbox" id="mirrorCB">上下
-									<input type="checkbox" id="mirror_h_CB" style="margin-left: 20px;">左右
-								</span>
+							<input type="checkbox" id="mirrorCB">上下
+							<input type="checkbox" id="mirror_h_CB" style="margin-left: 20px;">左右
+							</span>
 							<input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 5px;">トレース後に自動判定
 							<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 30px;">
 							<input type="button" id="dlog_bt" value="モーダル表示確認" style="height: 24px;border-radius: 4px;margin-left: 50px;">
@@ -140,10 +140,14 @@
 							<div id="editerAria">
 								<select id="typeSelect" size="1">
 									<option value="free">フリーハンド</option>
-									<option value="text">テキスト</option>
 									<option value="line">直線</option>
-									<option value="stamp">図形スタンプ</option>
-									<option value="erasre">消しゴム</option>
+									<option value="trigone">三角</option>
+									<option value="rect">矩形</option>
+									<option value="oval">楕円</option>
+									<option value="text">テキスト</option>
+									<option value="select_del">選択範囲を消去</option>
+									<!-- <option value="stamp">図形スタンプ</option>
+									<option value="erasre">消しゴム</option> -->
 									<option value="colorpic">カラーピッカー</option>
 									<option value="comp">確定</option>
 								</select>
@@ -323,8 +327,8 @@
 					if (-1 < urlStr.indexOf('127.0.0.1')) { //xamppでのテスト中は
 						// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
 						var wifiURL; //='<?php echo $_SERVER['REMOTE_ADDR']; ?>';
-						// var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
-						wifiURL = '192.168.3.14'; //自宅
+						var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
+						// wifiURL = '192.168.3.14'; //自宅
 						dbMsg += "　,wifiURL=" + wifiURL;
 						urlStr = urlStr.replace('127.0.0.1', wifiURL); //'http://192.168.3.10:3080'
 					} else {

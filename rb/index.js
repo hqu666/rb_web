@@ -19,14 +19,30 @@ function myLog(dbMsg) {
 *転送処理
 */
 function sendSocet(emName ,socket, data){
-    var dbMsg = "[sendSocet]emName=" + emName;          //ukTPEyxXW_HOx_eoAAAAなど
     var roomVal = data.room;
-    dbMsg += ",roomVal=" + roomVal;
+    var dbMsg ="room=" + roomVal;
+    dbMsg += "," + socket.id;
+    dbMsg += "；" + emName;
+
     if(roomVal != ""){                                                  //room指定
         socket.join(roomVal)
         io.sockets.in(roomVal).emit(emName, data);                        //③指定のルームに属するクライアントに送る
     }else{                                                              //何も指定が無ければ
         socket.emit(emName, data);                                      //全員にブロードキャスト
+    }
+    var act = -1;
+    if(emName == 'drawing'){
+        act = data.action * 1;
+    }
+    if(act != 1){
+        if(emName == 'drawing'){
+            dbMsg += "(" + data.x0 + " , " + data.y0 + ")～(" + data.x1 + " , " + data.y1 + ")";
+            dbMsg +=  data.color + "," + data.width + "px,lineCap=" + data.lineCap + ",action= " + data.action;
+        }else if(data.width){
+            dbMsg += ",width=" + data.width ;
+        }else if(emName == 'changeLineWidth'){
+            dbMsg += ",width=" + data.width ;
+        }
         myLog(dbMsg);
     }
 }
@@ -38,14 +54,15 @@ var socketId;
 function onConnection(socket){
     var dbMsg = "[onConnection]socket=" + socket.id;          //ukTPEyxXW_HOx_eoAAAAなど
     socketId=socket.id;
+
     socket.on('drawing', (data) => {                          //room　connect？
-        dbMsg += "[socket.drawing]" + socket.id+",room=" + data.room;
-         sendSocet('drawing' ,socket, data);
+        dbMsg += "[socket.drawing]";
+        sendSocet('drawing' ,socket, data);
         dbMsg ="";
     });
 
     socket.on('sendcomp', (data) => {                          //room　connect？
-        var dbMsg = "[sendcomp]room=" + data.room;
+        var dbMsg = "[sendcomp]";
         sendSocet('sendcomp' , socket , data);
     });
 
@@ -55,66 +72,64 @@ function onConnection(socket){
     });
 
     socket.on('changeColor', (data) => {                          //room　connect？
-        var dbMsg = "[changeColor]room=" + data.room;
+        var dbMsg = "[changeColor]";
         sendSocet('changeColor' , socket , data);
     });
 
     socket.on('changeLineWidth', (data) => {                          //room　connect？
-        var dbMsg = "[changeLineWidth]room=" + data.room;
+        var dbMsg = "[changeLineWidth]" ;
         sendSocet('changeLineWidth' , socket , data);
     });
 
     socket.on('changeLineCap', (data) => {                          //room　connect？
-        var dbMsg = "[changeLineCap]room=" + data.room;
+        var dbMsg = "[changeLineCap]";
         sendSocet('changeLineCap' , socket , data);
     });
 
     socket.on('setmirror', (data) => {                          //room　connect？
-        var dbMsg = "[setmirror]room=" + data.room;
+        var dbMsg = "[setmirror]" ;
         sendSocet('setmirror' , socket , data);
     });
 
     socket.on('setmirror_h', (data) => {                          //room　connect？
-        var dbMsg = "[setmirror_h]room=" + data.room;
+        var dbMsg = "[setmirror_h]";
         sendSocet('setmirror_h' , socket , data);
     });
 
     socket.on('setautojudge', (data) => {                          //room　connect？
-        var dbMsg = "[setautojudge]room=" + data.room;
+        var dbMsg = "[setautojudge]" ;
         sendSocet('setautojudge' , socket , data);
     });
 
     socket.on('allclear', (data) => {                          //room　connect？
-        dbMsg += "[socket.allclear]" + socket.id+",room=" + data.room;
+        var dbMsg = "[socket.allclear]";
         sendSocet('allclear' , socket , data);
     });
 
-    socket.on('connection', (socket) => {                          //room　connect？
+    socket.on('connection', (socket) => {                                       //標準コールバック確認中
         var dbMsg = "[connection]socket=" + socket.id;          //ukTPEyxXW_HOx_eoAAAAなど
         myLog(dbMsg);
     });
 
-    socket.on('conect_start', (config) => {             //game-start
+    socket.on('conect_start', (config) => {                                     //onloadから呼ばれる接続開始
         var dbMsg = "[conect_start]nickname=" + config.nickname;                //タイムスタンプ
-        // dbMsg += ",socket=" + socket.id;
-        // var roomVal = "/" + config.nickname;                                        //
-        // dbMsg += ",roomVal=" + roomVal;
-        // var urlStr = config.href;                                               //この時点のhref
-        // dbMsg += ",href=" + urlStr;
-        //  if(-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')){ //xamppでのテストで無ければ
-        //     isDebug =false;                                                     //デバッグログを吐かせない
-        // }
+        dbMsg += ",socket=" + socket.id;
+        var roomVal = "/" + config.nickname;                                        //
+        dbMsg += ",roomVal=" + roomVal;
+        var urlStr = config.href;                                               //この時点のhref
+        dbMsg += ",href=" + urlStr;
+         if(-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')){ //xamppでのテストで無ければ
+            isDebug =false;                                                     //デバッグログを吐かせない
+        }
        sendSocet('conect_start',socket, config.nickname);
-        myLog(dbMsg);
     });
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', () => {             //各クライアントが接続を解除した場合に発生する標準コールバック
         var dbMsg = "[disconnect]" ;
-        var sID =  socket.id;
-        dbMsg += ",socket=" + sID;
+        dbMsg += ",socket=" + socket.id;
         myLog(dbMsg);
     });
-    myLog(dbMsg);
+    // myLog(dbMsg);
 }
 io.on('connection', onConnection);          //onConnectionのソースを送る
 //urlの取得
