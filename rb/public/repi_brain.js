@@ -69,6 +69,10 @@
 	var originPixcel;															//読込み、作成確定直後の;scoreStartRadyで初期化
 	var startX =0;
 	var startY =0;
+	var drowTextStr ="";
+	var drowTextFont ="ＭＳ Ｐゴシック";
+	var drowTextSize ="80px";
+
 
 	function myLog(dbMsg) {
 		if(isDebug){
@@ -378,6 +382,7 @@
 				drowMode =currenttype;
 				break;
 			case "text":												//テキスト
+				drowMode =currenttype;
 				drowText();
 				// var res = confirm('作成中です。');
 				// if( res == true ) {
@@ -641,6 +646,20 @@
 			}
 			drawLine( eX,  eY, eX, eY, current.color , currentWidth , currentLineCap , 0 , true);
 	          //htmlの場合は不要、Androidネイティブは書き出しでパスを生成するので必要    //一点しかないので始点終点とも同じ座標を渡すし
+		}else if(drowMode == 'text'){
+			dbMsg += "drowTextStr="+drowTextStr;
+			dbMsg += ";Width="+currentWidth +",color="+current.color;
+		 	if(drowTextStr != ""){
+				context.lineWidth = currentWidth;
+				context.fillStyle = current.color;						// ,
+				dbMsg += ",drowTextSize="+drowTextSize +",drowTextFont="+drowTextFont;
+				context.font = drowTextSize + " " + drowTextFont;					//サイズとフォント
+				context.fillText(drowTextStr, eX, eY);
+			}
+			drowMode ="";
+			drawing = false;
+			typeSelect.options[0].selected = true;										//確定
+
 		}else{
 			context.beginPath();     // 1.Pathで描画を開始する
 		}
@@ -1098,9 +1117,41 @@
 	*/
 	function drowText() {
 		var dbMsg = "[drowText]";
+		document.getElementById("modalTitol").innerHTML = "文字を書き込みます";
+		document.getElementById("modalComent").innerHTML = "書き込む文字を入力して確定ボタンをクリックして下さい。";
+		document.getElementById("modalImgList").style.display="none";			 // 編集ツール表示
+		document.getElementById("progressBase").style.display="none";
+		document.getElementById("madalInput").style.display="inline-block";			 // 入力ツール表示
+		dbMsg += "drowTextStr="+drowTextStr;
+		if(drowTextStr != ""){
+			document.getElementById("madalInput1").value = drowTextStr;
+		}
+		$('#modal_box').modal('show');
+
 		myLog(dbMsg);
 	}
 
+	fontSelect.onchange = function () {
+		var dbMsg = "[fontSelect]";
+		drowTextFont = this.value
+		dbMsg += ",drowTextFont="+ drowTextFont;
+		myLog(dbMsg);
+	}
+
+	fontSizeSelect.onchange = function () {
+		var dbMsg = "[fontSizeSelect]";
+		drowTextSize = this.value
+		dbMsg += ",drowTextSize="+ drowTextSize;
+		myLog(dbMsg);
+	}
+
+	document.getElementById("modal_sum").onclick = function (){
+		var dbMsg = "[modal_sum]";
+		drowTextStr = $("#madalInput1").val();
+		dbMsg += "drowTextStr="+drowTextStr;
+		$('#modal_box').modal('hide');
+		myLog(dbMsg);
+	}
 
 	function colorPick() {
 		canvas.addEventListener('mousemove', colorPickBody);

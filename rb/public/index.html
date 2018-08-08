@@ -34,7 +34,7 @@
 								タイトル
 						</div>
 					</div>
-					<div class="modal-body">
+					<div class="modal-body"  style="margin-left: 5px;">
 						<div class="row" id="modalComent">
 							コメント
 						</div>
@@ -45,6 +45,36 @@
 							<img class="col-sm-2" src="/stereotype/st004.png" width="20%" height="20%">
 							<img class="col-sm-2" src="/stereotype/st005.png" width="20%" height="20%">
 						</div>
+						<div class="row" id="madalInput">
+							<span style="margin-left: 5px;">
+								<!-- //class="form-group"  -->
+		                        <label for="madalInput1">このダイアログを閉じた後、クリックした所に文字を書き込みます。</label>
+		                        <input type="text" class="form-control" id="madalInput1" placeholder="キャンセルは右上のクローズボックスで">
+		                    </span>
+							<span>
+								<select id="fontSelect" size="1">
+									<option value="ＭＳ Ｐゴシック">ＭＳ Ｐゴシック</option>
+									<option value="HG正楷書体-PRO">HG正楷書体-PRO"</option>
+									<option value="fantasy">fantasy</option>
+									<option value="cursive">cursive</option>
+									<option value="fantasy">fantasy</option>
+
+									<option value="cursive">cursive</option>
+									<option value="fantasy">fantasy</option>
+									<option value="monospace">monospace</option>
+									<option value="Osaka-Mono">Osaka-Mono</option>
+								</select>
+								<select id="fontSizeSelect" size="1">
+									<option value="40px">40px</option>
+									<option value="60px">60px</option>
+									<option value="80px" >80px</option>
+									<option value="120px">120px</option>
+									<option value="240px" selected>240px</option>
+									<option value="400px">400px</option>
+									<option value="600px">600px</option>
+								</select>
+							</span>
+						</div>
 
 						<div id="progressBase" class="progress" style="margin: 5px;">
 							<div id="progressBs" class="progress-bar" role="progressbar" style="width: 0%;">
@@ -53,6 +83,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="modal_sum" data-dismiss="modal">確定</button>
 						<!-- <button class="btn btn-default" data-dismiss="modal">
 					            data-dismiss="modal"
 					         </button>
