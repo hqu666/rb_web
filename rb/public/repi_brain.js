@@ -43,7 +43,7 @@
 	var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
 	var orgCount=0;
 	var compCount=0;
-	var currentWidth=10;
+	var currentWidth=15;														//セレクタの他、stereoTypeCheckで読み込んだ画像に合わせて変更
 	var currentLineCap="round";
 	var directionVal = 0;														//回転宝庫儒
 	var orgColor='#00ff00';
@@ -53,9 +53,8 @@
 	var oGreen;
 	var oBule;
 	colorPalet.value=orgColor;
-	lineWidthSelect.value= 10;				//currentWidth;
-	currentWidth =  lineWidthSelect.value;
-	currentLineCap =  "round";
+	lineWidthSelect.value= currentWidth;				//currentWidth;
+	lineCapSelect.value= currentLineCap;
 	var isErasre =false;
 	var erasreColor='#ffffff';
 
@@ -223,21 +222,8 @@
 			jobSelect.options[4].disabled = true;
 		}
 		document.getElementById('files').style.display="none";
-		// canvasRect = document.getElementById('hitarea').getBoundingClientRect();
-		// canvasX =canvasRect.left + window.pageXOffset;
-		// canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
-		// dbMsg += ",canvas("+ canvasX + " , " + canvasY + ")";
-	 	// var canvasWidth = canvasRect.width;
-		// var canvasHeight = canvasRect.height;
-		// dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
-		//  canvasHeight = canvasWidth*9/16;
-		// dbMsg += ">>" + canvasHeight + "]";
-		// document.getElementById('hitarea').style.height = canvasHeight;
 		if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
 			isMobile=true;				//現在使用しているのはスマホ
-			canvas.addEventListener('touchstart', touchHandler, false);
-			canvas.addEventListener('touchmove', touchHandler, false);
-			canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
 			// window.directions=0;			//this,window	>>cannat CET;0
 			// window.location = 0;
 		}else{
@@ -256,12 +242,17 @@
 		// 	href:location.href +""
 		// });
 		var roomPostion = urlStr.indexOf('room');
-		dbMsg += "　,roomPostion=" + roomPostion + "/" + urlStr.length;
-		if (-1 < roomPostion) { //セッションコード未定；アクセス直後
+		var reciverPostion = urlStr.indexOf('reciver');
+		dbMsg += "　,roomPostion=" + roomPostion + "/" + urlStr.length+ ";reciverPostion" + reciverPostion;
+		if (-1 < roomPostion && -1==reciverPostion) { //セッションコード未定；アクセス直後
 			srcName ="/stereotype/st001.png";			 // current.color = e.target.className.split(' ')[1];
 			dbMsg += ",src=" + srcName;
 		   bitmapRead(srcName);
 		}
+		if (-1 <reciverPostion) {						//レシーバーの時は
+			isComp =true;								//強制的に評価中
+		}
+
 		// mobileLog(dbMsg);
 		myLog(dbMsg);
 	});
@@ -422,8 +413,7 @@
 	lineWidthSelect.onchange = function () {
 		var dbMsg = "[lineWidthSelect]";
 		dbMsg += ",room=" + roomVal;
-		var selectWidth = this.value
-		currentWidth =  selectWidth;
+		currentWidth =  this.value;
 		dbMsg += ",selectWidth="+ currentWidth;
 		socket.emit('changeLineWidth', {
 			room : "/" + roomVal ,
@@ -600,7 +590,7 @@
 		var dbMsg = "recive:changeLineWidth;";
 		currentWidth = data.width;
 		dbMsg += "="+currentWidth;
-		lineWidthSelect.value=currentWidth;
+		lineWidthSelect.value=currentWidth;										//セレクタの表示も変更
 		myLog(dbMsg);
 	});
 
@@ -806,7 +796,9 @@
 		}
 		drawing = false;
 		myLog(dbMsg);
+		// isSmaphoDebug =true;
 		mobileLog(dbMsg);
+		// isSmaphoDebug =false;
 	}
 
 
@@ -864,107 +856,14 @@
 	canvas.addEventListener('mouseup', onMouseUp, false);
 	canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
 
-	// canvas.ontouchstart = function(event) { //画面に指が触れた
-	// 	var dbMsg = "ontouchstart(" + drawing;
-	// 	// drawing = true;
-	// 	// jobSelect.options[4].disabled = false;										//もう一度
-	// 	// typeSelect.options[6].disabled = false;										//確定
-	//
-	// 	canvasRect = document.getElementById('hitarea').getBoundingClientRect();
-	// 	canvasX =canvasRect.left + window.pageXOffset;
-	// 	canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
-	// 	dbMsg += ",canvas("+ canvasX + " , " + canvasY + ")";
-	// 	// canvasWidth = canvasRect.width;
-	// 	// canvasHeight = canvasRect.height;
-	// 	// dbMsg += "["+ canvasWidth + " × " + canvasHeight + "]";
-	// 	var toucheX = event.touches[0].pageX-canvasX; //タッチしている湯便の本数文、イベントは発生する
-	// 	var toucheY = event.touches[0].pageY;
-	// 	dbMsg += "(" + toucheX + " , " + toucheY + ")";
-	// 	moveStart(toucheX,toucheY);
-	//
-	// 	// if(is_h_Mirror){
-	// 	// 	toucheX = canvasWidth-toucheX;
-	// 	// 	dbMsg += ">x>" +toucheX;
-	// 	// }
-	// 	// dbMsg += ",isMirror="+isMirror;
-	// 	// if(isMirror){
-	// 	// 	toucheY = canvasHeight-toucheY;
-	// 	// 	dbMsg += ">y>" + toucheY ;
-	// 	// }
-	// 	// current.x = toucheX;
-	// 	// current.y = toucheY;
-	// 	// drawLine( current.x,  current.y, current.x, current.y, current.color , currentWidth , currentLineCap , 0 , true);
-	// 	mobileLog(dbMsg);
-	// };
-	//
-	// canvas.ontouchmove = function(event) { //画面に指を触れたまま動かした
-	// 	var dbMsg = "[ontouchmove]drawing=" + drawing;
-	// 	if (drawing) {
-	// 		event.preventDefault(); // 画面のスクロールを防止する
-	// 		var toucheX = event.touches[0].pageX-canvasX;
-	// 		var toucheY = event.touches[0].pageY;
-	// 		dbMsg += "(" + toucheX + " , " + toucheY + ")";
-	// 		moveOccasion (toucheX,toucheY);
-	// 		// dbMsg += ",is_h_Mirror="+is_h_Mirror;
-	// 		// if(is_h_Mirror){
-	// 		// 	toucheX = canvasWidth-toucheX;
-	// 		// 	dbMsg += ">x>" + toucheX;
-	// 		// }
-	// 		// dbMsg += ",isMirror="+isMirror;
-	// 		// if(isMirror){
-	// 		// 	toucheY = canvasHeight-toucheY;
-	// 		// 	dbMsg += ">y>" + toucheY ;
-	// 		// }
-	// 		// dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
-	// 		// drawLine(current.x, current.y, toucheX, toucheY, current.color, currentWidth , currentLineCap , 2,true);
-	// 		// current.x = toucheX;
-	// 		// current.y = toucheY;
-	// 	}
-	// 	mobileLog(dbMsg);
-	// };
-
-	// canvas.ontouchend = function(event) { //画面から指を離した
-	// 	var dbMsg = "[ontouchend]drawing=" + drawing;
-	// 	// if (drawing) {
-	// 	// 	drawing = false;
-	// 		var currentX = current.x;
-	// 		var currentY = current.y;
-	// 		dbMsg += "(" + currentX + " , " + currentY + ")";
-	// 		var toucheX = event.touches[0].pageX-canvasX;
-	// 		var toucheY = event.touches[0].pageY;
-	// 		dbMsg += "～(" + toucheX + " , " + toucheY+ ")";
-	// 		moveEnd(currentX,currentY,toucheX,toucheY);
-	// 	// 	dbMsg += ",is_h_Mirror="+is_h_Mirror;
-	// 	// 	if(is_h_Mirror){
-	// 	// 		toucheX= canvasWidth-toucheX;
-	// 	// 		dbMsg += ">x>" + toucheX;
-	// 	// 	}
-	// 	// 	dbMsg += ",isMirror="+isMirror;
-	// 	// 	if(isMirror){
-	// 	// 		toucheY = canvasHeight-toucheY;
-	// 	// 		dbMsg += ">y>" + toucheY ;
-	// 	// 	}
-	// 	// 	current.x = toucheX;
-	// 	// 	var endY = toucheY;
-	// 	// 	dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
-	// 	// 	drawLine(currentX, currentY, current.x, endY, current.color,currentWidth , currentLineCap ,1, true);
-	// 	// 	// scoreDrow();
-	// 	// }
-	// 	// dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
-	// 	// if(isComp && isAutoJudge){			//比較中
-	// 	// 	dbMsg += ",room=" + roomVal;
-	// 	// 	socket.emit('drawend', {
-	// 	// 		room:"/"+roomVal
-	// 	// 	});
-	// 	// }
-	// 	// myLog(dbMsg);
-	// 	mobileLog(dbMsg);
-	// };
-
+/***/
 	function touchHandler(evennt) {
 		var dbMsg = "[touchHandler]";
 		evennt.preventDefault();
 		dbMsg += "type="+evennt.type;
+		// var toucheX = event.touches[0].pageX-canvasX; //タッチしている湯便の本数文、イベントは発生する
+		// var toucheY = event.touches[0].pageY;
+		// dbMsg += "(" + toucheX + " , " + toucheY + ")";
 		switch (evennt.type) {
 			case "touchstart" :
 				canvasRect = document.getElementById('hitarea').getBoundingClientRect();
@@ -974,6 +873,7 @@
 				var toucheX = event.touches[0].pageX-canvasX; //タッチしている湯便の本数文、イベントは発生する
 				var toucheY = event.touches[0].pageY;
 				dbMsg += "(" + toucheX + " , " + toucheY + ")";
+				mobileLog(dbMsg);
 				moveStart(toucheX,toucheY);
 				break;
 			case "touchmove" :
@@ -989,32 +889,31 @@
 				break;
 			case "touchend" :
 				var touches = evennt.changedTouches;
+				dbMsg += ",touches=" + touches;
 				// if (drawing) {
-				// 	drawing = false;
 				var currentX = current.x;
 				var currentY = current.y;
-				dbMsg += "(" + currentX + " , " + currentY + ")";
-				var toucheX = event.touches[0].pageX;
-				var toucheY = event.touches[0].pageY-canvasX;
-				dbMsg += "～(" + toucheX + " , " + toucheY + ")";
+				dbMsg += ",current(" + currentX + " , " + currentY + ")";
+				var toucheX =currentX+1;
+				var toucheY = currentY+1;
+				if(event.touches[0]){
+					toucheX = event.touches[0].pageX-canvasX;
+					toucheY = event.touches[0].pageY;
+					dbMsg += "(" + toucheX + " , " + toucheY + ")";
+				}
+				// isSmaphoDebug =true;
+				mobileLog(dbMsg);
+				// isSmaphoDebug =false;
 				moveEnd(currentX,currentY,toucheX,toucheY);
 							// 	current.x = toucheX;
-				// 	current.y = toucheY;
-				// 	dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
-				// 	drawLine(currentX, currentY, current.x, current.y, current.color,currentWidth , currentLineCap ,1, true);
-				// 	// scoreDrow();
-				// }
-				// dbMsg += ",isComp="+isComp;
-				// // mobileLog(dbMsg);
-				// if(isComp){			//比較中
-				// 	dbMsg += ",room=" + roomVal;
-				// 	socket.emit('drawend', {
-				// 		room:"/"+roomVal
-				// 	});
-				// }
 				break;
 		}
+
 	}
+
+	canvas.addEventListener('touchstart', touchHandler, false);
+	canvas.addEventListener('touchmove', touchHandler, false);
+	canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
 
 	//drawingで受信したデータを書き込む/////////////////////////////////////イベント反映
 	function onDrawingEvent(data) {
@@ -1031,7 +930,7 @@
 		dbMsg += ",color=" + data.color+ ",width=" + data.width+ ",lineCap=" + data.lineCap+ ",action=" + data.action+ ",autojudge=" + data.autojudge;
 		current.color= data.color;
 		context.strokeStyle= data.color;
-		currentWidth= data.width;
+		// currentWidth= data.width;
 		context.lineCap= data.lineCap;
 		currentLineCap= data.lineCap;
 		isAutoJudge= data.autojudge;
@@ -1440,11 +1339,8 @@
 	*/
 	function Base64toBlob(base64){
 		var dbMsg = "[Base64toBlob]";
-    // カンマで分割して以下のようにデータを分ける
-	    // tmp[0] : データ形式（data:image/png;base64）
-	    // tmp[1] : base64データ（iVBORw0k～）
 		dbMsg += ",base64=" + base64.length;
-	    var tmp = base64.split(',');
+	    var tmp = base64.split(',');    // カンマで分割して以下のようにデータを分ける; tmp[0] : データ形式（data:image/png;base64）/ tmp[1] : base64データ（iVBORw0k～）
 	    var data = atob(tmp[1]);											    // base64データの文字列をデコード
 		var mime = tmp[0].split(':')[1].split(';')[0];	    					// tmp[0]の文字列（data:image/png;base64）からコンテンツタイプ（image/png）部分を取得
 		dbMsg += ",mime=" +mime;
@@ -1594,22 +1490,20 @@
 			dbMsg += ">最多lineWidth>"+ lineWidth;
 			if(lineWidth<5){
 				lineWidth =5;
-			}else if(lineWidth<15){
+			}else if(lineWidth<11){
 					lineWidth =10;
-			}else if(lineWidth<25){
-					lineWidth =20;
-			}else if(25<lineWidth){
-					lineWidth =30;
+			}else {
+					lineWidth ++;
 			}
 			currentWidth=lineWidth;
 			dbMsg += ">>"+ currentWidth;
 			lineWidthSelect.value=currentWidth;
 			dbMsg += "；Y軸上"+widthrray[0].value+"個所";
 			dbMsg += ",room=" + roomVal;
-			socket.emit('changeLineWidth', {
-				room : "/" + roomVal ,
-				width:currentWidth
-			});
+			// socket.emit('changeLineWidth', {
+			// 	room : "/" + roomVal ,
+			// 	width:currentWidth
+			// });
 		}
 		scoreStartRady();
 		if(isDebug){
@@ -1676,18 +1570,16 @@
 		dbMsg += ">retRGB>"+ retRGB;		//rgb(255, 0, 255)
 		compColor =rgb2hex(retRGB);
 		current.color=compColor;
-		dbMsg += ">>"+ current.color+ "," +currentWidth+ "," +currentLineCap;
+		dbMsg += ">送信値>"+ current.color+ "," +currentWidth+ "," +currentLineCap;
 		// dbMsg +=",emit=" + emit;
 		// if (emit) {
 		dbMsg += ",room=" + roomVal;
-			socket.emit('sendcomp', {
-				room : "/" + roomVal ,
-				color: compColor,
-				width: currentWidth,
-				lineCap:currentLineCap
-			});
-		// }
-
+		socket.emit('sendcomp', {
+			room : "/" + roomVal ,
+			color: compColor,
+			width: currentWidth,
+			lineCap:currentLineCap
+		});
 		myLog(dbMsg);
 	}
 /**

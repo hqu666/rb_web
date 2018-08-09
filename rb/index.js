@@ -7,7 +7,9 @@ const io = require('socket.io')(http);                                         /
 const port = process.env.PORT || 3080;
 dbMsg += ",http="+ http+",io="+ io+",port="+ port;
 app.use(express.static(__dirname + '/public'));                                 //コンテンツの在処
-
+var currentColor='#00ff00';
+var currentWidth=10;
+var currentLineCap="round";
 var isDebug =true;                                                              //console出力
 function myLog(dbMsg) {
     if(isDebug){
@@ -34,14 +36,22 @@ function sendSocet(emName ,socket, data){
     if(emName == 'drawing'){
         act = data.action * 1;
     }
-    if(act != 1){
+    if(act != 1){               //move以外の座標比
         if(emName == 'drawing'){
             dbMsg += "(" + data.x0 + " , " + data.y0 + ")～(" + data.x1 + " , " + data.y1 + ")";
-            dbMsg +=  data.color + "," + data.width + "px,lineCap=" + data.lineCap + ",action= " + data.action;
-        }else if(data.width){
+            // dbMsg +=  data.color + "," + data.width + "px,lineCap=" + data.lineCap + ",action= " + data.action;
+        }
+        if(data.color){
+            dbMsg += ",color=" + data.color ;
+        }
+        if(data.width){
             dbMsg += ",width=" + data.width ;
-        }else if(emName == 'changeLineWidth'){
-            dbMsg += ",width=" + data.width ;
+        }
+        if(data.lineCap){
+            dbMsg += ",lineCap=" + data.lineCap ;
+        }
+        if(data.action){
+            dbMsg += ",action=" + data.action ;
         }
         myLog(dbMsg);
     }
@@ -63,6 +73,9 @@ function onConnection(socket){
 
     socket.on('sendcomp', (data) => {                          //room　connect？
         var dbMsg = "[sendcomp]";
+        currentColor = data.color;
+        currentWidth = data.width;
+        currentLineCap = data.lineCap;
         sendSocet('sendcomp' , socket , data);
     });
 
@@ -111,17 +124,22 @@ function onConnection(socket){
         myLog(dbMsg);
     });
 
-    socket.on('conect_start', (config) => {                                     //onloadから呼ばれる接続開始
-        var dbMsg = "[conect_start]nickname=" + config.nickname;                //タイムスタンプ
+    socket.on('conect_start', (data) => {                                     //onloadから呼ばれる接続開始
+        var dbMsg = "[conect_start]nickname=" + data.room;                //タイムスタンプ
         dbMsg += ",socket=" + socket.id;
-        var roomVal = "/" + config.nickname;                                        //
+        var roomVal = "/" + data.room;                                        //
         dbMsg += ",roomVal=" + roomVal;
-        var urlStr = config.href;                                               //この時点のhref
+        var urlStr = data.href;                                               //この時点のhref
         dbMsg += ",href=" + urlStr;
          if(-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')){ //xamppでのテストで無ければ
             isDebug =false;                                                     //デバッグログを吐かせない
         }
-       sendSocet('conect_start',socket, config.nickname);
+        // var data;
+        // data.room = data.nickname;
+        data.color = currentColor;
+        data.width = currentWidth;
+        data.lineCap = currentLineCap;
+        sendSocet('conect_start',socket, data);
     });
 
     socket.on('disconnect', () => {             //各クライアントが接続を解除した場合に発生する標準コールバック

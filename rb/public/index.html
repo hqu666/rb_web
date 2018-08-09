@@ -192,7 +192,7 @@
 									<option value="rect">矩形</option>
 									<option value="oval">楕円</option>
 									<option value="text">テキスト</option>
-									<option value="erasre">消しゴム</option> 
+									<option value="erasre">消しゴム</option>
 									<option value="select_del">選択範囲を消去</option>
 									<!-- <option value="stamp">図形スタンプ</option>
 									-->
@@ -271,6 +271,9 @@
 			var ua;
 			var isMobile = false; //現在使用しているのはスマホ
 			var urlStr;
+			var currentColor = '#00ff00';
+			var currentWidth = 10;
+			var currentLineCap = "round";
 
 			function myLog(dbMsg) {
 				if (isDebug) {
@@ -350,6 +353,13 @@
 				dbMsg += "　,hash=" + hash;
 				ua = navigator.userAgent;
 				dbMsg += ",ua=" + ua;
+				if (ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod') > -1 || ua.indexOf('Android') > -1 || ua.indexOf('Mobile') > -1) {
+					isMobile = true; //現在使用しているのはスマホ
+					// openWindow(urlStr,"myWindow");
+					// // if (hitarea.requestFullscreen) {
+					//   hitarea.requestFullscreen();
+					// // }
+				}
 				// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
 				// dbmsg += "　,ipAddress="+ipAddress;
 				var tframe = document.getElementById("tframe");
@@ -365,7 +375,7 @@
 				dbMsg += "　,roomPostion=" + roomPostion + "/" + urlStr.length;
 				if (-1 == roomPostion) { //セッションコード未定；アクセス直後
 					socket.emit('conect_start', {
-						nickname: retNowStr(), //roomへ
+						room: retNowStr(), //roomへ
 						href: location.href //この時点のhref
 					});
 				}
@@ -412,13 +422,6 @@
 				// document.getElementById("allclear").click(); //リロード時の消去
 
 				var hitarea = document.getElementById('hitarea');
-				if (ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod') > -1 || ua.indexOf('Android') > -1 || ua.indexOf('Mobile') > -1) {
-					isMobile = true; //現在使用しているのはスマホ
-					// openWindow(urlStr,"myWindow");
-					// // if (hitarea.requestFullscreen) {
-					//   hitarea.requestFullscreen();
-					// // }
-				}
 
 				var canvasRect = hitarea.getBoundingClientRect();
 				var canvasX = canvasRect.left + window.pageXOffset;
@@ -442,7 +445,6 @@
 				if (!dbMsg) {
 					document.getElementById("footer").style.display = "none";
 				}
-
 				myLog(dbMsg)
 				mobileLog(dbMsg)
 			}
@@ -450,13 +452,22 @@
 			socket.on('conect_start', function(data) {
 				var dbMsg = "[recive:conect_start]";
 				dbMsg += ",data=" + data;
+				currentColor = data.color;
+				currentWidth = data.width;
+				currentLineCap = data.lineCap;
 				//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
 				// var portName = ':3080';//課題；ポート取得
 				// urlStr = urlStr.replace(portName, "/" +  data +　portName);
-				var UrlPparam = "?room=" + data; // "?sessid="+  data.socket.transport.sessid+"?transport="+socket.socket.transport.name;		// "?sesion="
+				var UrlPparam = "?room=" + data.room; // "?sessid="+  data.socket.transport.sessid+"?transport="+socket.socket.transport.name;		// "?sesion="
 				urlStr += UrlPparam; //		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
-				location.href = urlStr; //再起動
-				myLog(dbMsg);
+				if (isMobile) {
+					var optionVal = 'location=no,toolbar=no,menubar=no';
+					mobileLog(dbMsg)
+					window.open(urlStr, "操作画面", optionVal);
+				} else {
+					myLog(dbMsg);
+					location.href = urlStr; //再起動
+				}
 			});
 
 
