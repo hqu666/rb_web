@@ -7,9 +7,11 @@ const io = require('socket.io')(http);                                         /
 const port = process.env.PORT || 3080;
 dbMsg += ",http="+ http+",io="+ io+",port="+ port;
 app.use(express.static(__dirname + '/public'));                                 //コンテンツの在処
-var currentColor='#00ff00';
-var currentWidth=10;
-var currentLineCap="round";
+var currentColor='';
+var currentWidth=0;
+var currentLineCap="0";
+var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
+
 var isDebug =true;                                                              //console出力
 function myLog(dbMsg) {
     if(isDebug){
@@ -76,6 +78,7 @@ function onConnection(socket){
         currentColor = data.color;
         currentWidth = data.width;
         currentLineCap = data.lineCap;
+        isComp = true;
         sendSocet('sendcomp' , socket , data);
     });
 

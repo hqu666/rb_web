@@ -250,6 +250,35 @@
 		   bitmapRead(srcName);
 		}
 		if (-1 <reciverPostion) {						//レシーバーの時は
+			var colorPostion = urlStr.indexOf('color');
+			var parms =  urlStr.substring(colorPostion ,urlStr.length).split('?');
+			var parmVar ="";
+			if (-1 <colorPostion) {						//レシーバーの時は
+				parmVar =parms[0]+"";
+				parmVar = parmVar.replace("color=","");
+				if(0<parmVar.length){
+					current.color =parmVar;
+					dbMsg += ",color=" + current.color;
+				}
+			}
+			var widthPostion = urlStr.indexOf('width');
+			if (-1 <widthPostion) {						//レシーバーの時は
+				parmVar =parms[1]+"";
+				parmVar = parmVar.replace("width=","");
+				if(0<parmVar.length){
+					currentWidth =parmVar *1;
+					dbMsg += ",width=" + currentWidth;
+				}
+			}
+			var lineCaprPostion = urlStr.indexOf('lineCap');
+			if (-1 <lineCaprPostion) {						//レシーバーの時は
+				parmVar =parms[2]+"";
+				parmVar = parmVar.replace("lineCap=","");
+				if(0<parmVar.length){
+					currentLineCap =parmVar;
+					dbMsg += ",lineCap=" + currentLineCap;
+				}
+			}
 			isComp =true;								//強制的に評価中
 		}
 

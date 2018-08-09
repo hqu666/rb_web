@@ -271,9 +271,10 @@
 			var ua;
 			var isMobile = false; //現在使用しているのはスマホ
 			var urlStr;
-			var currentColor = '#00ff00';
-			var currentWidth = 10;
-			var currentLineCap = "round";
+			var currentColor = '';
+			var currentWidth = 0;
+			var currentLineCap = "";
+			var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
 
 			function myLog(dbMsg) {
 				if (isDebug) {
@@ -397,12 +398,14 @@
 					// infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank" >' + urlStr + '</a>';
 					//   directions=no location=no
 					if (-1 < urlStr.indexOf('127.0.0.1')) { //xamppでのテスト中は
-						// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
-						var wifiURL; //='<?php echo $_SERVER['REMOTE_ADDR']; ?>';
-						var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
-						// wifiURL = '192.168.3.14'; //自宅
-						dbMsg += "　,wifiURL=" + wifiURL;
-						urlStr = urlStr.replace('127.0.0.1', wifiURL); //'http://192.168.3.10:3080'
+						if(isMobile){
+							// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
+							var wifiURL; //='<?php echo $_SERVER['REMOTE_ADDR']; ?>';
+							var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
+							// wifiURL = '192.168.3.14'; //自宅
+							dbMsg += "　,wifiURL=" + wifiURL;
+							urlStr = urlStr.replace('127.0.0.1', wifiURL); //'http://192.168.3.10:3080'
+						}
 					} else {
 						isDebug = false;
 					}
@@ -450,7 +453,7 @@
 			}
 
 			socket.on('conect_start', function(data) {
-				var dbMsg = "[recive:conect_start]";
+				var dbMsg = "[index.html.recive:conect_start]";
 				dbMsg += ",data=" + data;
 				currentColor = data.color;
 				currentWidth = data.width;
@@ -459,6 +462,18 @@
 				// var portName = ':3080';//課題；ポート取得
 				// urlStr = urlStr.replace(portName, "/" +  data +　portName);
 				var UrlPparam = "?room=" + data.room; // "?sessid="+  data.socket.transport.sessid+"?transport="+socket.socket.transport.name;		// "?sesion="
+				dbMsg += ",currentColor=" + currentColor;
+				if(currentColor != ""){
+					UrlPparam += "?color=" + currentColor;
+				}
+				dbMsg += ",width=" + currentWidth;
+				if(currentWidth != 0){
+					UrlPparam += "?width=" + currentWidth;
+				}
+				dbMsg += ",lineCap=" + currentLineCap;
+				if(currentLineCap != 0){
+					UrlPparam += "?lineCap=" + currentLineCap;
+				}
 				urlStr += UrlPparam; //		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
 				if (isMobile) {
 					var optionVal = 'location=no,toolbar=no,menubar=no';
