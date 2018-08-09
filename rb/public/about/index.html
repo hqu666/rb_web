@@ -43,7 +43,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="col-xs-12 col-sm-12">
-                                    <div style="text-align: right;">更新日 2018/8/7</div>
+                                    <div style="text-align: right;">更新日 2018/8/9</div>
                                     <h1>リカバリーブラインWeb(仮)の使い方</h1>
                                     <!-- <h4>PHPやデータベースが使えないサーバ環境で、何が何処までできるか試しています。</h4>
                                 <div class="alert alert-danger" role="alert" style="width:96%;height: auto;margin-left: 10px;">
@@ -581,8 +581,8 @@
                                         <div class="panel-group">
                                             <div class="panel panel-default">
                                                 <div class="panel-title">
-                                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#editerAria_body" aria-expanded="true" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
-                                                        「手書きで作成」で表示されるツール 　（作成中）
+                                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#editerAria_body" aria-expanded="false" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
+                                                        「手書きで作成」で表示されるツール
                                                     </div>
                                                 </div>
 
@@ -591,6 +591,9 @@
                                                         <div class="panel-group">
                                                             「トレース元画像」で「手書きで作成」を選択すると下記の様なパネルが表示されます。
                                                             <img src="editpanel.png" class="phorRes" style="width:100%;" align="top" alt="editpanel">
+                                                            <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                簡易なビットマップ編集ツールです。
+                                                            </p>
 
                                                             <div class="row">
                                                                 <div class="col-xs-12 col-sm-2">
@@ -612,14 +615,38 @@
                                                                             </li>
                                                                             <li>
                                                                                 <h4>矩形</h4> マウスのボタンを押した所を左上、離した所を右下の範囲で四角を描きます。
-                                                                                <br> コントロールキーを押しながらドラッグすると正方形になります。
+                                                                                <!-- <br> コントロールキーを押しながらドラッグすると正方形になります。 -->
                                                                             </li>
                                                                             <li>
                                                                                 <h4>楕円</h4> マウスのボタンを押した所を左上、離した所を右下の範囲に収まる円を描きます。
-                                                                                <br> コントロールキーを押しながらドラッグすると真円になります。
+                                                                                <!-- <br> コントロールキーを押しながらドラッグすると真円になります。 -->
                                                                             </li>
                                                                             <li>
-                                                                                <h4>テキスト</h4> クリックした処から文字を記入します。
+                                                                                <h4>テキスト</h4>
+                                                                                <div class="row">
+                                                                                    <div class="col-xs-12 col-sm-6">
+                                                                                        書込む文字、フォント、サイズ、スタイルを設定して下さい。
+                                                                                        <img src="textinput.png" align="top" style="width:100%;" alt="textinput">
+                                                                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                                            ご注意；入りきらなければカットされます。
+                                                                                        </p>
+                                                                                    </div>
+                                                                                    <div class="col-xs-12 col-sm-6">
+                                                                                        クリックした処から文字を記入します。
+                                                                                        <img src="textinput_img.png" align="top" style="width:90%;" alt="textinput_img">
+                                                                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                                            クリックした位置からほぼ、文字の（先頭、ベースライン）辺りの座標で書き込まれます。
+                                                                                        </p>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                                <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                                    お使いのPC、ブラウザなど実行環境に依存します。
+                                                                                </p>
+
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>消しゴム</h4>背景と同じ白色で描いてある線を塗りつぶします。<br> 太さは「線の太さ」、消される形状は「先端」の設定が反映されます。
                                                                             </li>
                                                                             <li>
                                                                                 <h4>選択範囲を消去</h4> ドラッグした範囲にあるピクセルを消去します。
@@ -629,7 +656,7 @@
                                                                                 <br> 選択後、Deleteキーで範囲内のピクセルを消去します。
                                                                             </li> -->
                                                                             <li>
-                                                                                <h4>カラーピッカー</h4> マウスポイントのピクセルカラーを描画エリアの外に表示します。
+                                                                                <h4>カラーピッカー</h4> マウスポイントのピクセルカラーを描画エリアの外に表示します。(テスト用です。)
                                                                             </li>
                                                                             <li>
                                                                                 <h4>確定</h4> 「手書きで作成」する機能を終了し、書込まれたピクセルデータを読み取ります。
@@ -644,7 +671,7 @@
                                                             <div class="row" style="margin-top: 10px;">
                                                                 <div class="col-xs-12 col-sm-8">
                                                                     <div style="padding: 10px;background-color: #dff0d8;">
-                                                                        <img src="colorparetbt.png" class="phorRes" align="top" alt="colorparetbt"> をクリックするとカラーパレットを表示します。
+                                                                        <img src="colorparetbt.png" class="phorRes" align="top" alt="colorparetbt"> をクリックすると線の色を設定するカラーパレットを表示します。
                                                                         <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
                                                                             必ず単色にして下さい。 複数の色を使うと塗り面積の多い色だけが判定対象になります。
                                                                         </p>
@@ -686,7 +713,9 @@
                                                                                 <h4>無し</h4> マウスアップしたポイントまでの線が描かれます。
                                                                             </li>
                                                                         </ol>
-
+                                                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                            微小ながらマウスボタンを離したポイントから、どんなはみ出し方をするかという設置です。
+                                                                        </p>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-xs-12 col-sm-2">
@@ -698,14 +727,15 @@
                                                             <div class="row" style="margin-top: 10px;">
                                                                 <div class="col-xs-12 col-sm-10">
                                                                     <div style="padding: 10px;background-color: #dff0d8;">
-                                                                        <ol>
+                                                                        <h4>「消去」ボタン</h4>クリックすると画面全体のピクセルを消去します。
+                                                                        <!-- <ol>
                                                                             <li>
                                                                                 <h4>全消去</h4> 何も選択していない状態なら画面全体のピクセルを消去します。
                                                                             </li>
                                                                             <li>
                                                                                 <h4>部分消去</h4> 範囲を選択した状態ならその範囲内のピクセルを消去します。
                                                                             </li>
-                                                                        </ol>
+                                                                        </ol> -->
 
                                                                     </div>
                                                                 </div>

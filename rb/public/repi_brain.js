@@ -55,7 +55,9 @@
 	colorPalet.value=orgColor;
 	lineWidthSelect.value= 10;				//currentWidth;
 	currentWidth =  lineWidthSelect.value;
-	// currentLineCap =  "round";
+	currentLineCap =  "round";
+	var isErasre =false;
+	var erasreColor='#ffffff';
 
 	texeOptions.style.display="none";
 	var drawing = false;
@@ -71,8 +73,8 @@
 	var startY =0;
 	var drowTextStr ="";
 	var drowTextFont ="ＭＳ Ｐゴシック";
-	var drowTextSize ="80px";
-
+	var drowTextSize ="240px";
+	var drowTextStyle ="";
 
 	function myLog(dbMsg) {
 		if(isDebug){
@@ -366,6 +368,7 @@
 //編集ツール//////////////////////////////////////////////////////////////////
 	typeSelect.onchange = function () {					 //描画する種類を変更
 		var dbMsg = "[typeSelect]";
+		isErasre =false;
 		var currenttype =this.value;			 // current.color = e.target.className.split(' ')[1];
 		dbMsg += ",typeSelect="+ currenttype;
 		switch (currenttype) {
@@ -388,6 +391,9 @@
 				// if( res == true ) {
 				// }else {
 				// }
+				break;
+			case "erasre":												//消しゴム
+				isErasre =true;
 				break;
 			case "comp":												//確定
 				orgComp.click();
@@ -644,7 +650,11 @@
 				eY = canvasHeight-eY;
 				dbMsg += ">y>" + eY ;
 			}
-			drawLine( eX,  eY, eX, eY, current.color , currentWidth , currentLineCap , 0 , true);
+			var dColor = current.color;
+			if(isErasre){
+				dColor=erasreColor;
+			}
+			drawLine( eX,  eY, eX, eY, dColor , currentWidth , currentLineCap , 0 , true);
 	          //htmlの場合は不要、Androidネイティブは書き出しでパスを生成するので必要    //一点しかないので始点終点とも同じ座標を渡すし
 		}else if(drowMode == 'text'){
 			dbMsg += "drowTextStr="+drowTextStr;
@@ -652,8 +662,15 @@
 		 	if(drowTextStr != ""){
 				context.lineWidth = currentWidth;
 				context.fillStyle = current.color;						// ,
-				dbMsg += ",drowTextSize="+drowTextSize +",drowTextFont="+drowTextFont;
-				context.font = drowTextSize + " " + drowTextFont;					//サイズとフォント
+				dbMsg += ",drowTextSize="+drowTextSize +",drowTextFont="+drowTextFont +",drowTextStyle="+drowTextStyle;
+				var textAttribute = drowTextStyle;
+				if(textAttribute != ''){
+					textAttribute += ' ' +  drowTextSize + " " + drowTextFont
+				}else{
+					textAttribute = drowTextSize + " " + drowTextFont
+				}
+				dbMsg += ">>textAttribute="+ textAttribute;
+				context.font = textAttribute;					//サイズとフォント
 				context.fillText(drowTextStr, eX, eY);
 			}
 			drowMode ="";
@@ -684,7 +701,11 @@
 				eY = canvasHeight-eY;
 				dbMsg += ">y>" + eY;
 			}
-			drawLine(current.x, current.y,eX, eY, current.color,currentWidth , currentLineCap ,1, true);
+			var dColor = current.color;
+			if(isErasre){
+				dColor=erasreColor;
+			}
+			drawLine(current.x, current.y,eX, eY, dColor,currentWidth , currentLineCap ,1, true);
 			current.x = eX;
 			current.y = eY;
 			dbMsg += ">>(" + current.x + " , " + current.y + ")";
@@ -712,7 +733,11 @@
 				dbMsg += ">y>" + endY ;
 			}
 			dbMsg += ",color=" + current.color+ ",width=" + currentWidth;
-			drawLine(currentX, currentY, endX, endY, current.color , currentWidth , currentLineCap , 2 , true);
+			var dColor = current.color;
+			if(isErasre){
+				dColor=erasreColor;
+			}
+			drawLine(currentX, currentY, endX, endY, dColor, currentWidth , currentLineCap , 2 , true);
 			dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
 			if(isComp && isAutoJudge){			//比較中
 				dbMsg += ",room=" + roomVal;
@@ -741,9 +766,9 @@
 				context.lineTo(endX,endY); 								// 3.指定座標まで線を引く
 				context.closePath();  //moveTo()で指定した始点に向けて線を引き、領域を閉じます。
 				context.strokeStyle = current.color; //枠線の色
-				context.stroke();
-				context.fillStyle='rgba(255,255,255,1)';//塗りつぶしの色
-				context.fill();
+				context.stroke();												//※塗りつぶすと線の太さが半減；線まで塗りつぶされる
+				// context.fillStyle=current.color;//塗りつぶしの色
+				// context.fill();
 			}else if(drowMode == 'rect'){										//矩形
 				context.strokeRect(startX, startY, endX-startX, endY-startY);
 			}else if(drowMode == 'oval'){										//楕円
@@ -751,23 +776,29 @@
 				var oxHight = Math.abs(endY-startY);
 				dbMsg += "範囲[" + oxWidth + "×" + oxHight + "]";
 				var radius= Math.max(oxWidth,oxHight)/2;
-				dbMsg += ",radius=" + radius;
-				var Aspect= oxHight/oxWidth;
-				dbMsg += ",Aspect=" + Aspect;
-				context.save();
-				if(Aspect < 1){
-					context.scale(1,Aspect);		//oxHight/oxWidth
-				}else{
-					Aspect= oxWidth/oxHight;
-					dbMsg += ">>" + Aspect;
-					context.scale(Aspect,1);		//oxHight/oxWidth
-				}
-				context.beginPath();
+				dbMsg += ",半径=" + radius;
 				startX = Math.min(endX,startX);
 				startY = Math.min(endY,startY);
 				var stX = startX + oxWidth/2;
 				var stY = startY + oxHight/2;
 				dbMsg += "(" + stX + "," + stY + ")";
+				var Aspect= Aspect= oxWidth/oxHight;
+				dbMsg += ",Aspect=" + Aspect;
+				context.save();
+				if(1< Aspect){
+					context.scale(Aspect,1);		//oxHight/oxWidth
+					stX = stX * 1 / Aspect;
+					dbMsg += ",横長；stX=" + stX;
+				}else{
+					Aspect= oxHight/oxWidth;
+					dbMsg += ">縦長>" + Aspect;
+					context.scale(1,Aspect);		//oxHight/oxWidth
+					stY = stY * 1 / Aspect;
+					dbMsg += ",stY=" + stY;
+				}
+				radius = radius / Aspect;
+				dbMsg += ",半径=" + radius;
+				context.beginPath();
 				context.arc( stX , stY , radius, 0,  Math.PI*2, false);// x , y , 半径 , 開始角度 , 終了角度 , 時計回り
 				context.restore();
 			    context.stroke();
@@ -1121,7 +1152,7 @@
 		document.getElementById("modalComent").innerHTML = "書き込む文字を入力して確定ボタンをクリックして下さい。";
 		document.getElementById("modalImgList").style.display="none";			 // 編集ツール表示
 		document.getElementById("progressBase").style.display="none";
-		document.getElementById("madalInput").style.display="inline-block";			 // 入力ツール表示
+		document.getElementById("madalInput").style.display="inline";			 // 入力ツール表示
 		dbMsg += "drowTextStr="+drowTextStr;
 		if(drowTextStr != ""){
 			document.getElementById("madalInput1").value = drowTextStr;
@@ -1131,17 +1162,24 @@
 		myLog(dbMsg);
 	}
 
-	fontSelect.onchange = function () {
+	document.getElementById("fontSelect").onchange = function () {
 		var dbMsg = "[fontSelect]";
 		drowTextFont = this.value
 		dbMsg += ",drowTextFont="+ drowTextFont;
 		myLog(dbMsg);
 	}
 
-	fontSizeSelect.onchange = function () {
+	document.getElementById("fontSizeSelect").onchange = function () {
 		var dbMsg = "[fontSizeSelect]";
 		drowTextSize = this.value
 		dbMsg += ",drowTextSize="+ drowTextSize;
+		myLog(dbMsg);
+	}
+
+	document.getElementById("fontstyleSelect").onchange = function () {
+		var dbMsg = "[fontstyleSelect]";
+		drowTextStyle = this.value
+		dbMsg += ",drowTextStyle="+ drowTextStyle;
 		myLog(dbMsg);
 	}
 
