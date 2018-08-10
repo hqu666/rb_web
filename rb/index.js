@@ -7,6 +7,8 @@ const io = require('socket.io')(http);                                         /
 const port = process.env.PORT || 3080;
 dbMsg += ",http="+ http+",io="+ io+",port="+ port;
 app.use(express.static(__dirname + '/public'));                                 //コンテンツの在処
+//リリース時課題；各rooomごとに保持させる方法
+//その部屋のcanvas.paintプロパティ
 var currentColor='';
 var currentWidth=0;
 var currentLineCap="0";
@@ -45,12 +47,15 @@ function sendSocet(emName ,socket, data){
         }
         if(data.color){
             dbMsg += ",color=" + data.color ;
+            currentColor = data.color;
         }
         if(data.width){
             dbMsg += ",width=" + data.width ;
+            currentWidth = data.width;
         }
         if(data.lineCap){
             dbMsg += ",lineCap=" + data.lineCap ;
+            currentLineCap = data.lineCap;
         }
         if(data.action){
             dbMsg += ",action=" + data.action ;
@@ -73,7 +78,7 @@ function onConnection(socket){
         dbMsg ="";
     });
 
-    socket.on('sendcomp', (data) => {                          //room　connect？
+    socket.on('sendcomp', (data) => {
         var dbMsg = "[sendcomp]";
         currentColor = data.color;
         currentWidth = data.width;
@@ -87,37 +92,40 @@ function onConnection(socket){
         sendSocet('drawend' , socket , data);
     });
 
-    socket.on('changeColor', (data) => {                          //room　connect？
+    socket.on('changeColor', (data) => {
         var dbMsg = "[changeColor]";
-        sendSocet('changeColor' , socket , data);
+        currentColor = data.color;
+    sendSocet('changeColor' , socket , data);
     });
 
-    socket.on('changeLineWidth', (data) => {                          //room　connect？
+    socket.on('changeLineWidth', (data) => {
         var dbMsg = "[changeLineWidth]" ;
+        currentWidth = data.width;
         sendSocet('changeLineWidth' , socket , data);
     });
 
-    socket.on('changeLineCap', (data) => {                          //room　connect？
+    socket.on('changeLineCap', (data) => {
         var dbMsg = "[changeLineCap]";
+        currentLineCap = data.lineCap;
         sendSocet('changeLineCap' , socket , data);
     });
 
-    socket.on('setmirror', (data) => {                          //room　connect？
+    socket.on('setmirror', (data) => {
         var dbMsg = "[setmirror]" ;
         sendSocet('setmirror' , socket , data);
     });
 
-    socket.on('setmirror_h', (data) => {                          //room　connect？
+    socket.on('setmirror_h', (data) => {
         var dbMsg = "[setmirror_h]";
         sendSocet('setmirror_h' , socket , data);
     });
 
-    socket.on('setautojudge', (data) => {                          //room　connect？
+    socket.on('setautojudge', (data) => {
         var dbMsg = "[setautojudge]" ;
         sendSocet('setautojudge' , socket , data);
     });
 
-    socket.on('allclear', (data) => {                          //room　connect？
+    socket.on('allclear', (data) => {
         var dbMsg = "[socket.allclear]";
         sendSocet('allclear' , socket , data);
     });
