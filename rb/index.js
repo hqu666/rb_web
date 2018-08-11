@@ -1,4 +1,5 @@
 var dbMsg = "[../index.js]";
+// const util = require("/public/util.js");         //利かず；https://teratail.com/questions/45828
 
 const express = require('express');
 const app = express();
@@ -11,8 +12,8 @@ app.use(express.static(__dirname + '/public'));                                 
 //その部屋のcanvas.paintプロパティ
 var currentColor='';
 var currentWidth=0;
-var currentLineCap="0";
-var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
+var currentLineCap="";
+// var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
 
 var isDebug =true;                                                              //console出力
 function myLog(dbMsg) {

@@ -1,7 +1,7 @@
 <!doctype html>
-<?php
+<!-- <?php
 	 echo $_SERVER['REMOTE_ADDR'];
-?>
+?> -->
 	<html lang="jp">
 
 	<head>
@@ -17,7 +17,8 @@
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script src="/socket.io/socket.io.js"></script>
-
+		<link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
+	  	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 
 	</head>
 
@@ -39,13 +40,23 @@
 							コメント
 						</div>
 						<div class="row" id="modalImgList">
-							<img class="col-sm-2" src="/stereotype/st001.png" width="20%" height="20%">
-							<img class="col-sm-2" src="/stereotype/st002.png" width="20%" height="20%">
-							<img class="col-sm-2" src="/stereotype/st003.png" width="20%" height="20%">
-							<img class="col-sm-2" src="/stereotype/st004.png" width="20%" height="20%">
-							<img class="col-sm-2" src="/stereotype/st005.png" width="20%" height="20%">
+							<input type="image" src="/stereotype/st001.png" alt="st001" id="st001_bt" style="border-radius: 4px; width:20%;">
+							<input type="image" src="/stereotype/st002.png" alt="st002" id="st002_bt" style="border-radius: 4px; width:20%;">
+							<input type="image" src="/stereotype/st003.png" alt="st003" id="st003_bt" style="border-radius: 4px; width:20%;">
+							<input type="image" src="/stereotype/st004.png" alt="st004" id="st004_bt" style="border-radius: 4px; width:20%;">
+							<input type="image" src="/stereotype/st005.png" alt="st005" id="st005_bt" style="border-radius: 4px; width:20%;">
 						</div>
 						<!-- リリース課題；stereotypeフォルダに置いたファイルの動的読込み -->
+
+						<div class="row" id="traceAria" style="margin-left:1px;margin-top: 8px;margin-bottom: 12px;">
+							<span style="border-width: thick;border-style: ridge;padding: 7px;">
+								<span style="margin-left: 3px;margin-top: -8px;">鏡面動作</span>
+							<input type="checkbox" id="mirrorCB">上下
+							<input type="checkbox" id="mirror_h_CB" style="margin-left: 20px;">左右
+							</span>
+							<input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 5px;">トレース後に自動判定
+						</div>
+
 						<div class="row" id="madalInput">
 							<div class="form-group" style="margin-left: 5px;">
 								<!-- //class="form-group"  -->
@@ -97,6 +108,19 @@
 								0%
 							</div>
 						</div>
+
+						<div class="row" id="urlInfoAria">
+							<div class="col-sm-10" >
+								<!-- id="urlDescriptionAria" -->
+								<input type="button" id="pad_bt" value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;">
+								<span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
+								<p>スマホはQRコードで接続して下さい。</p>
+								<span id="wifiAdress" style="border-color: blue;border-bottom-color: aqua;color: crimson;">
+									<?php echo $_SERVER['REMOTE_ADDR']; ?>
+								</span>
+							</div>
+							<div class="col-sm-2" id="urlQR" style="text-align: right;padding-right: 20px;border: crimson;border-width: thin;"></div>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" id="modal_sum" data-dismiss="modal">確定</button>
@@ -117,137 +141,104 @@
 
 		<div id="container">
 			<div id="header">
-				<div class="row" id="urlInfoAria">
-					<div class="col-sm-10" id="urlDescriptionAria">
-						<div class="row" id="infoHead">
-							<div class="col-sm-2">
-								<input type="button" id="about_bt" value="このページの使い方" style="margin-left: 5px;border-radius: 4px">
-							</div>
-							<div class="col-sm-10">
-								<input type="button" id="pad_bt" value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;margin-left: 50px;">
-								<span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span> >>スマホはQRコードで接続して下さい。
-								<span id="wifiAdress" style="border-color: blue;border-bottom-color: aqua;color: crimson;">
-									<?php echo $_SERVER['REMOTE_ADDR']; ?>
-								</span>
-							</div>
-						</div>
-						<div class="row" style="margin-left:1px;margin-top: 8px;margin-bottom: 12px;">
-							<span style="border-width: thick;border-style: ridge;padding: 7px;">
-								<span style="margin-left: 3px;margin-top: -8px;">鏡面動作</span>
-							<input type="checkbox" id="mirrorCB">上下
-							<input type="checkbox" id="mirror_h_CB" style="margin-left: 20px;">左右
-							</span>
-							<input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 5px;">トレース後に自動判定
-							<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 30px;">
-							<input type="button" id="dlog_bt" value="モーダル表示確認" style="height: 24px;border-radius: 4px;margin-left: 50px;">
-						</div>
-						<div id="scoreAria">
-							トレース元図形
-							<select id="jobSelect" size="1">
-								<option value="none">選択して下さい</option>
-								<option value="patranList">パターンリスト表示</option>
-								<option value="fileSel">ファイルから読み込み</option>
-								<option value="make">手書きで作成</option>
-								<option value="again">もう一度</option>
-								<!-- <option value="comp">確定</option> -->
-							</select>
-							<span id="makeAfter">
-								変形
-								<select id="directionSelect" size="1">
-									<option value="0">オリジナル</option>
-									<option value="1">右へ90度回転</option>
-									<option value="2">左へ90度回転</option>
-									<option value="4">180度回転</option>
-									<option value="8">上下反転</option>
-									<option value="16">左右反転</option>
-									<!-- <option value="32">縮小</option>
-									<option value="64">拡大</option> -->
-									<option value="128">オリジナルにする</option>
-									<option value="256">保存</option>
-								</select>
-							</span>
-							<span id="compInfo" style="color: darkgreen;">
-								トレース元図形を確定にするとスコアの評価が始まります。
-							</span>
-							<input type="file" id="files" name="files[]" />
-							<span id="scoreBrock" style="display: inline-block;margin-left: 10px;margin-right:10px">
-								スコア
-								<span id="scoreTF" style="font-size: x-large">
-									0
-								</span>点
+				<div class="row" id="headerItems"  style="vertical-align: text-bottom;">
+					<div class="col-sm-10" id="scoreAria">
+						<input type="image" src="menu.png" alt="このページの機能" id="to_control_bt" style="width: 32px;border-radius: 4px;">
+						<span id="scoreBrock" style="display: inline-block;margin-left: 10px;margin-right:10px">
+							スコア
+							<span id="scoreTF" style="font-size: x-large">
+								0
+							</span>点
 							<span id="compTF" style="margin-left:10px">
-									0
-								</span>/
+								0
+							</span>/
 							<span id="orgTF">
-									0
-								</span>ピクセル
-							</span>
-							<!-- <span id="scoreComent" style="color: white;">
-							</span> -->
-							<div id="editerAria">
-								<select id="typeSelect" size="1">
-									<option value="free">フリーハンド</option>
-									<option value="line">直線</option>
-									<option value="trigone">三角</option>
-									<option value="rect">矩形</option>
-									<option value="oval">楕円</option>
-									<option value="text">テキスト</option>
-									<option value="erasre">消しゴム</option>
-									<option value="select_del">選択範囲を消去</option>
-									<!-- <option value="stamp">図形スタンプ</option>
-									-->
-									<option value="colorpic">カラーピッカー</option>
-									<option value="comp">確定</option>
-								</select>
-								<input type="color" id="colorPalet">
-								<span id="graficOptions">
-									線の太さ
-									<select id="lineWidthSelect" size="1">
-										<option value="1"> 1pt</option>
-										<option value="5"> 5pt</option>
-										<option value="10">10pt</option>
-										<option value="20">20pt</option>
-										<option value="50">50pt</option>
-									</select>
-									先端
-									<select id="lineCapSelect" size="1">
-										<option value="round">丸</option>
-										<option value="square">四角</option>
-										<option value="butt">無し</option>
-									</select>
-								</span>
-								<span id="texeOptions">
-									文字サイズ
-									<select id="fontSizeSelect" size="1">
-										<option value="6"> 6pt</option>
-										<option value="12">12pt</option>
-										<option value="24">24pt</option>
-										<option value="48">48pt</option>
-									</select>
-								</span>
+								0
+							</span>ピクセル
+						</span>
+						<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 10px;">
+						トレース元図形
+						<select id="jobSelect" size="1">
+							<option value="none">選択して下さい</option>
+							<option value="patranList">パターンリスト表示</option>
+							<option value="fileSel">ファイルから読み込み</option>
+							<option value="make">手書きで作成</option>
+							<option value="again">もう一度</option>
+						</select>
+						<span id="makeAfter">
+							変形
+							<select id="directionSelect" size="1">
+								<option value="0">オリジナル</option>
+								<option value="1">右へ90度回転</option>
+								<option value="2">左へ90度回転</option>
+								<option value="4">180度回転</option>
+								<option value="8">上下反転</option>
+								<option value="16">左右反転</option>
+								<!-- <option value="32">縮小</option>
+								<option value="64">拡大</option> -->
+								<option value="128">オリジナルにする</option>
+								<option value="256">保存</option>
+							</select>
+						</span>
+						<span id="compInfo" style="color: darkgreen;">
+							トレース元図形を確定にするとスコアの評価が始まります。
+						</span>
+						<input type="file" id="files" name="files[]" />
 
-								<input type="button" id="allclear" value="消去" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
-								<input type="button" id="orgComp" value="確定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
-							</div>
-
-						</div>
 					</div>
-					<div class="col-sm-2" id="urlQR" style="text-align: right;padding-right: 20px;border: crimson;border-width: thin;">
+					<div class="col-sm-2">
+						<input type="image" src="conect.png" alt="接続先指定" id="conect_bt" style="width: 30px;border-radius: 4px;">
+						<input type="image" src="trase.png" alt="トレース設定" id="trace_bt" style="margin-left: 21px;width: 30px;border-radius: 4px;">
+						<input type="image" src="help.png" alt="このページの使い方" id="about_bt" style="margin-left: 21px;width: 32px;border-radius: 4px;">
 					</div>
 
 				</div>
-				<!-- <div class="progress" id="progressFleam" style="margin: 5px;">
-					<div id="progressBs" class="progress-bar" role="progressbar" style="width: 0%;">
-						  20%
-					</div>
-				</div> -->
+				<div class="row" id="editerAria">
+					<select id="typeSelect" size="1">
+						<option value="free">フリーハンド</option>
+						<option value="line">直線</option>
+						<option value="trigone">三角</option>
+						<option value="rect">矩形</option>
+						<option value="oval">楕円</option>
+						<option value="text">テキスト</option>
+						<option value="erasre">消しゴム</option>
+						<option value="select_del">選択範囲を消去</option>
+						<!-- <option value="stamp">図形スタンプ</option>-->
+						<option value="colorpic">カラーピッカー</option>
+						<option value="comp">確定</option>
+					</select>
+					<input type="color" id="colorPalet">
+					<span id="graficOptions">
+						線の太さ
+						<select id="lineWidthSelect" size="1">
+							<option value="1"> 1pt</option>
+							<option value="5"> 5pt</option>
+							<option value="10">10pt</option>
+							<option value="20">20pt</option>
+							<option value="50">50pt</option>
+						</select>
+						先端
+						<select id="lineCapSelect" size="1">
+							<option value="round">丸</option>
+							<option value="square">四角</option>
+							<option value="butt">無し</option>
+						</select>
+					</span>
+					<span id="texeOptions">
+						文字サイズ
+						<select id="fontSizeSelect" size="1">
+							<option value="6"> 6pt</option>
+							<option value="12">12pt</option>
+							<option value="24">24pt</option>
+							<option value="48">48pt</option>
+						</select>
+					</span>
+
+					<input type="button" id="allclear" value="消去" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
+					<input type="button" id="orgComp" value="確定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
+				</div>
 			</div>
-			<!-- <div class="row" >
-				<div id="progress">
-				  <div id="loading"></div>
-				</div>
-				<div id="spinner" style="display:none;"><img src="loader _cycle_r.gif" /></div>
-			</div> -->
+
 			<div id="contents">
 				<canvas class="whiteboard" id="hitarea"></canvas>
 			</div>
@@ -258,157 +249,55 @@
 				<span id="eventComent" style="text-align: right;margin-left:  5px;">
 				</span>
 			</div>
+
+			<div id="toControlDialog" title="機能選択">
+				<select id="to_control_Select" size="3">
+					<option value="conect">接続先指定</option>
+					<option value="trace">トレース設定</option>
+					<option value="about">このページの使い方</option>
+				</select>
+			</div>
 		</div>
+
 
 		<script type="text/javascript" src="jquery.qrcode.min.js"></script>
 		<script type="text/javascript" src="repi_brain.js"></script>
+		<script type="text/javascript" src="util.js"></script>
 		<!-- <script type="text/javascript" src="IpCheck.php"></script> -->
 		<!-- <script type="text/javascript" src="/repireBrain/rb/public/IpCheck.php"></script> -->
 		<script type="text/javascript">
+			var dbMsg = "[index.html]";
 			var socket = io();
-			var isDebug = true;
-			var isSmaphoDebug = false;
-			var ua;
-			var isMobile = false; //現在使用しているのはスマホ
-			var urlStr;
-			var currentColor = '';
-			var currentWidth = 0;
-			var currentLineCap = "";
-			var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
-
-			function myLog(dbMsg) {
-				if (isDebug) {
-					console.log(dbMsg);
-					eventComent.innerHTML = dbMsg;
-				}
-			}
-
-			function mobileLog(dbMsg) {
-				if (isMobile & isSmaphoDebug) {
-					alert(dbMsg);
-				}
-			}
-
-			/**
-			 *2桁にして返す
-			 */
-			function towFigures(iVal) {
-				var dbMsg = "[towFigures]"
-				dbMsg += ",iVal=" + iVal;
-				var retStr = "";
-				if (iVal < 10) {
-					retStr = "0" + iVal;
-				} else {
-					retStr = "" + iVal;
-				}
-				dbMsg += ",retStr=" + retStr;
-				myLog(dbMsg);
-				return retStr;
-			}
-
-			function towFigures(iVal) {
-				var dbMsg = "[towFigures]"
-				dbMsg += ",iVal=" + iVal;
-				var retStr = "";
-				if (iVal < 10) {
-					retStr = "0" + iVal;
-				} else {
-					retStr = "" + iVal;
-				}
-				dbMsg += ",retStr=" + retStr;
-				myLog(dbMsg);
-				return retStr;
-			}
-
-			function retNowStr() {
-				var dbMsg = "[retNowStr]";
-				var s_time = ""; // "?sesion="
-				var now = new Date();
-				var rInt = "" + now.getYear();
-				if ("1" == rInt.substring(0, 1)) {
-					s_time += "20" + rInt.substring(1, rInt.length);
-				}
-				s_time += "" + towFigures((now.getMonth() + 1)) + towFigures(now.getDate() + 0) + towFigures(now.getHours()) +
-					towFigures(now.getMinutes()) + towFigures(now.getSeconds()); // "?sesion="
-				dbMsg += "　,s_time=" + s_time; //,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10
-				return s_time;
-			}
 
 			window.onload = function() { // onload	;	ページ読み込み時に実行したい処理
 				var dbMsg = "[index.html.onload]";
-				var protocol = location.protocol
-				dbMsg += "　,protocol=" + protocol; //protocol=http:
-				urlStr = location.href + "";
+				document.getElementById("scoreBrock").style.display = "none";
+				document.getElementById("editerAria").style.display = "none"; // 編集ツール表示
+				getSituation();							//util.js
 				dbMsg += ",urlStr=　" + urlStr; //protocol + hostname + port + hash をまとめて取得
-				var host = location.hostname; //プロトコル情報を除外したURLを取得する(port情報なし)>>
-				dbMsg += "　,host=" + host; //host=127.0.0.1
-				var path = location.pathname; //URLでパスの部分を取得・設定する
-				dbMsg += "　,path=" + path; //path=/　,query=
-				var port = location.port; //":3080/" ;
-				dbMsg += "　,port=" + port; //path=/　,query=
-				var search = location.search;
-				dbMsg += "　,search=" + search;
-				var query = location.query;
-				dbMsg += "　,query=" + query;
-				var hash = location.hash; //location.hash	URL内のハッシュ情報を抽出して取得する
-				dbMsg += "　,hash=" + hash;
-				ua = navigator.userAgent;
 				dbMsg += ",ua=" + ua;
-				if (ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod') > -1 || ua.indexOf('Android') > -1 || ua.indexOf('Mobile') > -1) {
-					isMobile = true; //現在使用しているのはスマホ
-					// openWindow(urlStr,"myWindow");
-					// // if (hitarea.requestFullscreen) {
-					//   hitarea.requestFullscreen();
-					// // }
-				}
-				// var ipAddress = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
-				// dbmsg += "　,ipAddress="+ipAddress;
+				dbMsg += ",isMobile=" + isMobile;
 				var tframe = document.getElementById("tframe");
 				var titolAncar = document.getElementById("titolAncar");
-
-				if (-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')) {
-					isDebug = false;
-					isSmaphoDebug = false;
-				}
 				// var targetUrl = urlStr.replace( path, ":3080" );
 				// dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
 				var roomPostion = urlStr.indexOf('room');
 				dbMsg += "　,roomPostion=" + roomPostion + "/" + urlStr.length;
 				if (-1 == roomPostion) { //セッションコード未定；アクセス直後
 					socket.emit('conect_start', {
-						room: retNowStr(), //roomへ
+						room: retNowStr(), //roomへ						//util.js
 						href: location.href //この時点のhref
 					});
 				}
 				var reciverPostion = urlStr.indexOf('reciver');
-				// dbMsg += "　,reciverPostion="+reciverPostion + "/" + urlStr.length;
 				if (-1 < reciverPostion) {
 					urlStr = urlStr.substring(0, reciverPostion - 1);
 					dbMsg += ">urlStr>" + urlStr;
-					document.getElementById("urlInfoAria").style.display = "none"; // $("#urlInfoAria").では使えない
+					document.getElementById("header").style.display = "none";
 					//課題　；非表示にした分、描画範囲修正（上端）
-					// current.color= '#FF0000';						//課題；Canvaceを取得してカラー設定
-					// urlStr =urlStr.replace('?reciver=pad ', "");
-					// openWindow(urlStr);
-					// navigator.directions=0;			//this,window,document	>>cannat CET;0  	/	navigator,location >>無反応
-					// navigator.location = 0;
 				} else if (-1 < roomPostion) {
 					urlStr += '?reciver=pad';
 					var infoAria = document.getElementById("infoAria");
-					// infoAria.innerHTML = '<a href="' + urlStr + '"  target="_blank" >' + urlStr + '</a>';
-					//   directions=no location=no
-					if (-1 < urlStr.indexOf('127.0.0.1')) { //xamppでのテスト中は
-						if(isMobile){
-							// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
-							var wifiURL; //='<?php echo $_SERVER['REMOTE_ADDR']; ?>';
-							var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
-							// wifiURL = '192.168.3.14'; //自宅
-							dbMsg += "　,wifiURL=" + wifiURL;
-							urlStr = urlStr.replace('127.0.0.1', wifiURL); //'http://192.168.3.10:3080'
-						}
-					} else {
-						isDebug = false;
-					}
 					dbMsg += "　,QR=" + urlStr;
 					$("#urlQR").html("");
 					$("#urlQR").qrcode({
@@ -417,11 +306,6 @@
 						text: urlStr
 					});
 				}
-				document.getElementById("scoreBrock").style.display = "none";
-				// document.getElementById("useComp").style.display="none";
-				document.getElementById("editerAria").style.display = "none"; // 編集ツール表示
-				// document.getElementById("editerAria").style.display="inline-block";			 // 編集ツール表示
-				document.getElementById("dlog_bt").style.display = "none";
 				// document.getElementById("allclear").click(); //リロード時の消去
 
 				var hitarea = document.getElementById('hitarea');
@@ -485,11 +369,63 @@
 				}
 			});
 
+			$("#toControlDialog").dialog({		//document.getElementById("to_control_dialog")ではない
+				autoOpen: false,  // 自動的に開かないように設定
+				// width: 500,       // 横幅のサイズを設定
+				modal: true,      // モーダルダイアログにする
+				// buttons: [        // ボタン名 : 処理 を設定
+				//   {
+				//     text: 'ボタン1',
+				//     click: function(){
+				//       alert("ボタン1をクリックしました");
+				//     }
+				//   },
+				//   {
+				//     text: 'ボタン2',
+				//     click: function(){
+				//       alert("ボタン2をクリックしました");
+				//     }
+				//   },
+				//   {
+				//     text: 'ボタン3',
+				//     click: function(){
+				//       // ダイアログを閉じる
+				//       $(this).dialog("close");
+				//     }
+				//   }
+				// ]
+			});
+
+
+			document.getElementById("to_control_Select").onchange = function() {
+  				var dbMsg = "[to_control_Select]";
+				var currenttype =this.value;			 // current.color = e.target.className.split(' ')[1];
+				dbMsg += ",typeSelect="+ currenttype;
+				switch (currenttype) {
+					case "conect":												//接続先指定</option>
+						document.getElementById("conect_bt").click();
+						break;
+					case "trace":												//トレース設定</option>
+						document.getElementById("trace_bt").click();
+						break;
+					case "about":												//このページの使い方</option>
+						document.getElementById("about_bt").click();
+						break;
+				}
+				$("#toControlDialog").dialog("close");
+  			}
+
+			document.getElementById("to_control_bt").onclick = function() {
+  				var dbMsg = "[to_control_bt]";
+				 $("#toControlDialog").dialog("open");
+  			}
+
 
 			document.getElementById("pad_bt").onclick = function() {
 				var dbMsg = "[pad_bt]";
 				var optionVal = 'location=no,toolbar=no,menubar=no';
 				window.open(urlStr, "操作画面", optionVal);
+				$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 			}
 
 			document.getElementById("about_bt").onclick = function() {

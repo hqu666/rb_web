@@ -1,11 +1,8 @@
-'use strict';
-
-(function() {
-	var isDebug =true;
-	var isSmaphoDebug =false;
+// 'use strict';
+// function() {
+	var dbMsg = "[rep_brain.js]";
 	var socket = io();
 	var ua =navigator.userAgent;
-	var isMobile=false;				//現在使用しているのはスマホ
 	var srcName="";																	//トレース元のファイル名
 	var canvas = document.getElementsByClassName('whiteboard')[0];				//描画領域
 	var jobSelect = document.getElementById('jobSelect');						//元データの作り方
@@ -74,8 +71,17 @@
 	var drowTextFont ="ＭＳ Ｐゴシック";
 	var drowTextSize ="240px";
 	var drowTextStyle ="";
+// }
+
+	// var req = new XMLHttpRequest();
+	// req.open("GET", "util.js", false);
+	// req.send("");
+	var isDebug =true;
+	var isSmaphoDebug =false;
+	var isMobile=false;				//現在使用しているのはスマホ
 
 	function myLog(dbMsg) {
+		// req.myLog(dbMsg);
 		if(isDebug){
 			console.log(dbMsg);
 			eventComent.innerHTML = dbMsg;
@@ -117,6 +123,8 @@
 		dbMsg += "　,s_time=" + s_time; //,UrlPparam=?sesion=11872218750　,wifiURL=http://192.168.3.10
 		return s_time;
 	}
+
+// $.getScript("util.js");
 
 	var roomVal = retNowStr();
 	var room =  socket.connect("127.0.0.1:3080/" + roomVal);				// = io.connect("http://localhost:3000/room1");
@@ -281,7 +289,7 @@
 			}
 			isComp =true;								//強制的に評価中
 		}
-
+		dialogReset();
 		// mobileLog(dbMsg);
 		myLog(dbMsg);
 	});
@@ -306,6 +314,30 @@
 	}
 
   /////////////////////////////////////////////////////////////////////////////
+  document.getElementById("to_control_bt").onclick = function() {
+		var dbMsg = "[to_control_bt]";
+
+		myLog(dbMsg);
+	}
+
+	document.getElementById("trace_bt").onclick = function() {
+		  var dbMsg = "[trace_bt]";
+		  dialogReset();
+		  document.getElementById("traceAria").style.display="inline-block";
+		  document.getElementById("modalTitol").innerHTML = "トレース設定";
+		  $('#modal_box').modal('show');
+		  myLog(dbMsg);
+	 }
+
+	document.getElementById("conect_bt").onclick = function() {
+		  var dbMsg = "[connect_bt]";
+		  dialogReset();
+		  document.getElementById("urlInfoAria").style.display="inline-block";
+		  document.getElementById("modalTitol").innerHTML = "接続先選択";
+		  $('#modal_box').modal('show');
+		  myLog(dbMsg);
+	 }
+
 	jobSelect.onchange = function () {					 //描画する種類を変更
 		var dbMsg = "[jobSelect]";
 		var currentjob =this.value;			 // current.color = e.target.className.split(' ')[1];
@@ -1138,6 +1170,20 @@
 *input type="file"からファイルを読み込む
 *	https://www.html5rocks.com/ja/tutorials/file/dndfiles/
 */
+	function dialogReset() {
+		var dbMsg = "[dialogReset]";
+		document.getElementById("modalComent").style.display="none";			 //コメントdiv
+		document.getElementById("modalImgList").style.display="none";
+		document.getElementById("madalInput").style.display="none";
+		document.getElementById("progressBase").style.display="none";
+		document.getElementById("urlInfoAria").style.display="none";
+		document.getElementById("traceAria").style.display="none";
+		myLog(dbMsg);
+	}
+/**
+*input type="file"からファイルを読み込む
+*	https://www.html5rocks.com/ja/tutorials/file/dndfiles/
+*/
 	function handleFileSelect(evt) {
 		var dbMsg = "[handleFileSelect]";
 		var file = evt.target.files[0]; // FileList object
@@ -1744,7 +1790,6 @@
 		document.getElementById("modalImgList").style.display="none";
 		document.getElementById("progressBase").style.display="block";
 		$('#modalComent').innerHTML = "描画領域[" +cWidth+"×"+cHeight+ "]" ;
-	// $('#dlog_bt').click();			// $('#modal_box').modal(); が効かない
 
 	// dispLoading("元データを確認しています");
 		// showProg();
@@ -1812,7 +1857,6 @@
 		document.getElementById("modalImgList").style.display="none";
 		document.getElementById("progressBase").style.display="block";
 		$('#modalComent').innerHTML = "描画領域[" +cWidth+"×"+cHeight+ "]" ;
-	// $('#dlog_bt').click();			// $('#modal_box').modal(); が効かない
 
 	// dispLoading("元データを確認しています");
 		// showProg();
@@ -1867,11 +1911,6 @@
     // });
 	}
 
- 	$('#dlog_bt').on('click', function(){
-	// $('.click_btn').on('click', function(){
-	  $('#modal_box').modal('show');
-
-	});
 	/* ------------------------------
 	 Loading イメージ表示関数
 	 引数： msg 画面に表示する文言
@@ -1926,8 +1965,8 @@
 	// // // // });
 	// myLog(dbMsg);
 
- }
-)();
+//  }
+// )();
 
 
 //Canvas とピクセル操作	https://developer.mozilla.org/ja/docs/Web/Guide/HTML/Canvas_tutorial/Pixel_manipulation_with_canvas
