@@ -2,6 +2,8 @@
 // function() {
 	var dbMsg = "[rep_brain.js]";
 	var socket = io();
+	var roomVal ;			//= retNowStr();
+	var room ;				// =  socket.connect("127.0.0.1:3080/" + roomVal);				// = io.connect("http://localhost:3000/room1");
 	var ua =navigator.userAgent;
 	var srcName="";																	//トレース元のファイル名
 	var canvas = document.getElementsByClassName('whiteboard')[0];				//描画領域
@@ -126,8 +128,6 @@
 
 // $.getScript("util.js");
 
-	var roomVal = retNowStr();
-	var room =  socket.connect("127.0.0.1:3080/" + roomVal);				// = io.connect("http://localhost:3000/room1");
 	/**
 	*連想配列の既存位置検索
 	*/
@@ -204,8 +204,8 @@
 
 	window.addEventListener('load', function() {
 		var dbMsg = "[repi_brain/onload]";
-		scoreBrock.style.display="none";
-		editerAria.style.display="none";
+		// scoreBrock.style.display="none";
+		// editerAria.style.display="none";
 		var urlStr = location.href +"";
 		dbMsg += ",urlStr=　"+urlStr;				//protocol + hostname + port + hash をまとめて取得
 		if(-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')){
@@ -250,8 +250,9 @@
 		// 	href:location.href +""
 		// });
 		var roomPostion = urlStr.indexOf('room');
+		dbMsg += "　,roomPostion=" + roomPostion + "/" + urlStr.length;
 		var reciverPostion = urlStr.indexOf('reciver');
-		dbMsg += "　,roomPostion=" + roomPostion + "/" + urlStr.length+ ";reciverPostion" + reciverPostion;
+		dbMsg += "　,reciverPostion=" + reciverPostion + "/" + urlStr.length;
 		if (-1 < roomPostion && -1==reciverPostion) { //セッションコード未定；アクセス直後
 			srcName ="/stereotype/st001.png";			 // current.color = e.target.className.split(' ')[1];
 			dbMsg += ",src=" + srcName;
@@ -289,8 +290,8 @@
 			}
 			isComp =true;								//強制的に評価中
 		}
-		dialogReset();
-		// mobileLog(dbMsg);
+		// dialogReset();
+		mobileLog(dbMsg);
 		myLog(dbMsg);
 	});
 
@@ -303,28 +304,105 @@
 	// 	canvas.height = setHight;			//window.innerHeight;
 	// 	myLog(dbMsg);
 	// })
+
+	/**
+	*canvasサイズの最適化
+	*/
 	function onResize() {
-		var dbMsg = "onResize;";
-		canvas.width = window.innerWidth;
+		var dbMsg = "[onResize]";
+		dbMsg += "window.inner[" + window.innerWidth + "×"　+ window.innerHeight +"]";
+ 		var canvasY = canvasRect.top + window.pageYOffset; //canvasRect.top = 110
+ 		dbMsg += ",canvasY=" + canvasY;
+		canvas.width = window.innerWidth*0.98;
+		dbMsg += ",isMobile=" + isMobile;
 		dbMsg += "[" + canvas.width;
 		var setHight = canvas.width*1080/1920;
 		dbMsg += " , " + setHight + "]";
 		canvas.height = setHight;			//window.innerHeight;
-		// myLog(dbMsg);
-	}
-
-  /////////////////////////////////////////////////////////////////////////////
-  document.getElementById("to_control_bt").onclick = function() {
-		var dbMsg = "[to_control_bt]";
-
+		var hRemain = window.innerHeight- canvasY;
+		dbMsg += ",hRemain=" + hRemain;
+		if(hRemain < setHight){
+			canvas.height = hRemain;
+			canvas.width = hRemain * 1920/1080;
+			dbMsg += ">>[" + canvas.width  + "×"　+ canvas.height +"]";
+		}
 		myLog(dbMsg);
+		mobileLog(dbMsg);
 	}
+
+  ///操作IF///////////////////////////////////////////////////////////
+  document.getElementById("to_control_Select").onchange = function() {
+  	var dbMsg = "[to_control_Select]";
+  	var currenttype =this.value;			 // current.color = e.target.className.split(' ')[1];
+  	dbMsg += ",typeSelect="+ currenttype;
+  	switch (currenttype) {
+  		case "job":												//トレース元指定
+  			document.getElementById("edit_bt").click();
+  			break;
+  		case "conect":												//接続先指定</option>
+  			document.getElementById("conect_bt").click();
+  			break;
+  		case "trace":												//トレース設定</option>
+  			document.getElementById("trace_bt").click();
+  			break;
+  		case "about":												//このページの使い方</option>
+  			document.getElementById("about_bt").click();
+  			break;
+  	}
+  	document.getElementById("to_control_Select").style.display = "none";
+	document.getElementById("to_control_Select").value = 'none';			//none		comp
+	// $("#toControlDialog").dialog("close");
+  }
+
+  document.getElementById("to_control_bt").onclick = function() {
+  	var dbMsg = "[to_control_bt]";
+  	document.getElementById("to_control_Select").style.display = "inline-block";
+  	 // $("#toControlDialog").dialog("open");
+  }
+
+  // document.getElementById("pad_bt").onclick = function() {
+  // 	var dbMsg = "[pad_bt]";
+  // 	var optionVal = 'location=no,toolbar=no,menubar=no';
+	// window.open(urlStr + '?reciver=pad', "操作画面", optionVal);
+  // 	$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+  // }
+
+  document.getElementById("pcUrlQR").onclick = function() {
+	  var dbMsg = "[pcUrlQR]";
+	  var optionVal = 'location=no,toolbar=no,menubar=no';
+	  window.open(urlStr + '?reciver=pad', "操作画面", optionVal);
+	  $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+  }
+
+    document.getElementById("urlQR").onclick = function() {
+  	  var dbMsg = "[urlQR]";
+  	  var optionVal = 'location=no,toolbar=no,menubar=no';
+  	  window.open(urlStr + '?reciver=pad', "操作画面", optionVal);
+  	  $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+    }
+
+  document.getElementById("about_bt").onclick = function() {
+  	var dbMsg = "[about_bt]";
+  	var optionVal = 'location=no,toolbar=no,menubar=no';
+  	window.open('/about', "このページの説明");
+  }
+
+	document.getElementById("edit_bt").onclick = function() {
+		  var dbMsg = "[edit_bt]";
+		  dialogReset();
+		  document.getElementById("jpbSelectAia").style.display="contents";
+		  document.getElementById("modalTitol").innerHTML = "トレース元指定";
+		  document.getElementById("modalTitolIcon").src="edit.png" ;
+		  $('#modal_box').modal('show');
+		  myLog(dbMsg);
+	 }
 
 	document.getElementById("trace_bt").onclick = function() {
 		  var dbMsg = "[trace_bt]";
 		  dialogReset();
-		  document.getElementById("traceAria").style.display="inline-block";
+		  document.getElementById("traceAria").style.display="contents";
 		  document.getElementById("modalTitol").innerHTML = "トレース設定";
+		  document.getElementById("modalTitolIcon").src="trase.png" ;
 		  $('#modal_box').modal('show');
 		  myLog(dbMsg);
 	 }
@@ -333,6 +411,7 @@
 		  var dbMsg = "[connect_bt]";
 		  dialogReset();
 		  document.getElementById("urlInfoAria").style.display="inline-block";
+		  document.getElementById("modalTitolIcon").src="conect.png" ;
 		  document.getElementById("modalTitol").innerHTML = "接続先選択";
 		  $('#modal_box').modal('show');
 		  myLog(dbMsg);
@@ -363,7 +442,7 @@
 				document.getElementById('mirrorCB').click();					//解除
 			}
 			document.getElementById("allclear").click();						//画面を初期化して
-			editerAria.style.display="inline-block";							//編集ツール表示
+			editerAria.style.display="contents";							//編集ツール表示
 			current.color = stdColor;			 								//元パターン用の色に戻す
 			colorPalet.value = current.color ;
 			document.getElementById('compInfo').style.display="inline-block";					//手書き完了後表示
@@ -576,13 +655,13 @@
 		dbMsg += ",room=" + roomVal;
 		allClear();
 		myLog(dbMsg);
-		socket.emit('allclear', {									//socket		room
+		socket.emit('allclear', {
 			room:"/"+roomVal
 		});
 	}
 
 //socket.ioイベント受信////////////////////////////////////////////////////////////////////////////
-	socket.on('drawing', function(data) {				//socket.on('drawing', function(data)
+	socket.on('drawing', function(data) {
 		var dbMsg = "recive:drawing";
 		onDrawingEvent(data);
 		myLog(dbMsg);
@@ -793,6 +872,7 @@
 			if(isComp && isAutoJudge){			//比較中
 				dbMsg += ",room=" + roomVal;
 				socket.emit('drawend', {
+					// room:""
 					room:"/"+roomVal
 				});
 			}
@@ -1065,6 +1145,7 @@
 			var h = canvas.height;
 			dbMsg += ",room=" + roomVal;
 			socket.emit('drawing', {						//socket.emit('drawing', {
+				// room : ""  ,
 				room : "/" + roomVal ,
 				x0: x0 / w,
 				y0: y0 / h,
@@ -1108,6 +1189,7 @@
 	*/
 	function drowText() {
 		var dbMsg = "[drowText]";
+		// dialogReset();
 		document.getElementById("modalTitol").innerHTML = "文字を書き込みます";
 		document.getElementById("modalComent").innerHTML = "書き込む文字を入力して確定ボタンをクリックして下さい。";
 		document.getElementById("modalImgList").style.display="none";			 // 編集ツール表示
@@ -1173,6 +1255,7 @@
 	function dialogReset() {
 		var dbMsg = "[dialogReset]";
 		document.getElementById("modalComent").style.display="none";			 //コメントdiv
+		document.getElementById("jpbSelectAia").style.display="none";
 		document.getElementById("modalImgList").style.display="none";
 		document.getElementById("madalInput").style.display="none";
 		document.getElementById("progressBase").style.display="none";
@@ -1243,7 +1326,7 @@
 	    var tag = "[stereoTypeStart]";
 		var dbMsg = tag ;
 		document.getElementById("allclear").click();
-		editerAria.style.display="inline-block";
+		editerAria.style.display="contents";
 		document.getElementById("modalTitol").innerHTML = "定型パターン選択";
 		document.getElementById("modalComent").innerHTML = "トレース元にする図形クリックして下さい。";
 		document.getElementById("modalImgList").style.display="inline-block";			 // 編集ツール表示
@@ -1585,7 +1668,6 @@
 			document.getElementById('scoreComent').innerHTML = colorArray.length +"色中 対象 "+orgColor + " ;線＝" + lineWidth +"PX";
 			var rgba = 'rgba(' + oRed + ',' +oGreen +',' + oBule + ',' + (255 / 255) + ')';
 			document.getElementById('scoreComent').style.background =  rgba;		//r=63,g=72,b=204 ="#3fcc48が正解
-			// 	editerAria.style.display="inline-block";
 		}
 		scoreBrock.style.display="inline-block";			//BD
 		if(isAutoJudge){
@@ -1763,7 +1845,7 @@
 		// });
 		myLog(dbMsg);
 		if(isDebug){
-			editerAria.style.display="inline-block";
+			editerAria.style.display="contents";
 		}
 
 	}

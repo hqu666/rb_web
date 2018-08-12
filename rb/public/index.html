@@ -17,6 +17,7 @@
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script src="/socket.io/socket.io.js"></script>
+		<!-- html5のダイアログ -->
 		<link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
 	  	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 
@@ -27,18 +28,47 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="box_inner">
-						<div class="modal-header">
+						<div class="modal-header" style="background-color: #160865;color: #ffffff;">
+							<img id="modalTitolIcon" src="conect.png" width="20px" style="border: white;border-width: 5px;border-color: white;">
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-							  <i class="glyphicon glyphicon-remove"></i>
+								<i class="glyphicon glyphicon-remove" style="background-color: white; "></i>
 							</button>
-							<div　class="modal-title" id="modalTitol">
+							<div　lass="modal-title" id="modalTitol">
 								タイトル
 						</div>
 					</div>
 					<div class="modal-body" style="margin-left: 5px;">
-						<div class="row" id="modalComent" style="padding-left: 5px;">
+						<div class="row" id="modalComent" style="padding-left: 5px;display:none">
 							コメント
 						</div>
+						<!-- リリース課題；stereotypeフォルダに置いたファイルの動的読込み -->
+						<div class="row" id="jpbSelectAia" style="padding-left: 5px;display:none">
+							<div class="row">
+							トレース元図形
+								<select id="jobSelect" size="1">
+									<option value="none">選択して下さい</option>
+									<option value="patranList">パターンリスト表示</option>
+									<option value="fileSel">ファイルから読み込み</option>
+									<option value="make">手書きで作成</option>
+									<option value="again">もう一度</option>
+								</select>
+									変形
+									<select id="directionSelect" size="1">
+										<option value="0">オリジナル</option>
+										<option value="1">右へ90度回転</option>
+										<option value="2">左へ90度回転</option>
+										<option value="4">180度回転</option>
+										<option value="8">上下反転</option>
+										<option value="16">左右反転</option>
+										<option value="128">オリジナルにする</option>
+										<option value="256">保存</option>
+									</select>
+								</div>
+								<div class="row">
+									<input type="file" id="files" name="files[]" />
+								</div>
+						</div>
+
 						<div class="row" id="modalImgList">
 							<input type="image" src="/stereotype/st001.png" alt="st001" id="st001_bt" style="border-radius: 4px; width:20%;">
 							<input type="image" src="/stereotype/st002.png" alt="st002" id="st002_bt" style="border-radius: 4px; width:20%;">
@@ -46,9 +76,8 @@
 							<input type="image" src="/stereotype/st004.png" alt="st004" id="st004_bt" style="border-radius: 4px; width:20%;">
 							<input type="image" src="/stereotype/st005.png" alt="st005" id="st005_bt" style="border-radius: 4px; width:20%;">
 						</div>
-						<!-- リリース課題；stereotypeフォルダに置いたファイルの動的読込み -->
 
-						<div class="row" id="traceAria" style="margin-left:1px;margin-top: 8px;margin-bottom: 12px;">
+						<div class="row" id="traceAria" style="margin-left:1px;margin-top: 8px;margin-bottom: 12px;display:none">
 							<span style="border-width: thick;border-style: ridge;padding: 7px;">
 								<span style="margin-left: 3px;margin-top: -8px;">鏡面動作</span>
 							<input type="checkbox" id="mirrorCB">上下
@@ -57,7 +86,7 @@
 							<input type="checkbox" id="autojudgeCB" checked=checked style="margin-left: 5px;">トレース後に自動判定
 						</div>
 
-						<div class="row" id="madalInput">
+						<div class="row" id="madalInput" style="padding-left: 5px;display:none">
 							<div class="form-group" style="margin-left: 5px;">
 								<!-- //class="form-group"  -->
 								<label for="madalInput1">このダイアログを閉じた後、クリックした所に文字を書き込みます。</label>
@@ -103,23 +132,30 @@
 							</span>
 						</div>
 
-						<div id="progressBase" class="progress" style="margin: 5px;">
+						<div id="progressBase" class="progress"  style="padding-left: 5px;display:none">
 							<div id="progressBs" class="progress-bar" role="progressbar" style="width: 0%;">
 								0%
 							</div>
 						</div>
 
-						<div class="row" id="urlInfoAria">
-							<div class="col-sm-10" >
-								<!-- id="urlDescriptionAria" -->
-								<input type="button" id="pad_bt" value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;">
-								<span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span>
-								<p>スマホはQRコードで接続して下さい。</p>
-								<span id="wifiAdress" style="border-color: blue;border-bottom-color: aqua;color: crimson;">
+						<div class="row" id="urlInfoAria" style="width: 100%;display:none">
+							<div class="col-xs-8 col-sm-8" >
+								リンクするパッド（操作画面を開くには）
+								<br><br>
+
+								<!-- id="urlDescriptionAria"  text-align: center; -->
+								<!-- <input type="button" id="pad_bt" value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;"> -->
+								<!-- <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span> -->
+								<!-- <span id="wifiAdress" style="border-color: blue;border-bottom-color: aqua;color: crimson;">
 									<?php echo $_SERVER['REMOTE_ADDR']; ?>
-								</span>
+								</span> -->
+								<div>スマートフォンは<br>QRコードを読み取ってブラウザを起動</div>
+								<br>
+								<div>パソコンは<br>QRコードをクリックして別画面でブラウザを起動</div>
+
+
 							</div>
-							<div class="col-sm-2" id="urlQR" style="text-align: right;padding-right: 20px;border: crimson;border-width: thin;"></div>
+							<div class="col-xs-4 col-sm-4" id="urlQR" style="text-align: right;padding-right: 20px;border: crimson;border-width: thin;"></div>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -142,8 +178,16 @@
 		<div id="container">
 			<div id="header">
 				<div class="row" id="headerItems"  style="vertical-align: text-bottom;">
-					<div class="col-sm-10" id="scoreAria">
+					<div class="col-sm-9" id="scoreAria">
 						<input type="image" src="menu.png" alt="このページの機能" id="to_control_bt" style="width: 32px;border-radius: 4px;">
+						<select id="to_control_Select" size="1" style="display: none;">
+							<option value="none">選択してください</option>
+							<option value="job">トレース元指定</option>
+							<option value="conect">接続先指定</option>
+							<option value="trace">トレース設定</option>
+							<option value="about">このページの使い方</option>
+						</select>
+
 						<span id="scoreBrock" style="display: inline-block;margin-left: 10px;margin-right:10px">
 							スコア
 							<span id="scoreTF" style="font-size: x-large">
@@ -157,43 +201,23 @@
 							</span>ピクセル
 						</span>
 						<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 10px;">
-						トレース元図形
-						<select id="jobSelect" size="1">
-							<option value="none">選択して下さい</option>
-							<option value="patranList">パターンリスト表示</option>
-							<option value="fileSel">ファイルから読み込み</option>
-							<option value="make">手書きで作成</option>
-							<option value="again">もう一度</option>
-						</select>
+
 						<span id="makeAfter">
-							変形
-							<select id="directionSelect" size="1">
-								<option value="0">オリジナル</option>
-								<option value="1">右へ90度回転</option>
-								<option value="2">左へ90度回転</option>
-								<option value="4">180度回転</option>
-								<option value="8">上下反転</option>
-								<option value="16">左右反転</option>
-								<!-- <option value="32">縮小</option>
-								<option value="64">拡大</option> -->
-								<option value="128">オリジナルにする</option>
-								<option value="256">保存</option>
-							</select>
+							<span id="compInfo" style="color: darkgreen;">
+								トレース元図形を確定にするとスコアの評価が始まります。
+							</span>
 						</span>
-						<span id="compInfo" style="color: darkgreen;">
-							トレース元図形を確定にするとスコアの評価が始まります。
-						</span>
-						<input type="file" id="files" name="files[]" />
 
 					</div>
-					<div class="col-sm-2">
-						<input type="image" src="conect.png" alt="接続先指定" id="conect_bt" style="width: 30px;border-radius: 4px;">
-						<input type="image" src="trase.png" alt="トレース設定" id="trace_bt" style="margin-left: 21px;width: 30px;border-radius: 4px;">
-						<input type="image" src="help.png" alt="このページの使い方" id="about_bt" style="margin-left: 21px;width: 32px;border-radius: 4px;">
+					<div class="hidden-xs col-sm-3" style="text-align: right;margin: inherit;">
+						<input type="image" src="edit.png" alt="トレース元指定" id="edit_bt" style="width: 30px;border-radius: 4px;">
+						<input type="image" src="conect.png" alt="接続先指定" id="conect_bt" style="margin-left: 5px;width: 24px;border-radius: 4px;">
+						<input type="image" src="trase.png" alt="トレース設定" id="trace_bt" style="margin-left: 5px;width: 30px;border-radius: 4px;">
+						<input type="image" src="help.png" alt="このページの使い方" id="about_bt" style="margin-left: 5px;width: 32px;border-radius: 4px;">
 					</div>
 
 				</div>
-				<div class="row" id="editerAria">
+				<div class="row" id="editerAria" style="display: none;">
 					<select id="typeSelect" size="1">
 						<option value="free">フリーハンド</option>
 						<option value="line">直線</option>
@@ -240,24 +264,28 @@
 			</div>
 
 			<div id="contents">
-				<canvas class="whiteboard" id="hitarea"></canvas>
+				<canvas class="whiteboard" id="hitarea" tyle="width: 100%;height:100%;"></canvas>
 			</div>
 
 			<div id="footer">
-				<span id="scoreComent" style="color: white;">
-				</span>
-				<span id="eventComent" style="text-align: right;margin-left:  5px;">
-				</span>
+				<div class="hidden-xs col-sm-10">
+					<span id="scoreComent" style="color: white;">
+					</span>
+					<span id="eventComent" style="text-align: right;margin-left:  5px;">
+					</span>
+				</div>
+				<div class="hidden-xs col-sm-2"  id="pcUrlQR">
+				</div>
 			</div>
 
-			<div id="toControlDialog" title="機能選択">
+			<!-- <div id="toControlDialog" title="機能選択">
 				<select id="to_control_Select" size="3">
 					<option value="conect">接続先指定</option>
 					<option value="trace">トレース設定</option>
 					<option value="about">このページの使い方</option>
 				</select>
 			</div>
-		</div>
+		</div> -->
 
 
 		<script type="text/javascript" src="jquery.qrcode.min.js"></script>
@@ -267,18 +295,18 @@
 		<!-- <script type="text/javascript" src="/repireBrain/rb/public/IpCheck.php"></script> -->
 		<script type="text/javascript">
 			var dbMsg = "[index.html]";
-			var socket = io();
+			// var socket = io();
 
 			window.onload = function() { // onload	;	ページ読み込み時に実行したい処理
 				var dbMsg = "[index.html.onload]";
-				document.getElementById("scoreBrock").style.display = "none";
+				// document.getElementById("scoreBrock").style.display = "none";
 				document.getElementById("editerAria").style.display = "none"; // 編集ツール表示
 				getSituation();							//util.js
 				dbMsg += ",urlStr=　" + urlStr; //protocol + hostname + port + hash をまとめて取得
-				dbMsg += ",ua=" + ua;
+				dbMsg += " ,ua=" + ua;
 				dbMsg += ",isMobile=" + isMobile;
-				var tframe = document.getElementById("tframe");
-				var titolAncar = document.getElementById("titolAncar");
+				// var tframe = document.getElementById("tframe");
+				// var titolAncar = document.getElementById("titolAncar");
 				// var targetUrl = urlStr.replace( path, ":3080" );
 				// dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
 				var roomPostion = urlStr.indexOf('room');
@@ -290,51 +318,59 @@
 					});
 				}
 				var reciverPostion = urlStr.indexOf('reciver');
-				if (-1 < reciverPostion) {
+				if (-1 < reciverPostion) {											//pad側なら
 					urlStr = urlStr.substring(0, reciverPostion - 1);
 					dbMsg += ">urlStr>" + urlStr;
 					document.getElementById("header").style.display = "none";
 					//課題　；非表示にした分、描画範囲修正（上端）
 				} else if (-1 < roomPostion) {
-					urlStr += '?reciver=pad';
-					var infoAria = document.getElementById("infoAria");
-					dbMsg += "　,QR=" + urlStr;
+					var setURL = urlStr;
+					if (-1 < urlStr.indexOf('127.0.0.1')) { //xamppでのテスト中は
+						// if(isMobile){
+							// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
+							var wifiURL ;			//='<?php echo $_SERVER['REMOTE_ADDR']; ?>';
+							// var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
+							wifiURL = '192.168.3.14'; //自宅
+							dbMsg += "　,wifiURL=" + wifiURL;
+							setURL = urlStr.replace('127.0.0.1', wifiURL); //'http://192.168.3.10:3080'
+						// }
+					}
+					setURL += '?reciver=pad';
+					// var infoAria = document.getElementById("infoAria");
+					dbMsg += "　,QR=" + setURL;
 					$("#urlQR").html("");
 					$("#urlQR").qrcode({
-						width: 100, //横幅
-						height: 100, //高さ
-						text: urlStr
+						width: 160, //横幅
+						height: 160, //高さ
+						text: setURL
 					});
+					if(! isMobile){
+						// var canvasRect = hitarea.getBoundingClientRect();
+						// var canvasX = canvasRect.left + window.pageXOffset;
+						// var canvasY = canvasRect.top + window.pageYOffset; //canvasRect.top = 110
+						// dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
+						// var canvasWidth = canvasRect.width;
+						// var canvasHeight = canvasRect.height;
+						// dbMsg += "[" + canvasWidth + " × " + canvasHeight + "]";
+						var futerRect =  document.getElementById("footer").getBoundingClientRect();
+						var footerY = futerRect.top + window.pageYOffset; //canvasRect.top = 110
+						var hRemain = (window.innerHeight- footerY)*0.6;
+						dbMsg += " ,hRemain=" + hRemain;
+						$("#pcUrlQR").html("");
+						$("#pcUrlQR").qrcode({
+							width: hRemain, //横幅
+							height: hRemain, //高さ
+							text: setURL
+						});
+					}
 				}
-				// document.getElementById("allclear").click(); //リロード時の消去
-
-				var hitarea = document.getElementById('hitarea');
-
-				var canvasRect = hitarea.getBoundingClientRect();
-				var canvasX = canvasRect.left + window.pageXOffset;
-				var canvasY = canvasRect.top + window.pageYOffset; //canvasRect.top = 110
-				dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
-				var canvasWidth = canvasRect.width;
-				var canvasHeight = canvasRect.height;
-				dbMsg += "[" + canvasWidth + " × " + canvasHeight + "]";
-				//  canvasHeight = canvasWidth*9/16;
-				// dbMsg += ">>" + canvasHeight + "]";
-				// document.getElementById('hitarea').style.height = canvasHeight;
-				if (isMobile) {
-					canvasHeight = canvasHeight - canvasY - 80; //課題；アドレスバーの高さ
-					dbMsg += ">height>" + canvasHeight;
-					canvasWidth = canvasHeight * 16 / 9;
-					dbMsg += ">width>" + canvasWidth;
-					hitarea.width = canvasWidth;
-					hitarea.height = canvasHeight;
-					dbMsg += "[" + canvasWidth + " × " + canvasHeight + "]";
-				}
-				if (!dbMsg) {
-					document.getElementById("footer").style.display = "none";
-				}
+				// if (!dbMsg) {
+				// 	document.getElementById("footer").style.display = "none";
+				// }
 				myLog(dbMsg)
 				mobileLog(dbMsg)
 			}
+
 
 			socket.on('conect_start', function(data) {
 				var dbMsg = "[index.html.recive:conect_start]";
@@ -369,79 +405,32 @@
 				}
 			});
 
-			$("#toControlDialog").dialog({		//document.getElementById("to_control_dialog")ではない
-				autoOpen: false,  // 自動的に開かないように設定
-				// width: 500,       // 横幅のサイズを設定
-				modal: true,      // モーダルダイアログにする
-				// buttons: [        // ボタン名 : 処理 を設定
-				//   {
-				//     text: 'ボタン1',
-				//     click: function(){
-				//       alert("ボタン1をクリックしました");
-				//     }
-				//   },
-				//   {
-				//     text: 'ボタン2',
-				//     click: function(){
-				//       alert("ボタン2をクリックしました");
-				//     }
-				//   },
-				//   {
-				//     text: 'ボタン3',
-				//     click: function(){
-				//       // ダイアログを閉じる
-				//       $(this).dialog("close");
-				//     }
-				//   }
-				// ]
-			});
-
-
-			document.getElementById("to_control_Select").onchange = function() {
-  				var dbMsg = "[to_control_Select]";
-				var currenttype =this.value;			 // current.color = e.target.className.split(' ')[1];
-				dbMsg += ",typeSelect="+ currenttype;
-				switch (currenttype) {
-					case "conect":												//接続先指定</option>
-						document.getElementById("conect_bt").click();
-						break;
-					case "trace":												//トレース設定</option>
-						document.getElementById("trace_bt").click();
-						break;
-					case "about":												//このページの使い方</option>
-						document.getElementById("about_bt").click();
-						break;
-				}
-				$("#toControlDialog").dialog("close");
-  			}
-
-			document.getElementById("to_control_bt").onclick = function() {
-  				var dbMsg = "[to_control_bt]";
-				 $("#toControlDialog").dialog("open");
-  			}
-
-
-			document.getElementById("pad_bt").onclick = function() {
-				var dbMsg = "[pad_bt]";
-				var optionVal = 'location=no,toolbar=no,menubar=no';
-				window.open(urlStr, "操作画面", optionVal);
-				$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
-			}
-
-			document.getElementById("about_bt").onclick = function() {
-				var dbMsg = "[about_bt]";
-				var optionVal = 'location=no,toolbar=no,menubar=no';
-				window.open('/about', "このページの説明");
-			}
-
-
-			// function openWindow(url){
-			//   info = 'toolbar=no,location=no,directories=no,menubar=no' ;//+		   ',status=no,scrollbars=yes,left=0,top=0,resizable=yes,width=1014,height=740,title=no'
-			//   var window1 = window.open(url,info);
-			//   window1.moveTo(0, 0);
-			//   window.opener = self;
-			//   window.close();
-			// }
+			// $("#toControlDialog").dialog({		//document.getElementById("to_control_dialog")ではない
+			// 	autoOpen: false,  // 自動的に開かないように設定
+			// 	// width: 500,       // 横幅のサイズを設定
+			// 	modal: true,      // モーダルダイアログにする
+			// 	// buttons: [        // ボタン名 : 処理 を設定
+			// 	//   {
+			// 	//     text: 'ボタン1',
+			// 	//     click: function(){
+			// 	//       alert("ボタン1をクリックしました");
+			// 	//     }
+			// 	//   },
+			// 	//   {
+			// 	//     text: 'ボタン2',
+			// 	//     click: function(){
+			// 	//       alert("ボタン2をクリックしました");
+			// 	//     }
+			// 	//   },
+			// 	//   {
+			// 	//     text: 'ボタン3',
+			// 	//     click: function(){
+			// 	//       // ダイアログを閉じる
+			// 	//       $(this).dialog("close");
+			// 	//     }
+			// 	//   }
+			// 	// ]
+			// });
 
 		</script>
 	</body>
