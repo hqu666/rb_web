@@ -1,6 +1,6 @@
 var dbMsg = "[util.js]";
 var isDebug =true;
-var isSmaphoDebug =true;
+var isSmaphoDebug =false;
 var isMobile=false;				//現在使用しているのはスマホ
 
 var protocol ; //protocol=http:

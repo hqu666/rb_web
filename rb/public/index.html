@@ -41,14 +41,13 @@
 						<div class="row" id="modalComent" style="padding-left: 5px;display:none">
 							コメント
 						</div>
-						<!-- リリース課題；stereotypeフォルダに置いたファイルの動的読込み -->
 						<div class="row" id="jpbSelectAia" style="padding-left: 5px;display:none">
 							<div class="row">
-							トレース元図形
+								トレース元図形
 								<select id="jobSelect" size="1">
 									<option value="none">選択して下さい</option>
 									<option value="patranList">パターンリスト表示</option>
-									<option value="fileSel">ファイルから読み込み</option>
+									<option value="fileSel" data-prefecture="notmobile">ファイルから読み込み</option>
 									<option value="make">手書きで作成</option>
 									<option value="again">もう一度</option>
 								</select>
@@ -63,18 +62,19 @@
 										<option value="128">オリジナルにする</option>
 										<option value="256">保存</option>
 									</select>
-								</div>
-								<div class="row">
-									<input type="file" id="files" name="files[]" />
-								</div>
+							</div>
+							<div class="row">
+								<input type="file" id="files" name="files[]"  style="margin-top: 15px;display:none"/>
+							</div>
 						</div>
 
-						<div class="row" id="modalImgList">
-							<input type="image" src="/stereotype/st001.png" alt="st001" id="st001_bt" style="border-radius: 4px; width:20%;">
-							<input type="image" src="/stereotype/st002.png" alt="st002" id="st002_bt" style="border-radius: 4px; width:20%;">
-							<input type="image" src="/stereotype/st003.png" alt="st003" id="st003_bt" style="border-radius: 4px; width:20%;">
-							<input type="image" src="/stereotype/st004.png" alt="st004" id="st004_bt" style="border-radius: 4px; width:20%;">
-							<input type="image" src="/stereotype/st005.png" alt="st005" id="st005_bt" style="border-radius: 4px; width:20%;">
+						<div class="row" id="modalImgList" style="display:none">
+							<input type="image" src="/stereotype/st001.png" alt="st001" id="st001_bt" style="border-radius: 4px; width:18%;">
+							<input type="image" src="/stereotype/st002.png" alt="st002" id="st002_bt" style="border-radius: 4px; width:18%;">
+							<input type="image" src="/stereotype/st003.png" alt="st003" id="st003_bt" style="border-radius: 4px; width:18%;">
+							<input type="image" src="/stereotype/st004.png" alt="st004" id="st004_bt" style="border-radius: 4px; width:18%;">
+							<input type="image" src="/stereotype/st005.png" alt="st005" id="st005_bt" style="border-radius: 4px; width:18%;">
+							<!-- リリース課題；stereotypeフォルダに置いたファイルの動的読込み -->
 						</div>
 
 						<div class="row" id="traceAria" style="margin-left:1px;margin-top: 8px;margin-bottom: 12px;display:none">
@@ -132,23 +132,10 @@
 							</span>
 						</div>
 
-						<div id="progressBase" class="progress"  style="padding-left: 5px;display:none">
-							<div id="progressBs" class="progress-bar" role="progressbar" style="width: 0%;">
-								0%
-							</div>
-						</div>
-
 						<div class="row" id="urlInfoAria" style="width: 100%;display:none">
 							<div class="col-xs-8 col-sm-8" >
 								リンクするパッド（操作画面を開くには）
 								<br><br>
-
-								<!-- id="urlDescriptionAria"  text-align: center; -->
-								<!-- <input type="button" id="pad_bt" value="操作画面をブラウザで開く" style="height: 24px;border-radius: 4px;"> -->
-								<!-- <span id="infoAria" style="border-color: blue;border-bottom-color: aqua;color: crimson;"></span> -->
-								<!-- <span id="wifiAdress" style="border-color: blue;border-bottom-color: aqua;color: crimson;">
-									<?php echo $_SERVER['REMOTE_ADDR']; ?>
-								</span> -->
 								<div>スマートフォンは<br>QRコードを読み取ってブラウザを起動</div>
 								<br>
 								<div>パソコンは<br>QRコードをクリックして別画面でブラウザを起動</div>
@@ -157,7 +144,15 @@
 							</div>
 							<div class="col-xs-4 col-sm-4" id="urlQR" style="text-align: right;padding-right: 20px;border: crimson;border-width: thin;"></div>
 						</div>
+
+						<div id="progressBase" class="progress"  style="padding-left: 5px;display:none">
+							<div id="progressBs" class="progress-bar" role="progressbar" style="width: 0%;">
+								0%
+							</div>
+						</div>
+
 					</div>
+
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" id="modal_sum" data-dismiss="modal">確定</button>
 						<!-- <button class="btn btn-default" data-dismiss="modal">
@@ -202,7 +197,7 @@
 						</span>
 						<input type="button" id="useComp" value="判定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 10px;">
 
-						<span id="makeAfter">
+						<span class="hidden-xs" id="makeAfter">
 							<span id="compInfo" style="color: darkgreen;">
 								トレース元図形を確定にするとスコアの評価が始まります。
 							</span>
@@ -258,8 +253,8 @@
 						</select>
 					</span>
 
-					<input type="button" id="allclear" value="消去" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
-					<input type="button" id="orgComp" value="確定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 50px;">
+					<input type="button" id="allclear" value="消去" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 5px;">
+					<input type="button" id="orgComp" value="確定" style="width: 62px;height: 24px;border-radius: 4px;margin-left: 5px;">
 				</div>
 			</div>
 
@@ -268,17 +263,19 @@
 			</div>
 
 			<div id="footer">
-				<div class="hidden-xs col-sm-10">
-					<span id="scoreComent" style="color: white;">
-					</span>
-					<span id="eventComent" style="text-align: right;margin-left:  5px;">
-					</span>
-				</div>
-				<div class="hidden-xs col-sm-2"  id="pcUrlQR">
+				<div class="row" style="padding: 10px;">
+					<div class="hidden-xs col-sm-9">
+						<span id="scoreComent" style="color: white;">
+						</span>
+						<span id="eventComent" style="text-align: right;margin-left:  5px;">
+						</span>
+					</div>
+					<div class="hidden-xs col-sm-3"  id="pcUrlQR" style="text-align: right;">
+					</div>
 				</div>
 			</div>
 
-			<!-- <div id="toControlDialog" title="機能選択">
+			<!-- <div id="toControlDialog" title="機能選択">		    text-align: right;
 				<select id="to_control_Select" size="3">
 					<option value="conect">接続先指定</option>
 					<option value="trace">トレース設定</option>
@@ -354,7 +351,7 @@
 						// dbMsg += "[" + canvasWidth + " × " + canvasHeight + "]";
 						var futerRect =  document.getElementById("footer").getBoundingClientRect();
 						var footerY = futerRect.top + window.pageYOffset; //canvasRect.top = 110
-						var hRemain = (window.innerHeight- footerY)*0.6;
+						var hRemain = (window.innerHeight- footerY)*0.7;
 						dbMsg += " ,hRemain=" + hRemain;
 						$("#pcUrlQR").html("");
 						$("#pcUrlQR").qrcode({

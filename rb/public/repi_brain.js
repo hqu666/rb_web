@@ -69,6 +69,8 @@
 	var originPixcel;															//読込み、作成確定直後の;scoreStartRadyで初期化
 	var startX =0;
 	var startY =0;
+	var currentX = 0;
+	var currentY = 0;
 	var drowTextStr ="";
 	var drowTextFont ="ＭＳ Ｐゴシック";
 	var drowTextSize ="240px";
@@ -91,7 +93,7 @@
 	}
 
 	function mobileLog(dbMsg) {
-		if(isMobile & isSmaphoDebug){
+		if(isMobile & isSmaphoDebug){					//
 			alert(dbMsg);
 		}
 	}
@@ -192,13 +194,6 @@
 		return results;
 	}
 
-	// if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
-	// 	isMobile = true;
-	// 	// canvas.addEventListener('touchend', ontouchend, false);
-	// 	// canvas.addEventListener('touchstart', touchHandler, false);
-	// 	// canvas.addEventListener('touchmove', touchHandler, false);
-	// 	canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
-	// }
 	window.addEventListener('resize', onResize, false);
 	onResize();
 
@@ -232,8 +227,11 @@
 		document.getElementById('files').style.display="none";
 		if(ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1 || ua.indexOf('iPod')  > -1|| ua.indexOf('Android')  > -1|| ua.indexOf('Mobile')  > -1){
 			isMobile=true;				//現在使用しているのはスマホ
-			// window.directions=0;			//this,window	>>cannat CET;0
-			// window.location = 0;
+			canvas.addEventListener('touchstart', touchHandler, false);
+			canvas.addEventListener('touchmove', touchHandler, false);
+			canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
+			canvas.addEventListener('touchcancel', touchHandler, false);
+			typeSelect.options[8].disabled = true;										//カラーピッカー
 		}else{
 			isMobile=false;
 		}
@@ -295,16 +293,6 @@
 		myLog(dbMsg);
 	});
 
-	// window.addEventListener('resize', function() {
-	// 	var dbMsg = "[repi_brain/resize]";
-	// 	canvas.width = window.innerWidth;
-	// 	dbMsg = "[" + canvas.width;
-	// 	var setHight = canvas.width*1080/1920;
-	// 	dbMsg = " , " + setHight + "]";
-	// 	canvas.height = setHight;			//window.innerHeight;
-	// 	myLog(dbMsg);
-	// })
-
 	/**
 	*canvasサイズの最適化
 	*/
@@ -331,10 +319,39 @@
 	}
 
   ///操作IF///////////////////////////////////////////////////////////
+  /**
+	*modal-body
+  */
+  function dialogReset() {
+	  var dbMsg = "[dialogReset]";
+	  document.getElementById("modalComent").style.display="none";			 //コメントdiv
+	  document.getElementById("jpbSelectAia").style.display="none";
+	  document.getElementById("modalImgList").style.display="none";
+	  document.getElementById("madalInput").style.display="none";
+	  document.getElementById("progressBase").style.display="none";
+	  document.getElementById("urlInfoAria").style.display="none";
+	  document.getElementById("traceAria").style.display="none";
+	  editerAria.style.display="none";
+	  document.getElementById('files').style.display="none";
+	  document.getElementById('compInfo').style.display="none";					//手書き完了後表示
+	  if(isMobile){
+		  // jobSelect.options[2].unwrap(‘<span>’);									//ファイルから読み込み
+		  // jobSelect.options[2].hide();									//ファイルから読み込み
+		  jobSelect.options[2].disabled = true;										//ファイルから読み込み
+		  // jobSelect.options[2].selected = hidden;										//ファイルから読み込み
+	  }
+	  if(! isDebug){
+		  // typeSelect.options[8].disabled = true;										//カラーピッカー
+	  }
+	  myLog(dbMsg);
+  }
+
   document.getElementById("to_control_Select").onchange = function() {
   	var dbMsg = "[to_control_Select]";
   	var currenttype =this.value;			 // current.color = e.target.className.split(' ')[1];
   	dbMsg += ",typeSelect="+ currenttype;
+	dialogReset();
+	document.getElementById("to_control_Select").style.display = "none";
   	switch (currenttype) {
   		case "job":												//トレース元指定
   			document.getElementById("edit_bt").click();
@@ -349,42 +366,8 @@
   			document.getElementById("about_bt").click();
   			break;
   	}
-  	document.getElementById("to_control_Select").style.display = "none";
 	document.getElementById("to_control_Select").value = 'none';			//none		comp
 	// $("#toControlDialog").dialog("close");
-  }
-
-  document.getElementById("to_control_bt").onclick = function() {
-  	var dbMsg = "[to_control_bt]";
-  	document.getElementById("to_control_Select").style.display = "inline-block";
-  	 // $("#toControlDialog").dialog("open");
-  }
-
-  // document.getElementById("pad_bt").onclick = function() {
-  // 	var dbMsg = "[pad_bt]";
-  // 	var optionVal = 'location=no,toolbar=no,menubar=no';
-	// window.open(urlStr + '?reciver=pad', "操作画面", optionVal);
-  // 	$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
-  // }
-
-  document.getElementById("pcUrlQR").onclick = function() {
-	  var dbMsg = "[pcUrlQR]";
-	  var optionVal = 'location=no,toolbar=no,menubar=no';
-	  window.open(urlStr + '?reciver=pad', "操作画面", optionVal);
-	  $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
-  }
-
-    document.getElementById("urlQR").onclick = function() {
-  	  var dbMsg = "[urlQR]";
-  	  var optionVal = 'location=no,toolbar=no,menubar=no';
-  	  window.open(urlStr + '?reciver=pad', "操作画面", optionVal);
-  	  $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
-    }
-
-  document.getElementById("about_bt").onclick = function() {
-  	var dbMsg = "[about_bt]";
-  	var optionVal = 'location=no,toolbar=no,menubar=no';
-  	window.open('/about', "このページの説明");
   }
 
 	document.getElementById("edit_bt").onclick = function() {
@@ -421,18 +404,21 @@
 		var dbMsg = "[jobSelect]";
 		var currentjob =this.value;			 // current.color = e.target.className.split(' ')[1];
 		dbMsg += ",currentjob="+ currentjob;
-		scoreBrock.style.display="none";
-		editerAria.style.display="none";
-		document.getElementById('files').style.display="none";
-		document.getElementById('compInfo').style.display="none";					//手書き完了後表示
+		// scoreBrock.style.display="none";
+		// editerAria.style.display="none";
+		// document.getElementById('files').style.display="none";
+		// document.getElementById('compInfo').style.display="none";					//手書き完了後表示
+		dialogReset();
 		myLog(dbMsg);
 		if(currentjob == "none"){
-		}else if(currentjob == "fileSel"){										//ファイルから読み込み
-			document.getElementById('files').style.display="inline-block";
+
 		}else if(currentjob == "patranList"){									//パターンリスト表示</option>
 			isComp=false;				//比較中
 			document.getElementById("allclear").click();
 			stereoTypeStart();
+		}else if(currentjob == "fileSel"){										//ファイルから読み込み
+			document.getElementById("jpbSelectAia").style.display="contents";
+			document.getElementById('files').style.display="inline-block";		//inline-block
 		}else if(currentjob == "make"){											//"手書きで作成の場合
 		 	isComp=false;														//比較中解除
 			if(is_h_Mirror){														//鏡面動作になっていたら
@@ -446,15 +432,34 @@
 			current.color = stdColor;			 								//元パターン用の色に戻す
 			colorPalet.value = current.color ;
 			document.getElementById('compInfo').style.display="inline-block";					//手書き完了後表示
+			$('#modal_box').modal('hide');
 		}else if(currentjob == "again"){			//もう一度</option>
 			drowAgain();
-		// }else if(currentjob == "comp"){			//確定</option>
-		// 	orgComp.click();
+		}else if(currentjob == "comp"){			//確定</option>
+			orgComp.click();
 		}else{			// <option value="line">作成</option>
 			alert( '作成中です。');  //数値と文字の結合
 		}
+
 	}
 
+	document.getElementById("modalImgList").onclick = function (event) {					 // カラーパレットからの移し替え
+		 var tag = "[modalImgList]";
+		 var $getListAItems = document.getElementById( "modalImgList" ).children;
+		 for( var $i = 0; $i < $getListAItems.length; $i++ ){
+			 $getListAItems[$i].onclick =function(){
+			 srcName =this.src;			 // current.color = e.target.className.split(' ')[1];
+			 	var dbMsg = tag + ",src=" + srcName;
+			 	myLog(dbMsg);
+				$('#modal_box').modal('hide');
+				bitmapRead(srcName);
+			};
+	     }
+	}
+
+	/**
+	*手書きの後で評価の準備
+	*/
 	orgComp.onclick = function () {											//元データの描画結果
 		var dbMsg = "[orgComp]";
 		editerAria.style.display="none";
@@ -471,8 +476,8 @@
 		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 
 		jobSelect.value = 'none';											//none		comp
-		document.getElementById('compInfo').style.display="none";					//手書き完了後表示
-		document.getElementById('editerAria').style.display="none";					//手書きツールパレット
+		// document.getElementById('compInfo').style.display="none";					//手書き完了後表示
+		// document.getElementById('editerAria').style.display="none";					//手書きツールパレット
 
 	}
 
@@ -495,6 +500,32 @@
 
 		jobSelect.value = 'none';			//none		comp
 	}
+
+	  document.getElementById("to_control_bt").onclick = function() {
+	  	var dbMsg = "[to_control_bt]";
+	  	document.getElementById("to_control_Select").style.display = "inline-block";
+	  	 // $("#toControlDialog").dialog("open");
+	  }
+
+	  document.getElementById("pcUrlQR").onclick = function() {
+		  var dbMsg = "[pcUrlQR]";
+		  var optionVal = 'location=no,toolbar=no,menubar=no';
+		  window.open(urlStr + '?reciver=pad', "操作画面", optionVal);
+		  $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+	  }
+
+	    document.getElementById("urlQR").onclick = function() {
+	  	  var dbMsg = "[urlQR]";
+	  	  var optionVal = 'location=no,toolbar=no,menubar=no';
+	  	  window.open(urlStr + '?reciver=pad', "操作画面", optionVal);
+	  	  $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+	    }
+
+	  document.getElementById("about_bt").onclick = function() {
+	  	var dbMsg = "[about_bt]";
+	  	var optionVal = 'location=no,toolbar=no,menubar=no';
+	  	window.open('/about', "このページの説明");
+	  }
 
 //編集ツール//////////////////////////////////////////////////////////////////
 	typeSelect.onchange = function () {					 //描画する種類を変更
@@ -525,6 +556,9 @@
 				break;
 			case "erasre":												//消しゴム
 				isErasre =true;
+				break;
+			case "colorpic":												//カラーピッカー
+				colorPick() ;
 				break;
 			case "comp":												//確定
 				orgComp.click();
@@ -806,11 +840,13 @@
 			drowMode ="";
 			drawing = false;
 			typeSelect.options[0].selected = true;										//確定
-
 		}else{
 			context.beginPath();     // 1.Pathで描画を開始する
 		}
 		myLog(dbMsg);
+		// isSmaphoDebug =true;
+		// mobileLog(dbMsg);
+		// isSmaphoDebug =false;
 	}
 
 	/**
@@ -848,7 +884,8 @@
 	*/
 	function moveEnd(currentX,currentY,endX,endY) {
 		var dbMsg = "[moveEnd]drowMode=" + drowMode;
-		dbMsg += "(" + currentX + " , " + currentY + ")～(" + endX + " , " + endY + ")";
+		dbMsg += ";start(" + startX + " , " + startY + ")" ;
+		dbMsg += "current(" + currentX + " , " + currentY + ")～(" + endX + " , " + endY + ")";
 		dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
 		if (drawing && drowMode == '') {
 			// drawing = false;
@@ -872,7 +909,6 @@
 			if(isComp && isAutoJudge){			//比較中
 				dbMsg += ",room=" + roomVal;
 				socket.emit('drawend', {
-					// room:""
 					room:"/"+roomVal
 				});
 			}
@@ -971,11 +1007,6 @@
 		dbMsg += "Mouse(" + currentX + " , " + currentY + ")";
 		var endX = event.clientX - canvasX;
 		var endY = event.clientY - canvasY;
-		// if(drowMode == 'select_del' || drowMode == 'rect' ){
-		// 	endX = event.clientX;
-		// 	endY = event.clientY;
-		// }
-
 		dbMsg += "～(" + endX + " , " + endY + ")";
 		myLog(dbMsg);
 		moveEnd(currentX,currentY,endX,endY);
@@ -997,64 +1028,95 @@
 	canvas.addEventListener('mouseup', onMouseUp, false);
 	canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
 
-/***/
+/**
+*タッチベントの取得
+* evennt直下；
+*/
 	function touchHandler(evennt) {
 		var dbMsg = "[touchHandler]";
 		evennt.preventDefault();
-		dbMsg += "type="+evennt.type;
-		// var toucheX = event.touches[0].pageX-canvasX; //タッチしている湯便の本数文、イベントは発生する
-		// var toucheY = event.touches[0].pageY;
-		// dbMsg += "(" + toucheX + " , " + toucheY + ")";
+		dbMsg += "type="+evennt.type;		//発生したイベントの種類を表す文字列
+		dbMsg += ",drawing="+drawing;		//発生したイベントの種類を表す文字列
+		canvasRect = document.getElementById('hitarea').getBoundingClientRect();
+		canvasX =canvasRect.left + window.pageXOffset;
+		canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
+		dbMsg += ",canvas("+ canvasX + " , " + canvasY + ")";
+		var toucheX = -1;
+		var toucheY = -1;
+		if(event.touches[0]){
+			toucheX = event.touches[0].pageX ; //タッチしている湯便の本数文、イベントは発生する
+			toucheY = event.touches[0].pageY ;		//screenX, screenY, clientX, clientY
+		}
+		dbMsg += "(" + toucheX + " , " + toucheY + ")";
+
 		switch (evennt.type) {
 			case "touchstart" :
 				canvasRect = document.getElementById('hitarea').getBoundingClientRect();
-				canvasX =canvasRect.left + window.pageXOffset;
-				canvasY = canvasRect.top+ window.pageYOffset;			//canvasRect.top = 110
-				dbMsg += ",canvas("+ canvasX + " , " + canvasY + ")";
-				var toucheX = event.touches[0].pageX-canvasX; //タッチしている湯便の本数文、イベントは発生する
-				var toucheY = event.touches[0].pageY;
+				toucheX -= canvasX;
+				toucheY -= canvasY;
 				dbMsg += "(" + toucheX + " , " + toucheY + ")";
-				mobileLog(dbMsg);
 				moveStart(toucheX,toucheY);
+				currentX = toucheX;
+				currentY = toucheY;
 				break;
 			case "touchmove" :
-				if (drawing) {
-					event.preventDefault(); // 画面のスクロールを防止する
-					var toucheX = event.touches[0].pageX-canvasX;
-					var toucheY = event.touches[0].pageY;
+				// if (drawing) {
+					event.preventDefault(); // 画面のスクロールを防止する;デフォルトのイベントをキャンセル
+					if(-1 < toucheX && -1 < toucheY){
+						toucheX -= canvasX;
+						toucheY -= canvasY;
+					}else{
+						toucheX = currentX;
+						toucheY = currentY;
+					}
 					dbMsg += "(" + toucheX + " , " + toucheY + ")";
+					currentX = toucheX;
+					currentY = toucheY;
 					moveOccasion (toucheX,toucheY);
-				}
-				break;
-			case "touchcancel" :
+				// }
 				break;
 			case "touchend" :
-				var touches = evennt.changedTouches;
-				dbMsg += ",touches=" + touches;
+			case "touchcancel" :
+			// var touches = evennt.changedTouches;
+				// dbMsg += ",touches=" + touches;
 				// if (drawing) {
-				var currentX = current.x;
-				var currentY = current.y;
-				dbMsg += ",current(" + currentX + " , " + currentY + ")";
-				var toucheX =currentX+1;
-				var toucheY = currentY+1;
-				if(event.touches[0]){
-					toucheX = event.touches[0].pageX-canvasX;
-					toucheY = event.touches[0].pageY;
+					// var currentX = currentX;		//current.x;
+					// var currentY = currentY;		//current.y;
+					dbMsg += ",current(" + currentX + " , " + currentY + ")";
+					// if(event.touches[0]){
+					// 	toucheX = event.touches[0].pageX - canvasX; //タッチしている湯便の本数文、イベントは発生する
+					// 	toucheY = event.touches[0].pageY - canvasY;		//screenX, screenY, clientX, clientY
+					if(-1 < toucheX && -1 < toucheY){
+						toucheX -= canvasX;
+						toucheY -= canvasY;
+					}else{
+						toucheX = currentX;
+						toucheY = currentY;
+					}
 					dbMsg += "(" + toucheX + " , " + toucheY + ")";
-				}
+					// }
+					moveEnd(currentX,currentY,toucheX,toucheY);
+				// }
 				// isSmaphoDebug =true;
 				mobileLog(dbMsg);
 				// isSmaphoDebug =false;
-				moveEnd(currentX,currentY,toucheX,toucheY);
-							// 	current.x = toucheX;
+				break;
+			case "touchcancel" :
+				break;
+			case "gesturestart" :
+				break;
+			case "gesturechange" :
+				break;
+			case "gestureend" :
 				break;
 		}
 
+
 	}
 
-	canvas.addEventListener('touchstart', touchHandler, false);
-	canvas.addEventListener('touchmove', touchHandler, false);
-	canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
+	// canvas.addEventListener('touchstart', touchHandler, false);
+	// canvas.addEventListener('touchmove', touchHandler, false);
+	// canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
 
 	//drawingで受信したデータを書き込む/////////////////////////////////////イベント反映
 	function onDrawingEvent(data) {
@@ -1245,24 +1307,15 @@
 	  var rgba = 'rgba(' + data[0] + ',' + data[1] +',' + data[2] + ',' + (data[3] / 255) + ')';
 	  // document.getElementById('eventComent').style.background =  rgba;
 	  var cColor = rgb2hex("rgb("+  data[0] + ", " +  data[1] + ", " +  data[2] +")");
-	  document.getElementById('eventComent').textContent = rgba + "("+ cColor+ ")";
+	  document.getElementById('compInfo').textContent = rgba + ",Hex("+ cColor+ ")";
+	  // document.getElementById('eventComent').textContent = rgba + ",Hex("+ cColor+ ")";
 	}
 //ファイル操作//////////////////////////////////////////
 /**
 *input type="file"からファイルを読み込む
 *	https://www.html5rocks.com/ja/tutorials/file/dndfiles/
 */
-	function dialogReset() {
-		var dbMsg = "[dialogReset]";
-		document.getElementById("modalComent").style.display="none";			 //コメントdiv
-		document.getElementById("jpbSelectAia").style.display="none";
-		document.getElementById("modalImgList").style.display="none";
-		document.getElementById("madalInput").style.display="none";
-		document.getElementById("progressBase").style.display="none";
-		document.getElementById("urlInfoAria").style.display="none";
-		document.getElementById("traceAria").style.display="none";
-		myLog(dbMsg);
-	}
+
 /**
 *input type="file"からファイルを読み込む
 *	https://www.html5rocks.com/ja/tutorials/file/dndfiles/
@@ -1336,26 +1389,13 @@
 		myLog(dbMsg);
 	}
 
-	document.getElementById("modalImgList").onclick = function (event) {					 // カラーパレットからの移し替え
-		 var tag = "[modalImgList]";
-		 var $getListAItems = document.getElementById( "modalImgList" ).children;
-		 for( var $i = 0; $i < $getListAItems.length; $i++ ){
-			 $getListAItems[$i].onclick =function(){
-			 srcName =this.src;			 // current.color = e.target.className.split(' ')[1];
-			 	var dbMsg = tag + ",src=" + srcName;
-			 	myLog(dbMsg);
-				$('#modal_box').modal('hide');
-				bitmapRead(srcName);
-			};
-	     }
-	}
-
 	/**
 	 * 定型静止画を読み込む
 	 * @param {*} srcName 型の画像ファイル名
 	 */
 	function bitmapRead(srcName) {
 	    var tag = "[bitmapRead]srcName="+srcName;
+		allClear();
 	    var img = new Image();
 	    img.src = srcName;
 	    var dbMsg = tag + ",src=" + img.src;
@@ -1402,7 +1442,6 @@
 			// document.getElementById('header').style.display = "block";
 	    }
 		myLog(dbMsg);
-
 	}
 
 	/**
@@ -1737,6 +1776,7 @@
 			width: currentWidth,
 			lineCap:currentLineCap
 		});
+		setOriginPixcel();
 		myLog(dbMsg);
 	}
 /**
@@ -1828,25 +1868,27 @@
 		orgCount=0;
 		$('#modalTitol').innerHTML = "元データを確認しています";
 		// orgCount =setTimeout(scoreCount,1000);
-		dbMsg += ",orgColo="+ orgColor;
-		orgCount =scoreCount(canvas ,  orgColor);
-		dbMsg += ",orgCount="+ orgCount;
-		compCount = orgCount;
-		document.getElementById('compTF').innerHTML = orgCount+"";
-		document.getElementById('orgTF').innerHTML = orgCount+"";
-		// const prom =scoreCount();
-		// prom.then((orgCount) => {
-		// 	dbMsg += ",orgCount="+ orgCount;
-		// 	compCount = orgCount;
-		// 	document.getElementById('compTF').innerHTML = orgCount+"";
-		// 	document.getElementById('orgTF').innerHTML = orgCount+"";
-		// }).catch((err) => {
-		// 	dbMsg += "カウント失敗";
-		// });
+		// dbMsg += ",orgColo="+ orgColor;
+		// orgCount =scoreCount(canvas ,  orgColor);
+		// dbMsg += ",orgCount="+ orgCount;
+		// compCount = orgCount;
+		// document.getElementById('compTF').innerHTML = orgCount+"";
+		// document.getElementById('orgTF').innerHTML = orgCount+"";
+		// // const prom =scoreCount();
+		// // prom.then((orgCount) => {
+		// // 	dbMsg += ",orgCount="+ orgCount;
+		// // 	compCount = orgCount;
+		// // 	document.getElementById('compTF').innerHTML = orgCount+"";
+		// // 	document.getElementById('orgTF').innerHTML = orgCount+"";
+		// // }).catch((err) => {
+		// // 	dbMsg += "カウント失敗";
+		// // });
+		stereoTypeCheck(canvas);
+
 		myLog(dbMsg);
-		if(isDebug){
-			editerAria.style.display="contents";
-		}
+		// if(isDebug){
+		// 	editerAria.style.display="contents";
+		// }
 
 	}
 
@@ -1869,8 +1911,9 @@
 		// $('body').addClass('modal-open');
 		// $("#progressFleam").css("display", "block");
 		$('#modal_box').modal();
-		document.getElementById("modalImgList").style.display="none";
+		dialogReset();
 		document.getElementById("progressBase").style.display="block";
+		document.getElementById("modalComent").style.display="block";
 		$('#modalComent').innerHTML = "描画領域[" +cWidth+"×"+cHeight+ "]" ;
 
 	// dispLoading("元データを確認しています");
@@ -1895,7 +1938,6 @@
 				var cBule = canvasRGBA[carentPos + 2];					//canvasRGBA[2 + carentPos];
 				var cAlpha =  canvasRGBA[carentPos + 3]/255;					//canvasRGBA[3 + carentPos];
 				var cColor = rgb2hex("rgb("+ cRed + ", " + cGreen + ", " + cBule +")");
-
 				if(cColor!='#000000' && cColor!='#ffffff' ){	//真っ白はもしくは真っ黒もしk儒はデータ無し							&& cAlpha == 1
 					checkCount++;
 					if(orgColor == cColor){
