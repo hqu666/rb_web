@@ -1,5 +1,5 @@
 var dbMsg = "[util.js]";
-var isDebug =true;
+var isDebug =false;
 var isSmaphoDebug =false;
 var isMobile=false;				//現在使用しているのはスマホ
 
@@ -16,7 +16,10 @@ var ua;
 	function myLog(dbMsg) {
 		if(isDebug){
 			console.log(dbMsg);
-			eventComent.innerHTML = dbMsg;
+			document.getElementById("eventComent").innerHTML = dbMsg;
+		}else{
+			document.getElementById("eventComent").innerHTML = ""
+			"";
 		}
 	}
 

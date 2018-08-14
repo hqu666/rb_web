@@ -199,8 +199,6 @@
 
 	window.addEventListener('load', function() {
 		var dbMsg = "[repi_brain/onload]";
-		// scoreBrock.style.display="none";
-		// editerAria.style.display="none";
 		var urlStr = location.href +"";
 		dbMsg += ",urlStr=　"+urlStr;				//protocol + hostname + port + hash をまとめて取得
 		if(-1 == urlStr.indexOf('127.0.0') && -1 == urlStr.indexOf('192.168')){
@@ -476,9 +474,6 @@
 		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 
 		jobSelect.value = 'none';											//none		comp
-		// document.getElementById('compInfo').style.display="none";					//手書き完了後表示
-		// document.getElementById('editerAria').style.display="none";					//手書きツールパレット
-
 	}
 
 	/**
@@ -1379,7 +1374,7 @@
 	    var tag = "[stereoTypeStart]";
 		var dbMsg = tag ;
 		document.getElementById("allclear").click();
-		editerAria.style.display="contents";
+		// editerAria.style.display="contents";
 		document.getElementById("modalTitol").innerHTML = "定型パターン選択";
 		document.getElementById("modalComent").innerHTML = "トレース元にする図形クリックして下さい。";
 		document.getElementById("modalImgList").style.display="inline-block";			 // 編集ツール表示
