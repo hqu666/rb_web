@@ -2,7 +2,7 @@
 <!-- <?php
 	 echo $_SERVER['REMOTE_ADDR'];
 ?> -->
-	<html lang="jp">
+<html lang="jp">
 
 	<head>
 		<meta charset="UTF-8">
@@ -19,7 +19,7 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<!-- html5のダイアログ -->
 		<link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
-	  	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 
 	</head>
 
@@ -50,9 +50,8 @@
 									<option value="fileSel" data-prefecture="notmobile">ファイルから読み込み</option>
 									<option value="make">手書きで作成</option>
 									<option value="again">もう一度</option>
-								</select>
-									変形
-									<select id="directionSelect" size="1">
+								</select> 変形
+								<select id="directionSelect" size="1">
 										<option value="0">オリジナル</option>
 										<option value="1">右へ90度回転</option>
 										<option value="2">左へ90度回転</option>
@@ -64,7 +63,7 @@
 									</select>
 							</div>
 							<div class="row">
-								<input type="file" id="files" name="files[]"  style="margin-top: 15px;display:none"/>
+								<input type="file" id="files" name="files[]" style="margin-top: 15px;display:none" />
 							</div>
 						</div>
 
@@ -133,19 +132,17 @@
 						</div>
 
 						<div class="row" id="urlInfoAria" style="width: 100%;display:none">
-							<div class="col-xs-8 col-sm-8" >
+							<div class="col-xs-8 col-sm-8">
 								リンクするパッド（操作画面を開くには）
 								<br><br>
 								<div>スマートフォンは<br>QRコードを読み取ってブラウザを起動</div>
 								<br>
 								<div>パソコンは<br>QRコードをクリックして別画面でブラウザを起動</div>
-
-
 							</div>
 							<div class="col-xs-4 col-sm-4" id="urlQR" style="text-align: right;padding-right: 20px;border: crimson;border-width: thin;"></div>
 						</div>
 
-						<div id="progressBase" class="progress"  style="padding-left: 5px;display:none">
+						<div id="progressBase" class="progress" style="padding-left: 5px;display:none">
 							<div id="progressBs" class="progress-bar" role="progressbar" style="width: 0%;">
 								0%
 							</div>
@@ -172,9 +169,10 @@
 
 		<div id="container">
 			<div id="header">
-				<div class="row" id="headerItems"  style="vertical-align: text-bottom;">
+				<div class="row" id="headerItems">
+					<!-- style="vertical-align: text-bottom;" -->
 					<div class="col-sm-9" id="scoreAria">
-						<input type="image" src="menu.png" alt="このページの機能" id="to_control_bt" style="width: 32px;border-radius: 4px;">
+						<input type="image" src="menu.png" alt="このページの機能" id="to_control_bt" align="middle" style="width: 32px;border-radius: 4px;margin-top: -14px;margin-right: 5px;">
 						<select id="to_control_Select" size="1" style="display: none;">
 							<option value="none">選択してください</option>
 							<option value="job">トレース元指定</option>
@@ -182,16 +180,16 @@
 							<option value="trace">トレース設定</option>
 							<option value="about">このページの使い方</option>
 						</select>
-
-						<span id="scoreBrock" style="display: inline-block;margin-left: 10px;margin-right:10px">
+						<!-- display: inline-block; -->
+						<span id="scoreBrock" style="margin-left: 10px;margin-right:10px">
 							スコア
 							<span id="scoreTF" style="font-size: x-large">
 								0
 							</span>点
-							<span id="compTF" style="margin-left:10px">
+						<span id="compTF" style="margin-left:10px">
 								0
 							</span>/
-							<span id="orgTF">
+						<span id="orgTF">
 								0
 							</span>ピクセル
 						</span>
@@ -202,7 +200,7 @@
 								トレース元図形を確定にするとスコアの評価が始まります。
 							</span>
 						</span>
-
+						<button type="button" id="again_bt">もう一度</button>
 					</div>
 					<div class="hidden-xs col-sm-3" style="text-align: right;margin: inherit;">
 						<input type="image" src="edit.png" alt="トレース元指定" id="edit_bt" style="width: 30px;border-radius: 4px;">
@@ -270,7 +268,7 @@
 						<span id="eventComent" style="text-align: right;margin-left:  5px;">
 						</span>
 					</div>
-					<div class="hidden-xs col-sm-3"  id="pcUrlQR" style="text-align: right;">
+					<div class="hidden-xs col-sm-3" id="pcUrlQR" style="text-align: right;">
 					</div>
 				</div>
 			</div>
@@ -285,157 +283,157 @@
 		</div> -->
 
 
-		<script type="text/javascript" src="jquery.qrcode.min.js"></script>
-		<script type="text/javascript" src="repi_brain.js"></script>
-		<script type="text/javascript" src="util.js"></script>
-		<!-- <script type="text/javascript" src="IpCheck.php"></script> -->
-		<!-- <script type="text/javascript" src="/repireBrain/rb/public/IpCheck.php"></script> -->
-		<script type="text/javascript">
-			var dbMsg = "[index.html]";
-			// var socket = io();
+			<script type="text/javascript" src="jquery.qrcode.min.js"></script>
+			<script type="text/javascript" src="repi_brain.js"></script>
+			<script type="text/javascript" src="util.js"></script>
+			<!-- <script type="text/javascript" src="IpCheck.php"></script> -->
+			<!-- <script type="text/javascript" src="/repireBrain/rb/public/IpCheck.php"></script> -->
+			<script type="text/javascript">
+				var dbMsg = "[index.html]";
+				// var socket = io();
 
-			window.onload = function() { // onload	;	ページ読み込み時に実行したい処理
-				var dbMsg = "[index.html.onload]";
-				// document.getElementById("scoreBrock").style.display = "none";
-				document.getElementById("editerAria").style.display = "none"; // 編集ツール表示
-				getSituation();							//util.js
-				dbMsg += ",urlStr=　" + urlStr; //protocol + hostname + port + hash をまとめて取得
-				dbMsg += " ,ua=" + ua;
-				dbMsg += ",isMobile=" + isMobile;
-				// var tframe = document.getElementById("tframe");
-				// var titolAncar = document.getElementById("titolAncar");
-				// var targetUrl = urlStr.replace( path, ":3080" );
-				// dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
-				var roomPostion = urlStr.indexOf('room');
-				dbMsg += "　,roomPostion=" + roomPostion + "/" + urlStr.length;
-				if (-1 == roomPostion) { //セッションコード未定；アクセス直後
-					socket.emit('conect_start', {
-						room: retNowStr(), //roomへ						//util.js
-						href: location.href //この時点のhref
-					});
-				}
-				var reciverPostion = urlStr.indexOf('reciver');
-				if (-1 < reciverPostion) {											//pad側なら
-					urlStr = urlStr.substring(0, reciverPostion - 1);
-					dbMsg += ">urlStr>" + urlStr;
-					document.getElementById("header").style.display = "none";
-					//課題　；非表示にした分、描画範囲修正（上端）
-				} else if (-1 < roomPostion) {
-					var setURL = urlStr;
-					if (-1 < urlStr.indexOf('127.0.0.1')) { //xamppでのテスト中は
-						// if(isMobile){
-							// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
-							var wifiURL ;			//='<?php echo $_SERVER['REMOTE_ADDR']; ?>';
-							// var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
-							wifiURL = '192.168.3.14'; //自宅
-							dbMsg += "　,wifiURL=" + wifiURL;
-							setURL = urlStr.replace('127.0.0.1', wifiURL); //'http://192.168.3.10:3080'
-						// }
-					}
-					setURL += '?reciver=pad';
-					// var infoAria = document.getElementById("infoAria");
-					dbMsg += "　,QR=" + setURL;
-					$("#urlQR").html("");
-					$("#urlQR").qrcode({
-						width: 160, //横幅
-						height: 160, //高さ
-						text: setURL
-					});
-					if(! isMobile){
-						// var canvasRect = hitarea.getBoundingClientRect();
-						// var canvasX = canvasRect.left + window.pageXOffset;
-						// var canvasY = canvasRect.top + window.pageYOffset; //canvasRect.top = 110
-						// dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
-						// var canvasWidth = canvasRect.width;
-						// var canvasHeight = canvasRect.height;
-						// dbMsg += "[" + canvasWidth + " × " + canvasHeight + "]";
-						var futerRect =  document.getElementById("footer").getBoundingClientRect();
-						var footerY = futerRect.top + window.pageYOffset; //canvasRect.top = 110
-						var hRemain = (window.innerHeight- footerY)*0.7;
-						dbMsg += " ,hRemain=" + hRemain;
-						$("#pcUrlQR").html("");
-						$("#pcUrlQR").qrcode({
-							width: hRemain, //横幅
-							height: hRemain, //高さ
-							text: setURL
+				window.onload = function() { // onload	;	ページ読み込み時に実行したい処理
+					var dbMsg = "[index.html.onload]";
+					// document.getElementById("scoreBrock").style.display = "none";
+					document.getElementById("editerAria").style.display = "none"; // 編集ツール表示
+					getSituation(); //util.js
+					dbMsg += ",urlStr=　" + urlStr; //protocol + hostname + port + hash をまとめて取得
+					dbMsg += " ,ua=" + ua;
+					dbMsg += ",isMobile=" + isMobile;
+					// var tframe = document.getElementById("tframe");
+					// var titolAncar = document.getElementById("titolAncar");
+					// var targetUrl = urlStr.replace( path, ":3080" );
+					// dbmsg += "　,targetUrl="+targetUrl;			//targetUrl=http::3080/127.0.0.1:3080/　
+					var roomPostion = urlStr.indexOf('room');
+					dbMsg += "　,roomPostion=" + roomPostion + "/" + urlStr.length;
+					if (-1 == roomPostion) { //セッションコード未定；アクセス直後
+						socket.emit('conect_start', {
+							room: retNowStr(), //roomへ						//util.js
+							href: location.href //この時点のhref
 						});
 					}
-				}
-				if (!dbMsg) {
-					document.getElementById("eventComent").innerHTML ="";
-				}
-				myLog(dbMsg)
-				mobileLog(dbMsg)
-			}
-
-
-			socket.on('conect_start', function(data) {
-				var dbMsg = "[index.html.recive:conect_start]";
-				dbMsg += ",data=" + data;
-				currentColor = data.color;
-				currentWidth = data.width;
-				currentLineCap = data.lineCap;
-				//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
-				// var portName = ':3080';//課題；ポート取得
-				// urlStr = urlStr.replace(portName, "/" +  data +　portName);
-				var UrlPparam = "?room=" + data.room; // "?sessid="+  data.socket.transport.sessid+"?transport="+socket.socket.transport.name;		// "?sesion="
-				dbMsg += ",currentColor=" + currentColor;
-				if(currentColor != ""){
-					UrlPparam += "?color=" + currentColor;
-				}
-				dbMsg += ",width=" + currentWidth;
-				if(currentWidth != 0){
-					UrlPparam += "?width=" + currentWidth;
-				}
-				dbMsg += ",lineCap=" + currentLineCap;
-				if(currentLineCap != 0){
-					UrlPparam += "?lineCap=" + currentLineCap;
-				}
-				urlStr += UrlPparam; //		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
-				if (isMobile) {
-					var optionVal = 'location=no,toolbar=no,menubar=no';
+					var reciverPostion = urlStr.indexOf('reciver');
+					if (-1 < reciverPostion) { //pad側なら
+						urlStr = urlStr.substring(0, reciverPostion - 1);
+						dbMsg += ">urlStr>" + urlStr;
+						document.getElementById("header").style.display = "none";
+						//課題　；非表示にした分、描画範囲修正（上端）
+					} else if (-1 < roomPostion) {
+						var setURL = urlStr;
+						if (-1 < urlStr.indexOf('127.0.0.1')) { //xamppでのテスト中は
+							// if(isMobile){
+							// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
+							var wifiURL; //='<?php echo $_SERVER['REMOTE_ADDR']; ?>';
+							var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
+							// wifiURL = '192.168.3.14'; //自宅
+							dbMsg += "　,wifiURL=" + wifiURL;
+							setURL = urlStr.replace('127.0.0.1', wifiURL); //'http://192.168.3.10:3080'
+							// }
+						}
+						setURL += '?reciver=pad';
+						// var infoAria = document.getElementById("infoAria");
+						dbMsg += "　,QR=" + setURL;
+						$("#urlQR").html("");
+						$("#urlQR").qrcode({
+							width: 160, //横幅
+							height: 160, //高さ
+							text: setURL
+						});
+						if (!isMobile) {
+							// var canvasRect = hitarea.getBoundingClientRect();
+							// var canvasX = canvasRect.left + window.pageXOffset;
+							// var canvasY = canvasRect.top + window.pageYOffset; //canvasRect.top = 110
+							// dbMsg += ",canvas(" + canvasX + " , " + canvasY + ")";
+							// var canvasWidth = canvasRect.width;
+							// var canvasHeight = canvasRect.height;
+							// dbMsg += "[" + canvasWidth + " × " + canvasHeight + "]";
+							var futerRect = document.getElementById("footer").getBoundingClientRect();
+							var footerY = futerRect.top + window.pageYOffset; //canvasRect.top = 110
+							var hRemain = (window.innerHeight - footerY) * 0.7;
+							dbMsg += " ,hRemain=" + hRemain;
+							$("#pcUrlQR").html("");
+							$("#pcUrlQR").qrcode({
+								width: hRemain, //横幅
+								height: hRemain, //高さ
+								text: setURL
+							});
+						}
+					}
+					if (!dbMsg) {
+						document.getElementById("eventComent").innerHTML = "";
+					}
+					myLog(dbMsg)
 					mobileLog(dbMsg)
-					window.open(urlStr, "操作画面", optionVal);
-				} else {
+				}
+
+
+				socket.on('conect_start', function(data) {
+					var dbMsg = "[index.html.recive:conect_start]";
+					dbMsg += ",data=" + data;
+					currentColor = data.color;
+					currentWidth = data.width;
+					currentLineCap = data.lineCap;
+					//		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
+					// var portName = ':3080';//課題；ポート取得
+					// urlStr = urlStr.replace(portName, "/" +  data +　portName);
+					var UrlPparam = "?room=" + data.room; // "?sessid="+  data.socket.transport.sessid+"?transport="+socket.socket.transport.name;		// "?sesion="
+					dbMsg += ",currentColor=" + currentColor;
+					if (currentColor != "") {
+						UrlPparam += "?color=" + currentColor;
+					}
+					dbMsg += ",width=" + currentWidth;
+					if (currentWidth != 0) {
+						UrlPparam += "?width=" + currentWidth;
+					}
+					dbMsg += ",lineCap=" + currentLineCap;
+					if (currentLineCap != 0) {
+						UrlPparam += "?lineCap=" + currentLineCap;
+					}
+					urlStr += UrlPparam; //		urlStr =protocol+"//"+ host+UrlPparam + port + '?reciver=pad';
+					// if (isMobile) {
+					// 	var optionVal = 'location=no,toolbar=no,menubar=no';
+					// 	mobileLog(dbMsg)
+					// 	window.open(urlStr, "操作画面", optionVal);
+					// } else {
 					myLog(dbMsg);
 					location.href = urlStr; //再起動
-				}
-			});
+					// }
+				});
 
-			// $("#toControlDialog").dialog({		//document.getElementById("to_control_dialog")ではない
-			// 	autoOpen: false,  // 自動的に開かないように設定
-			// 	// width: 500,       // 横幅のサイズを設定
-			// 	modal: true,      // モーダルダイアログにする
-			// 	// buttons: [        // ボタン名 : 処理 を設定
-			// 	//   {
-			// 	//     text: 'ボタン1',
-			// 	//     click: function(){
-			// 	//       alert("ボタン1をクリックしました");
-			// 	//     }
-			// 	//   },
-			// 	//   {
-			// 	//     text: 'ボタン2',
-			// 	//     click: function(){
-			// 	//       alert("ボタン2をクリックしました");
-			// 	//     }
-			// 	//   },
-			// 	//   {
-			// 	//     text: 'ボタン3',
-			// 	//     click: function(){
-			// 	//       // ダイアログを閉じる
-			// 	//       $(this).dialog("close");
-			// 	//     }
-			// 	//   }
-			// 	// ]
-			// });
+				// $("#toControlDialog").dialog({		//document.getElementById("to_control_dialog")ではない
+				// 	autoOpen: false,  // 自動的に開かないように設定
+				// 	// width: 500,       // 横幅のサイズを設定
+				// 	modal: true,      // モーダルダイアログにする
+				// 	// buttons: [        // ボタン名 : 処理 を設定
+				// 	//   {
+				// 	//     text: 'ボタン1',
+				// 	//     click: function(){
+				// 	//       alert("ボタン1をクリックしました");
+				// 	//     }
+				// 	//   },
+				// 	//   {
+				// 	//     text: 'ボタン2',
+				// 	//     click: function(){
+				// 	//       alert("ボタン2をクリックしました");
+				// 	//     }
+				// 	//   },
+				// 	//   {
+				// 	//     text: 'ボタン3',
+				// 	//     click: function(){
+				// 	//       // ダイアログを閉じる
+				// 	//       $(this).dialog("close");
+				// 	//     }
+				// 	//   }
+				// 	// ]
+				// });
 
-		</script>
+			</script>
 	</body>
 
-	</html>
+</html>
 
 
-	<!--
+<!--
 https://github.com/socketio/socket.io/tree/master/examples/whiteboard
 
 /**

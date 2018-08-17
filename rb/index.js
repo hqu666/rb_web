@@ -131,9 +131,10 @@ function onConnection(socket){
         sendSocet('allclear' , socket , data);
     });
 
-    socket.on('connection', (socket) => {                                       //標準コールバック確認中
-        var dbMsg = "[connection]socket=" + socket.id;          //ukTPEyxXW_HOx_eoAAAAなど
+    socket.on('conect_comp', (data) => {                                       //標準コールバック確認中
+        var dbMsg = "[conect_comp]";          //ukTPEyxXW_HOx_eoAAAAなど
         myLog(dbMsg);
+        sendSocet('conect_comp' , socket , data);
     });
 
     socket.on('conect_start', (data) => {                                     //onloadから呼ばれる接続開始

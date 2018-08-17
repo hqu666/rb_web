@@ -239,12 +239,7 @@
 		is_h_Mirror = document.getElementById('mirror_h_CB').checked;
 		dbMsg += ",is_h_Mirror="+is_h_Mirror;
 		document.getElementById('compInfo').style.display="none";					//手書き完了後表示
-		// dbMsg += ",socket="+socket.id;
-		//
-		// socket.emit('conect_start', {
-		// 	nickname: "nick",
-		// 	href:location.href +""
-		// });
+
 		var roomPostion = urlStr.indexOf('room');
 		dbMsg += "　,roomPostion=" + roomPostion + "/" + urlStr.length;
 		var reciverPostion = urlStr.indexOf('reciver');
@@ -285,8 +280,10 @@
 				}
 			}
 			isComp =true;								//強制的に評価中
+			socket.emit('conect_comp', {						//socket.emit('drawing', {
+				room : "/" + roomVal ,
+			});
 		}
-		// dialogReset();
 		mobileLog(dbMsg);
 		myLog(dbMsg);
 	});
@@ -689,7 +686,20 @@
 		});
 	}
 
+	document.getElementById("again_bt").onclick = function() {
+		var dbMsg = "[again_bt]";
+		drowAgain();
+		myLog(dbMsg);
+	}
+
 //socket.ioイベント受信////////////////////////////////////////////////////////////////////////////
+	socket.on('conect_comp', function(data) {
+		var dbMsg = "recive:all conect_comp";
+		myLog(dbMsg);
+		$('#modal_box').modal('hide');
+	});
+
+
 	socket.on('drawing', function(data) {
 		var dbMsg = "recive:drawing";
 		onDrawingEvent(data);
@@ -1772,6 +1782,7 @@
 			lineCap:currentLineCap
 		});
 		setOriginPixcel();
+		document.getElementById("again_bt").style.display="none";
 		myLog(dbMsg);
 	}
 /**
@@ -1853,6 +1864,7 @@
 		// }).catch((err) => {
 		// 	dbMsg += "カウント失敗";
 		// });
+
 		myLog(dbMsg);
 	}
 
@@ -1953,6 +1965,7 @@
 		// if(0 < originPixcel.length){
 			document.getElementById("makeAfter").style.display="inline-block";			 //トレース元画像の表示方向
 			jobSelect.options[4].disabled = false;										//もう一度
+			document.getElementById("again_bt").style.display="inline-block";
 		// }
 		myLog(dbMsg);
 		return dCount;
