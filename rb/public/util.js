@@ -1,5 +1,5 @@
 var dbMsg = "[util.js]";
-var isDebug =false;
+var isDebug =true;
 var isSmaphoDebug =false;
 var isMobile=false;				//現在使用しているのはスマホ
 

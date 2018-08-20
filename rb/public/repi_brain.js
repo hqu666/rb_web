@@ -18,7 +18,7 @@
 
 	var orgComp = document.getElementById('orgComp');							//元データの描画結果
 	var useComp = document.getElementById('useComp');							//判定ボタン；トレース後の描画結果
-	useComp.style.display="none";												//判定ボタン
+	// useComp.style.display="none";												//判定ボタン
 
 	var graficOptions = document.getElementById('graficOptions');				//グラフィック設定
 	var lineWidthSelect = document.getElementById('lineWidthSelect');			//線の太さ
@@ -38,7 +38,7 @@
 	};
 	var isMirror=false;				//上下鏡面動作
 	var is_h_Mirror=false;				//左右鏡面動作
-	var isAutoJudge=true;				//トレース後に自動判定
+	var isAutoJudge=false;				//トレース後に自動判定
 	var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
 	var orgCount=0;
 	var compCount=0;
@@ -341,6 +341,24 @@
 	  myLog(dbMsg);
   }
 
+  function setLineWidthVal(setVal) {
+  	var dbMsg = "[setLineWidthVal]setVal="+setVal;
+	if(setVal<=5){
+		setVal = 5;
+	}else if(setVal<=10){
+		setVal = 10;
+	}else if(setVal<=20){
+		setVal = 20;
+	}else{
+		setVal = 50;
+	}
+	dbMsg += ">>"+setVal;
+	lineWidthSelect.value=setVal;
+	currentWidth =setVal;
+	myLog(dbMsg);
+}
+
+
   document.getElementById("to_control_Select").onchange = function() {
   	var dbMsg = "[to_control_Select]";
   	var currenttype =this.value;			 // current.color = e.target.className.split(' ')[1];
@@ -462,10 +480,10 @@
 		var cWidth = canvas.width;
 		var cHeight = canvas.height;
 		dbMsg += "["+ cWidth + "×"+ cHeight + "]";
-		var lWidth=context.lineWidth;
-		dbMsg += "lineWidth=" + lWidth;
+		// var lWidth=context.lineWidth;
+		// dbMsg += "lineWidth=" + lWidth;
 		dbMsg += ",orgColo="+ orgColor;
-		$('#modalComent').innerHTML = "["+ cWidth + "×"+ cHeight + "]を線幅" +lWidth+"で分割\n" ;
+		$('#modalComent').innerHTML = "["+ cWidth + "×"+ cHeight + "]";				//"を線幅" +lWidth+"で分割\n" ;
 		$('#modal_box').modal('show');
 		scoreStart();
 		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
@@ -585,6 +603,7 @@
 			room : "/" + roomVal ,
 			width:currentWidth
 		});
+		// context.lineWidth = currentWidth*1;
 		myLog(dbMsg);
 	}
 
@@ -744,6 +763,9 @@
 		mobileLog(dbMsg);
 	});
 
+	/**
+	*トレースラインの設定
+	*/
 	socket.on('sendcomp', function(data) {
 		var dbMsg = "recive[sendcomp]";
 		isComp =true;
@@ -751,7 +773,7 @@
 		current.color =data.color;
 		colorPalet.value=current.color;
 		currentWidth= data.width;
-		lineWidthSelect.value=currentWidth;
+		setLineWidthVal(currentWidth);
 		currentLineCap =  data.lineCap;
 		lineCapSelect.value=currentLineCap;
 		myLog(dbMsg);
@@ -769,7 +791,7 @@
 		var dbMsg = "recive:changeLineWidth;";
 		currentWidth = data.width;
 		dbMsg += "="+currentWidth;
-		lineWidthSelect.value=currentWidth;										//セレクタの表示も変更
+		setLineWidthVal(currentWidth);										//セレクタの表示も変更
 		myLog(dbMsg);
 	});
 
@@ -823,6 +845,7 @@
 			if(isErasre){
 				dColor=erasreColor;
 			}
+			dbMsg += ",color=" +dColor+ ",width=" + currentWidth;
 			drawLine( eX,  eY, eX, eY, dColor , currentWidth , currentLineCap , 0 , true);
 	          //htmlの場合は不要、Androidネイティブは書き出しでパスを生成するので必要    //一点しかないので始点終点とも同じ座標を渡すし
 		}else if(drowMode == 'text'){
@@ -846,7 +869,7 @@
 			drawing = false;
 			typeSelect.options[0].selected = true;										//確定
 		}else{
-			context.beginPath();     // 1.Pathで描画を開始する
+			// context.beginPath();     // 1.Pathで描画を開始する
 		}
 		myLog(dbMsg);
 		// isSmaphoDebug =true;
@@ -1138,11 +1161,11 @@
 		dbMsg += ",color=" + data.color+ ",width=" + data.width+ ",lineCap=" + data.lineCap+ ",action=" + data.action+ ",autojudge=" + data.autojudge;
 		current.color= data.color;
 		context.strokeStyle= data.color;
-		// currentWidth= data.width;
+		currentWidth= data.width*1.0;
 		context.lineCap= data.lineCap;
 		currentLineCap= data.lineCap;
 		isAutoJudge= data.autojudge;
-
+		// drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, current.color , currentWidth , currentLineCap, data.action , false);
 		drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color , data.width , data.lineCap , data.action , false);
 		// if( data.action==1){
 		// 	scoreStart();
@@ -1187,22 +1210,25 @@
 			// orgCount++;
 			// dbMsg +="；orgCount=" + orgCount;
 		}
-		context.beginPath();
+		;
+		context.beginPath();													//パスを切ってこれ以降の設定とする
 		context.moveTo(x0, y0); //サブパスの開始点
 		context.lineTo(x1, y1); //直前の座標と指定座標を結ぶ直線を引く
 		dbMsg += "color=" + _color;
 		context.strokeStyle = _color;
-		dbMsg += ">>context=" + context.strokeStyle;
+		dbMsg += ">context>=" + context.strokeStyle;
 
 		dbMsg += ",width=" + _width;
-		context.lineWidth = _width;
-		dbMsg += ">>_width=" + context.lineWidth;
+		context.lineWidth = _width;				//正の整数、もしくは浮動小数点数値
+		dbMsg += ">>=" + context.lineWidth;
 
 		dbMsg += ",lineCap=" + _lineCap;
 		context.lineCap = _lineCap;
-		dbMsg += ">>_lineCap=" + context.lineCap ;
+		dbMsg += ">>=" + context.lineCap ;
 
 		dbMsg +=",action=" + action;
+		// context.moveTo(x0, y0); //サブパスの開始点
+		// context.lineTo(x1, y1); //直前の座標と指定座標を結ぶ直線を引く
 		context.stroke();
 		context.closePath();
 
@@ -1219,7 +1245,7 @@
 				x1: x1 / w,
 				y1: y1 / h,
 				color: context.strokeStyle,
-				width: currentWidth,
+				width: _width,
 				lineCap:currentLineCap,				//context.lineCap,
 				action:action,
 				autojudge:isAutoJudge
@@ -1358,7 +1384,7 @@
 		var cWidth = canvas.width;
 		var cHeight = canvas.height;
 		dbMsg += "["+ cWidth + "×"+ cHeight +  "]";
-		var context = canvas.getContext('2d');
+		// var context = canvas.getContext('2d');
 		originalCanvas = context.getImageData(0, 0, cWidth, cHeight);
 		originPixcel = new Array();											//原版の保持領域初期化
 		originPixcel = originalCanvas.data;					//ファイルから読み込まれたピクセル配列を保持
@@ -1477,8 +1503,9 @@
 				var carentPos =	4 * xPos +  4 * cWidth * yPos ;			//(x,y) = 4x+4wy
 				var mirrorInversion =carentPos
 				switch (direction) {
-					case 1:		//右へ90度;(x,y) => (w/2-(h/2-y) , h/2+(w/2-x))
-						mirrorInversion = (cWidth/2 - (cHeight/2 - yPos) )*4 + (cHeight/2 + (cWidth/2-xPos)) * 4 * cWidth;	//要縮小？
+					case 1:		//右へ90度;(x,y) => (h/2+y , w/2-x)			//×(w/2-(h/2-y) , h/2+(w/2-x))
+					// mirrorInversion =(cHeight/2 - xPos) * 4* cWidth  + ((cHeight/2 - yPos) )*4 *cWidth;	//上ずれ（下に残る）
+						mirrorInversion = (cWidth/2 - (cHeight/2 - yPos) )*4 + (cHeight/2 + (cWidth/2-xPos)) * 4 * cWidth;	//8/20;上ずれ（下に残る）
 						break;
 					case 2:		//左へ90度;(x,y) => (w/2+(h/2-y) , h/2+w/2-x)
 						mirrorInversion = (cWidth/2 + (cHeight/2 - yPos) )*4 + (cHeight/2 - (cWidth/2-xPos)) * 4 * cWidth;	//左右反転
@@ -1580,6 +1607,7 @@
 	var bColor;
 	/**
 	* 使用されている色と線幅を取得
+	* トレースラインの色と太さの設定と送信
 	* @param {*} canvas 捜査対象
 	*/
 	function stereoTypeCheck(canvas) {
@@ -1690,26 +1718,19 @@
 			 });
 			lineWidth = widthrray[1].name;			//0pxが最多になる
 			dbMsg += ">最多lineWidth>"+ lineWidth;
-			if(lineWidth<5){
-				lineWidth =5;
-			}else if(lineWidth<11){
-					lineWidth =10;
-			}else {
-					lineWidth ++;
-			}
-			currentWidth=lineWidth;
+			currentWidth=Math.ceil(lineWidth*2.0);				//トレース戦は太めに
 			dbMsg += ">>"+ currentWidth;
-			lineWidthSelect.value=currentWidth;
+			setLineWidthVal(currentWidth);										//セレクタの表示も変更
 			dbMsg += "；Y軸上"+widthrray[0].value+"個所";
 			dbMsg += ",room=" + roomVal;
-			// socket.emit('changeLineWidth', {
-			// 	room : "/" + roomVal ,
-			// 	width:currentWidth
-			// });
+			socket.emit('changeLineWidth', {
+				room : "/" + roomVal ,
+				width:currentWidth
+			});
 		}
 		scoreStartRady();
 		if(isDebug){
-			document.getElementById('scoreComent').innerHTML = colorArray.length +"色中 対象 "+orgColor + " ;線＝" + lineWidth +"PX";
+			document.getElementById('scoreComent').innerHTML = colorArray.length +"色中 対象 "+orgColor + " ;線＝" + lineWidth +"PX" + ">トレース>" + currentWidth +"PX";
 			var rgba = 'rgba(' + oRed + ',' +oGreen +',' + oBule + ',' + (255 / 255) + ')';
 			document.getElementById('scoreComent').style.background =  rgba;		//r=63,g=72,b=204 ="#3fcc48が正解
 		}
@@ -1771,11 +1792,11 @@
 		dbMsg += ">retRGB>"+ retRGB;		//rgb(255, 0, 255)
 		compColor =rgb2hex(retRGB);
 		current.color=compColor;
-		dbMsg += ">送信値>"+ current.color+ "," +currentWidth+ "," +currentLineCap;
+		dbMsg += ">送信値>"+ current.color+ "," +currentWidth+ "px," +currentLineCap;
 		// dbMsg +=",emit=" + emit;
 		// if (emit) {
 		dbMsg += ",room=" + roomVal;
-		socket.emit('sendcomp', {
+		socket.emit('sendcomp', {												//トレースラインの設定
 			room : "/" + roomVal ,
 			color: compColor,
 			width: currentWidth,
