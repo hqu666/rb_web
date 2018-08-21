@@ -10,6 +10,8 @@
 	var jobSelect = document.getElementById('jobSelect');						//元データの作り方
 	jobSelect.options[0].disabled = true;										//>選択して下さい
     jobSelect.options[4].disabled = true;										//もう一度
+		// document.getElementById('directionSelect').options[1].disabled = true;				//右へ90度回転
+		// document.getElementById('directionSelect').options[2].disabled = true;				//左へ90度回転
 	var typeSelect = document.getElementById('typeSelect');						//描画種別
 	typeSelect.options[6].disabled = true;										//確定
 	var colorPalet = document.getElementById('colorPalet');						//カラーパレット
