@@ -1,58 +1,57 @@
 <!DOCTYPE HTML>
 <html lang="ja">
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Script-Type" content="text/javascript">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
-    <title>リカバリーブラインAndroid(仮)</title>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-        crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-    <!-- <script type="text/javascript" src="js/org_util.js"></script> -->
-    <!-- <link rel="stylesheet" type="text/css" href="../main.css" title="優先スタイル"> -->
-    <style>
-        table {
-            border-collapse: collapse;
-        }
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Script-Type" content="text/javascript">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+        <title>リカバリーブラインAndroid(仮)</title>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- <script type="text/javascript" src="js/org_util.js"></script> -->
+        <!-- <link rel="stylesheet" type="text/css" href="../main.css" title="優先スタイル"> -->
+        <style>
+            table {
+                border-collapse: collapse;
+            }
 
-        td {
-            border: solid 1px;
-            padding: 0.5em;
-        }
-    </style>
-</head>
+            td {
+                border: solid 1px;
+                padding: 0.5em;
+            }
 
-<body style="padding: 5px;">
-    <div id="wrapper">
-        <!-- <div id="header">
+        </style>
+    </head>
+
+    <body style="padding: 5px;">
+        <div id="wrapper">
+            <!-- <div id="header">
             <ul class="nav nav-tabs nav-justified">
                 <li role="presentation"><a href="../dotnet/">.NET/C#</a></li>
                 <li role="presentation" class="active"><a href="#">webプログラム実験室</a></li>
                 <li role="presentation"><a href="../android/">Andriod</a></li>
             </ul>
         </div> -->
-        <div id="contents">
-            <div class="row" id='pagetop'>
-                <div class="panel panel-default">
-                    <div class="row">
-                        <div class="col-xs-2 col-sm-2">
-                            <img src="splash_log.png" class="phorRes" style="width:100%;"  alt="splash_log">
-                        </div>
-                        <div class="col-xs-8 col-sm-8">
-                            <div style="text-align: right;">更新日 2018/8/28</div>
-                            <h1>Android版リカバリーブラインの使い方</h1>
-                        </div>
-                        <div class="col-xs-2 col-sm-2">
-                            <img src="ic_launcher.png" class="phorRes" style="width:50%;"  alt="ic_launcher">
-                        </div>
-                        <!-- <div class="col-xs-12 col-sm-5" style="text-align: right;">
+            <div id="contents">
+                <div class="row" id='pagetop'>
+                    <div class="panel panel-default">
+                        <div class="row">
+                            <div class="col-xs-2 col-sm-2">
+                                <img src="splash_log.png" class="phorRes" style="width:100%;" alt="splash_log">
+                            </div>
+                            <div class="col-xs-8 col-sm-8">
+                                <div style="text-align: right;">更新日 2018/8/29</div>
+                                <h1>Android版リカバリーブラインの使い方</h1>
+                            </div>
+                            <div class="col-xs-2 col-sm-2">
+                                <img src="ic_launcher.png" class="phorRes" style="width:50%;" alt="ic_launcher">
+                            </div>
+                            <!-- <div class="col-xs-12 col-sm-5" style="text-align: right;">
                                 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3146425308522831" data-ad-slot="4219928305" data-ad-format="auto"></ins>
                                 <script>
@@ -70,106 +69,192 @@
                                 </script>
                                 <script type="text/javascript" src="https://js1.nend.net/js/nendAdLoader.js"></script>
                             </div> -->
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row " id="about">
-            <div class="col-sm-12">
-                <div class="panel-group">
-                    <div class="panel panel-default">
-                        <div class="panel-title">
-                            <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;"
-                                data-target="#about_recovary_brain_body" aria-expanded="true">
-                                脳機能回復訓練箱
-                                <span style="font-size: x-large;margin-right: 20px;">リカバリーブラインについて</span>
-                                <span style="font-size: small;margin-right: 20px;">特許番号　第3114239 号</span>
+            <div class="row " id="about">
+                <div class="col-sm-12">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-title">
+                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#about_recovary_brain_body" aria-expanded="true">
+                                    脳機能回復訓練箱
+                                    <span style="font-size: x-large;margin-right: 20px;">リカバリーブラインについて</span>
+                                    <span style="font-size: small;margin-right: 20px;">特許番号　第3114239 号</span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div id="about_recovary_brain_body" class="panel-collapse collapse in" aria-expanded="true">
-                            <div class="panel-body">
-                                <div class="panel-group">
-                                    <div class="row">
-                                        <div class="col-xs-12 col-sm-4">
-                                            <img src="Recovery11.png" class="phorRes" style="width:100%;" align="top" alt="Recovery11">
-                                            <span style="font-size: small;margin-left: 20px;">販売価格　￥35,000(税込)</span>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-4">
-                                            <img src="Recovery12.png" class="phorRes" style="width:100%;" align="top" alt="Recovery12">
-                                        </div>
+                            <div id="about_recovary_brain_body" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="panel-body">
+                                    <div class="panel-group">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-4">
+                                                <img src="Recovery11.png" class="phorRes" style="width:100%;" align="top" alt="Recovery11">
+                                                <span style="font-size: small;margin-left: 20px;">販売価格　￥35,000(税込)</span>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-4">
+                                                <img src="Recovery12.png" class="phorRes" style="width:100%;" align="top" alt="Recovery12">
+                                            </div>
 
-                                        <div class="col-xs-12 col-sm-4">
-                                            <img src="Recovery13.png" class="phorRes" style="width:100%;" align="top" alt="Recovery13">
+                                            <div class="col-xs-12 col-sm-4">
+                                                <img src="Recovery13.png" class="phorRes" style="width:100%;" align="top" alt="Recovery13">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row" id="toweb">
-                                        <div class="col-sm-12">
-                                            <div class="panel-group">
-                                                <div class="panel panel-default">
-                                                    <div class="panel-title">
-                                                        <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#toweb_body" aria-expanded="true" style="width: 100%;font-size: large;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
-                                                            この機能をスマートフォンで再現します。
+                                        <div class="row" id="toweb">
+                                            <div class="col-sm-12">
+                                                <div class="panel-group">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-title">
+                                                            <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#toweb_body" aria-expanded="true" style="width: 100%;font-size: large;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
+                                                                この機能をスマートフォンで再現します。
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div id="toweb_body" class="panel-collapse collapse in" aria-expanded="true">
-                                                        <div class="panel-body">
-                                                            <div class="panel-group">
-                                                                <div class="row">
-                                                                    <div class="col-xs-12 col-sm-12">
-                                                                        リカバリーブラインAndroid(仮)は今では販売されていないこの筐体をスマートフォンで再現するアプリケーションです。<br>                                                                        表示した線や図形などのパターンをトレースする事で表示されている線の消し込みを行い、どれだけ消せたか（正確にトレースできたか）を評価します。
-                                                                    </div>
-                                                                </div>
-                                                                <p>
-                                                                </P>
-                                                                <div class="row">
-                                                                    <div class="col-xs-6 col-sm-4">
-                                                                        <div style="height:82px;padding: 20px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                            アプリケーションを起動すると「リカバリーブライン」を知って頂く為の「スタート画面が表示されます。
+                                                        <div id="toweb_body" class="panel-collapse collapse in" aria-expanded="true">
+                                                            <div class="panel-body">
+                                                                <div class="panel-group">
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 col-sm-12">
+                                                                            リカバリーブラインAndroid(仮)は今では販売されていないこの筐体をスマートフォンで再現するアプリケーションです。<br> 表示した線や図形などのパターンをトレースする事で表示されている線の消し込みを行い、どれだけ消せたか（正確にトレースできたか）を評価します。
                                                                         </div>
-                                                                        <img src="beginning1.png" style="width:75%;" align="top" alt="beginning1"><br>
+                                                                    </div>
+                                                                    <p>
+                                                                    </P>
+                                                                    <div class="row">
+                                                                        <div class="col-xs-6 col-sm-4">
+                                                                            <div style="height:82px;padding: 20px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                                アプリケーションを起動すると「リカバリーブライン」を知って頂く為の「スタート画面が表示されます。
+                                                                            </div>
+                                                                            <img src="beginning1.png" style="width:75%;" align="top" alt="beginning1"><br>
+                                                                        </div>
+
+                                                                        <div class="col-xs-6 col-sm-4">
+                                                                            <div style="height:82px;padding: 20px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                                pad(グレーの部分)をなぞって、表示された線を消し込みます。
+                                                                            </div>
+                                                                            <img src="beginning2.png" style="width:75%;" align="top" alt="beginning2">
+                                                                        </div>
+                                                                        <div class="col-xs-12 col-sm-4">
+                                                                            <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                                <img src="judge_off.png" style="width:20px;" alt="☆（レーティング）">アイコンをタップすると元画像の線をどれだけ消せたかを、トレース前後のピクセル数で評価します。
+                                                                            </div>
+                                                                            <img src="score_a.png" style="width:98%;" alt="score_a">
+                                                                            <div style="padding: 20px;margin-top: 20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                                <img src="judge_off.png" style="width:20px;" alt="☆（レーティング）">アイコンをタッチ（ロングタップ）すれば「自動判定モード」<img src="judge_on.png" style="width:20px;" alt="☆（レーティング）">になり、画面から指を離したタイミングでスコアが自動的に算出されます。
+                                                                            </div>
+                                                                            <div style="background-color: #e7f9fe;">
+                                                                                toolbar右の<img src="modoru_bt.png" style="width:20px;" alt="戻る">アイコンをタップするとトレースした線を消して再挑戦できます。
+                                                                            </div>
+                                                                            <div style="height:82px;padding: 20px;margin-top: 20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                                <img src="../edit.png" style="width:20px;" alt="トレース元">アイコンをタップすると別のトレース元画像を選択できます。
+                                                                            </div>
+                                                                            <img src="patarnselect.png" style="width:98%;" align="left" alt="patarnselect">
+                                                                        </div>
                                                                     </div>
 
-                                                                    <div class="col-xs-6 col-sm-4">
-                                                                        <div style="height:82px;padding: 20px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                            pad(グレーの部分)をなぞって、表示された線を消し込みます。
+                                                                    <p>
+                                                                    </P>
+                                                                    <div class="row" style="background-color: #D6CEFF;font-size: large;">
+                                                                        <div class="col-xs-12 col-sm-12">
+                                                                            得点について
                                                                         </div>
-                                                                        <img src="beginning2.png" style="width:75%;" align="top" alt="beginning2">
                                                                     </div>
-                                                                    <div class="col-xs-12 col-sm-4">
-                                                                        <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                            <img src="judge_off.png" style="width:20px;" alt="☆（レーティング）">アイコンをタップすると元画像の線をどれだけ消せたかを、トレース前後のピクセル数で評価します。
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 col-sm-4">
+                                                                            <img src="score.png" style="width:98%;" alt="score">
                                                                         </div>
-                                                                        <img src="score_a.png" style="width:98%;" alt="score_a">
-                                                                        <div style="padding: 20px;margin-top: 20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                            <img src="judge_off.png" style="width:20px;" alt="☆（レーティング）">アイコンをタッチ（ロングタップ）すれば「自動判定モード」<img
-                                                                                src="judge_on.png" style="width:20px;" alt="☆（レーティング）">になり、画面から指を離したタイミングでスコアが自動的に算出されます。
+                                                                        <div class="col-xs-12 col-sm-8">
+                                                                            上記の得点では全面を塗りつぶしても高得点になってしまうので、きちんと元画像の線をどれだけ正確にトレースしたかを示すヒット率を加えます。<br> トレース後にツールバーには左から以下の4つの表示が並びます。
+
+                                                                            <ol>
+                                                                                <li>
+                                                                                    残り（1647[ピクセル]）
+                                                                                    <ul>
+                                                                                        <li>
+                                                                                            トレースによって元画像が無理つぶされ、何ピクセル残っているか
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </li>
+                                                                                <li>
+                                                                                    元画像のピクセル数（5634[ピクセル]）
+                                                                                    <ul>
+                                                                                        <li>
+                                                                                            トレースのピクセル数。図の中では青い線の面積。
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </li>
+                                                                                <li>
+                                                                                    トレース線のピクセル数14845[ピクセル]）
+                                                                                    <ul>
+                                                                                        <li>
+                                                                                            トレースのピクセル数。図の中では赤い線の面積。
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </li>
+                                                                                <li>
+                                                                                    ヒット率43[%]）
+                                                                                    <ul>
+                                                                                        <li>
+                                                                                            トレース線がどれだけ元画像を塗りつぶしたか。
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            はみ出しや、関係ない所を塗りつぶすとヒット率は下がります。
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            このヒット率を塗りつぶしで得た得点に積算して最終的なスコアとします。
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </li>
+                                                                            </ol>
+                                                                            また、トレースの開始まではで探りで元画像の開始点を捜す事になるかと思います。（オレンジ色の部分）<br> この部分はトレース線が元画像に接した処で消去しますので「関係ない所を塗りつぶす」行為（ヒット率を下げる減点）には含めません。
                                                                         </div>
-                                                                        <div style="background-color: #e7f9fe;">
-                                                                            toolbar右の<img src="modoru_bt.png" style="width:20px;"
-                                                                                alt="戻る">アイコンをタップするとトレースした線を消して再挑戦できます。
-                                                                        </div>
-                                                                        <div style="height:82px;padding: 20px;margin-top: 20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                            <img src="../edit.png" style="width:20px;" alt="トレース元">アイコンをタップすると別のトレース元画像を選択できます。
-                                                                        </div>
-                                                                        <img src="patarnselect.png" style="width:98%;" align="left" alt="patarnselect">
                                                                     </div>
-                                                                </div>
-                                                                <p>
-                                                                </P>
-                                                                <div class="row">
-                                                                    <div class="col-xs-11 col-sm-11" style="background-color: #F6CEF5;">
-                                                                        <ul>
-                                                                            <li>
-                                                                                説明の便宜上、トレースを行う部分を「pad」、padをなぞって線を消し込む操作を「トレース」と記載します。
-                                                                            </li>
-                                                                        </ul>
+
+                                                                    <p>
+                                                                    </P>
+                                                                    <div class="row" style="background-color: #D6CEFF;font-size: large;">
+                                                                        <div class="col-xs-12 col-sm-12">
+                                                                            その他の工夫
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="col-xs-1 col-sm-1" data-toggle="collapse" style="height: 50px;text-align: right;" data-target="#about_recovary_brain_body"
-                                                                        aria-expanded="true">
-                                                                        <img src="close.png" class="phorRes" alt="close" style="position: absolute;bottom: 5px;right: 5px;">
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 col-sm-12">
+                                                                            <ol>
+                                                                                <li>
+                                                                                    起動した時の向きで固定
+                                                                                    <ul>
+                                                                                        <li>
+                                                                                            スマートホンは使用中に持っている角度が変わると縦画面/横画面の表示が切り替わります。
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            表示の切り替わりが発生するとそれまでトレースしていた結果や、手書き編集中の画像データが破棄されてしまします。
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            リカバリーブラインAndroidは起動時点で縦持ちなのか、横持なのかを読み取り、その向きを固定します。ですから意図しない回転でデータを失う事は有りません。
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            ただし画面を切り替えた時（ドロワーメニューから呼び出すQRコードリーダーなど）から戻った時は起動状態に戻ります。
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </li>
+                                                                            </ol>
+                                                                        </div>
+                                                                    </div>
+                                                                    <p>
+                                                                    </P>
+                                                                    <div class="row">
+                                                                        <div class="col-xs-11 col-sm-11" style="background-color: #F6CEF5;">
+                                                                            <ul>
+                                                                                <li>
+                                                                                    説明の便宜上、トレースを行う部分を「pad」、padをなぞって線を消し込む操作を「トレース」と記載します。
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <div class="col-xs-1 col-sm-1" data-toggle="collapse" style="height: 50px;text-align: right;" data-target="#about_recovary_brain_body" aria-expanded="true">
+                                                                            <img src="close.png" class="phorRes" alt="close" style="position: absolute;bottom: 5px;right: 5px;">
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -185,46 +270,944 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row " id="mirror">
-            <div class="col-sm-12">
-                <div class="panel-group">
-                    <div class="panel panel-default">
-                        <div class="panel-title">
-                            <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;"
-                                data-target="#mirror_body" aria-expanded="true">
-                                <h3>鏡面動作で難易度を上げましょう</h3>
+            <div class="row " id="mirror">
+                <div class="col-sm-12">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-title">
+                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#mirror_body" aria-expanded="true">
+                                    <h3>鏡面動作で難易度を上げましょう</h3>
+                                </div>
                             </div>
-                        </div>
 
-                        <div id="mirror_body" class="panel-collapse collapse in" aria-expanded="true">
-                            <div class="panel-body">
-                                <div class="panel-group">
+                            <div id="mirror_body" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="panel-body">
+                                    <div class="panel-group">
+                                        <div class="row">
+                                            <div class="col-xs-6 col-sm-9">
+                                                <img src="mirror_h.png" style="width:20px;" alt="trase">アイコンをクリックすると<img src="mirror_h_t.png" style="width:20px;" alt="trase">に変化し、パッドをトレースする向きとトレースラインが書込まれる方向が上下に反転します。<br><br>同様に
+                                                <img src="mirror_v.png" style="width:20px;" alt="mirror_v">アイコンをクリックすると<img src="mirror_v_t.png" style="width:20px;" alt="mirror_v_t">に変化し、パッドをトレースする向きとトレースラインが書込まれる方向が左右に反転します。<br><br> 二つともタップしておけば上下左右同時に反転します。
+                                            </div>
+                                            <div class="col-xs-6 col-sm-3">
+                                                <img src="mirror_p2.png" class="phorRes" style="width:100%;  margin-bottom: 5px;" alt="mirror_p2">
+                                            </div>
+                                        </div>
+
+                                    </div>
                                     <div class="row">
-                                        <div class="col-xs-6 col-sm-9">
-                                            <img src="mirror_h.png" style="width:20px;" alt="trase">アイコンをクリックすると<img src="mirror_h_t.png"
-                                                style="width:20px;" alt="trase">に変化し、パッドをトレースする向きとトレースラインが書込まれる方向が上下に反転します。<br><br>同様に
-                                            <img src="mirror_v.png" style="width:20px;" alt="mirror_v">アイコンをクリックすると<img src="mirror_v_t.png"
-                                                style="width:20px;" alt="mirror_v_t">に変化し、パッドをトレースする向きとトレースラインが書込まれる方向が左右に反転します。<br><br>                                            二つともタップしておけば上下左右同時に反転します。
+                                        <div class="col-xs-12 col-sm-9" style="background-color: #D6CEFF;font-size: large;">
+                                            パッドの左右入れ替え
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-9">
+                                            リカバリーブラインAndroidは設定画面で横向きの時、Padを左右のいずれにするかを選択できます。
+                                            <ul>
+                                                <li>
+                                                    左利きの方
+                                                </li>
+                                                <li>
+                                                    利き手と反対側の手を使って難易度を上げたいとき
+                                                </li>
+                                            </ul>
+                                            など、用途に応じて切り替え可能です。<br> 初期値は右がPadです。
+
                                         </div>
                                         <div class="col-xs-6 col-sm-3">
-                                            <img src="mirror_p2.png" class="phorRes" style="width:100%;  margin-bottom: 5px;" alt="mirror_p2">
                                             <img src="mirror_p1.png" class="phorRes" style="width:100%;" align="top" alt="mirror_p1">
+                                        </div>
+                                    </div>
+                                    <p>
+                                    </P>
+                                    <div class="row">
+                                        <div class="col-xs-11 col-sm-11" style="background-color: #F6CEF5;">
+                                            <h3>
+                                            この機能で鏡越しに手元に置かれた紙に書かれた線をトレースする機能を実現します。
+                                        </h3>
+                                        </div>
+                                        <div class="col-xs-1 col-sm-1" data-toggle="collapse" style="height: 60px;text-align: right;" data-target="#mirror_body" aria-expanded="true">
+                                            <img src="close.png" class="phorRes" alt="close" style="position: absolute;bottom: 5px;right: 5px;">
                                         </div>
                                     </div>
 
                                 </div>
-                                <p>
-                                </P>
-                                <div class="row">
-                                    <div class="col-xs-11 col-sm-11" style="background-color: #F6CEF5;">
-                                        <h3>
-                                            この機能で鏡越しに手元に置かれた紙に書かれた線をトレースする機能を実現します。
-                                        </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row " id="toPC">
+                <div class="col-sm-12">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-title">
+                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#to_pc_body" aria-expanded="true">
+                                    <h3>PCの大きな画面で</h3>
+                                </div>
+                            </div>
+
+                            <div id="to_pc_body" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="panel panel-default">
+                                    <div id="toweb_body" class="panel-collapse collapse in" aria-expanded="true">
+                                        <div class="panel-body">
+                                            <div class="panel-group">
+                                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" aria-expanded="true" style="width: 100%;font-size: large;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
+                                                    PCのWebブラウザーとリンク
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-6 col-sm-3">
+                                                        <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                            PCのブラウザでリカバリーブラインwebを開いてください。
+                                                        </div>
+                                                        <img src="pc_rb.png" style="width:100%;" alt="pc_rb">
+                                                    </div>
+                                                    <div class="col-xs-6 col-sm-3">
+                                                        <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                            アプリ画面の左端をスワイプ。もしくはtoolBar左のハンバーガーメニューをタップして開くドロワーメニューから「QRコードから接続」をタップ
+                                                        </div>
+                                                        <img src="sa_drwer_mwnu.png" style="width:75%;" alt="sa_drwer_mwnu">
+                                                    </div>
+                                                    <div class="col-xs-6 col-sm-3">
+                                                        <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                            リカバリーブラインWebで表示されたQRコードをアプリケーションのリーダーで読み取り。
+                                                        </div>
+                                                        <img src="qract02.png" style="width:100%;" alt="qract02">
+                                                        <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                            読込みに成功するとURLが書込まれた大きなボタンが表示されます。それをタップしてスマートホンをpadとして接続します。
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-6 col-sm-3">
+                                                        <div style="padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                            スマートフォンでトレース
+                                                        </div>
+                                                        <img src="pad_phot.png" style="width:60%;" alt="pad_phot">
+                                                        <div style="padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                            トレース以外の操作はPCで
+                                                        </div>
+                                                        <img src="pc_rb_end.png" style="width:60%;" alt="pc_rb_end">
+                                                    </div>
+                                                </div>
+                                                <p>
+                                                </P>
+                                                <div class="row">
+                                                    <div class="col-xs-11 col-sm-11" style="background-color: #F6CEF5;">
+                                                        <ul>
+                                                            <li>
+                                                                パッドと操作部を別の端末で表示する時はインターネットに接続してWebSoket(チャットの様な仕掛け)を使います。
+                                                            </li>
+                                                            <li>
+                                                                複数の方がリカバリーブラインのアプリケーションwebページ(リカバリーブラインweb)へアクセスしても動作が混在しない様「room」という概念で切り分けています。
+                                                            </li>
+                                                            <li>
+                                                                roomはご利用された方がリカバリーブラインweb(仮)にアクセスした日時のタイムスタンプをキーに切り分けます。
+                                                            </li>
+                                                            <li>
+                                                                Padを接続すると、その時点でroomで使用している線の色、太さ、先端形状をトレースの初期値として送ります。
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-xs-1 col-sm-1" data-toggle="collapse" style="height: 90px;text-align: right;" data-target="#to_pc_body" aria-expanded="true">
+                                                        <img src="close.png" class="phorRes" alt="close" style="position: absolute;bottom: 5px;right: 5px;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-xs-1 col-sm-1" data-toggle="collapse" style="height: 60px;text-align: right;" data-target="#mirror_body"
-                                        aria-expanded="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row " id="other_screen">
+                <div class="col-sm-12">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-title">
+                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#other_screen_body" aria-expanded="true">
+                                    <h3>別画面からの操作で更に難易度を上げましょう</h3>
+                                </div>
+                            </div>
+
+                            <div id="other_screen_body" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="panel-body">
+                                    <div class="panel-group">
+                                        <div class="panel-heading btn collapse_bt" data-toggle="collapse" aria-expanded="true" style="width: 100%;font-size: large;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
+                                            もう一台、AndroidのスマートホンかタブレットにリカバリーブラインAndroidをインストール
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-6 col-sm-3">
+                                                <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                    ドロワーメニューから「メイン画面として接続」をタップ
+                                                </div>
+                                                <img src="sa_drwer_mwnu.png" style="width:75%;" align="top" alt="sa_drwer_mwnu">
+                                            </div>
+                                            <div class="col-xs-6 col-sm-3">
+                                                <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                    リカバリーブラインwebをスマートホンの全画面で表示します。
+                                                </div>
+                                                <img src="open_client.png" style="width:100%;" align="top" alt="open_client">
+                                                <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                    左上に表示された<img src="../menu.png" style="width:20px;" alt="menu">アイコンをクリックすると<img src="open_client_menu.png" style="width:60%;" alt="trase">リストが表示されます。
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6 col-sm-3">
+                                                <img src="open_client_menu01.png" style="width:75%;" align="top" alt="qract02"><br>の「接続先選択」で
+                                                <img src="open_client_qr.png" style="width:80%;" align="top" alt="qrcord"><br>を表示。
+                                            </div>
+                                            <div class="col-xs-6 col-sm-3">
+                                                <div style="height:110px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                    「PCの大きな画面で」で紹介した要領でリカバリーブラインAndroidをインストールした２台目のスマートホンをpadとして接続
+                                                </div>
+                                                <img src="open_client_end.png" style="width:100%;" alt="sumalink">
+                                                <img src="pad_phot.png" style="width:50%;" alt="pad_phot">
+                                            </div>
+                                        </div>
+
+                                        <p>
+                                        </P>
+                                        <div class="row">
+                                            <div class="col-xs-11 col-sm-11" style="background-color: #F6CEF5;">
+                                                <ul>
+                                                    <li>
+                                                        スマートホン同士の接続もWebSoketの仕掛けを使います。
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-xs-1 col-sm-1" data-toggle="collapse" style="height: 60px;text-align: right;" data-target="#other_screen_body" aria-expanded="true">
+                                                <img src="close.png" class="phorRes" alt="close" style="position: absolute;bottom: 5px;right: 5px;">
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row " id="usage">
+                <div class="col-sm-12">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-title">
+                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;" data-target="#usage_body" aria-expanded="true">
+                                    <h3>機能と使い方</h3>
+                                </div>
+                            </div>
+
+                            <div id="usage_body" class="panel-collapse collapse in" aria-expanded="true">
+
+                                <div class="row" id="over_view_">
+                                    <div class="col-sm-12">
+                                        <div class="panel-group">
+                                            <div class="panel panel-default">
+                                                <div class="panel-title">
+                                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#over_view_body" aria-expanded="true" style="width: 100%;font-size: large;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
+                                                        全体構成
+                                                    </div>
+                                                </div>
+
+                                                <div id="over_view_body" class="panel-collapse collapse in" aria-expanded="true">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-12">
+                                                                    <div style="margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                        リカバリーブラインAndroid(仮)は縦でも横でも同じ使い方になる様、toolbarの下にもう一行、「トレース」と「手書き編集」それぞれのツールパレットを用意しました。
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-5">
+                                                                    <img src="beginning_l.png" class="phorRes" style="width:100%;" alt="beginning_l">
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-7">
+                                                                    <img src="optionmenu.png" class="phorRes" style="width:100%;" alt="optionmenu">
+                                                                    <div style="height:82px;padding: 20px;margin-top: 20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                        また機能に直結する各ボタンと画面遷移を合わせてtoolbar右のオプションメニューにも用意していますので、使いやすい方からご利用ください。
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" id="functions">
+                                    <div class="col-sm-12">
+                                        <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
+                                        <div class="panel-group">
+                                            <div class="panel panel-default">
+                                                <div class="panel-title">
+                                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#functions_body" aria-expanded="true" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
+                                                        <img src="hanbarger_ll.png" style="width:20px;" alt="hanbarger_l">ドロワーメニュー
+                                                    </div>
+                                                </div>
+
+                                                <div id="functions_body" class="panel-collapse collapse in" aria-expanded="true">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-12">
+                                                                    toolbar左のハンバーガーアイコンのタップ、もしくは画面左からのスワイプで引きだされる画面遷移と線画面で共通する項目です。
+                                                                </div>
+                                                            </div>
+                                                            </P>
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-3">
+                                                                    <img src="sa_drwer_mwnu.png" class="phorRes" style="width:100%;" alt="sa_drwer_mwnu">
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-9">
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        ドロワーの内容は
+                                                                        <ul>
+                                                                            <li>
+                                                                                このアプリに用意した、その時使っている画面以外への遷移
+                                                                            </li>
+                                                                            <li>
+                                                                                設定画面への遷移
+                                                                            </li>
+                                                                            <li>
+                                                                                終了ボタン
+                                                                                <ul>
+                                                                                    <li>
+                                                                                        バックボタン、ホームボタンでもアプリを終了できます。
+                                                                                    </li>
+                                                                                </ul>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                    <p></p>
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        その他にtoolbarには
+                                                                        <ul>
+                                                                            <li>
+                                                                                タイトルと差替えにスコアの根拠になるピクセル数の表示
+                                                                                <ul>
+                                                                                    <li>
+                                                                                        残りピクセル数 / 最初のピクセル数
+                                                                                    </li>
+                                                                                </ul>
+                                                                            </li>
+                                                                            <li>
+                                                                                <img src="modoru_bt.png" style="width:20px;" alt="戻る">アイコンをタップするとトレースした線を消し、トレース前の状態に戻します。
+                                                                            </li>
+                                                                            <li>
+                                                                                toolbar右の<img src="hanbarger_r.png" style="width:20px;" alt="hanbarger_r">ボタンはオプションメニューを表示します。
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" id="jobSelect">
+                                    <div class="col-sm-12">
+                                        <div class="panel-group">
+                                            <div class="panel panel-default">
+                                                <div class="panel-title">
+                                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#jobSelect_body" aria-expanded="true" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
+                                                        <img src="../edit.png" style="width:20px;" align="left" alt="edit">トレース元画像
+                                                    </div>
+                                                </div>
+
+                                                <div id="jobSelect_body" class="panel-collapse collapse in" aria-expanded="true">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-12">
+                                                                    <div style="margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                        起動直後はすぐにトレースが始められる様、設定で指定した画面（デフォルトは定例パターン1）をセットした「トレースモード」で起動します。
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- </div> -->
+                                                    <div class="row">
+                                                        <div class="col-xs-12 col-sm-6">
+                                                            <div style="padding: 20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                <img src="../edit.png" style="width:20px;" align="left" alt="edit">アイコンをクリックすると右の様な「定例パターン」 ダイアログが表示されます。
+                                                            </div>
+                                                            <div style="padding: 20px;margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                キャンセルする場合はタイトルバー右端のクローズボックスで閉じます。<br> (web版と使い方を揃える為のカスタムIFです)
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-12 col-sm-6">
+                                                            <img src="patarnselect.png" class="phorRes" style="width:100%;" align="top" alt="patarnselect"> </div>
+                                                    </div>
+                                                    <p></p>
+                                                    <div class="row">
+                                                        <div class="col-xs-12 col-sm-4">
+                                                            <img src="trace_menu.png" class="phorRes" style="width:100%;" align="top" alt="trace_menu">
+                                                        </div>
+                                                        <div class="col-xs-12 col-sm-8">
+                                                            タッチ（ロングタップ）するとトレース元画像の操作メニューを表示します。
+
+                                                        </div>
+                                                    </div>
+                                                    <p></p>
+
+                                                    <div class="row">
+                                                        <div class="col-xs-12 col-sm-8" style="padding: 10px;background-color: #dff0d8;">
+                                                            <h4>ファイルから読み込み</h4>
+                                                            <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;">
+                                                                <ul>
+                                                                    <li>
+                                                                        制作中の機能ですので暫定仕様です。
+                                                                    </li>
+                                                                    <li>
+                                                                        ファイル選択後、読み込みが完了してダイアログが消えます。
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;">
+                                                                使用できる画像の目安
+                                                                <table style="border-collapse: collapse;">
+                                                                    <tr valign="top">
+                                                                        <td style="width: 80px;">サイズ</td>
+                                                                        <td>縦横比１：１～16：9</td>
+                                                                        <td>
+                                                                            幅が960pxなら高さは540px。回転可能な様に正方形をベースにする事が望ましいです。<br> 定型パターンは540×540を基本にしています。
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr valign="top">
+                                                                        <td>ファイル</td>
+                                                                        <td>
+                                                                            PINGもしくはGIF
+                                                                        </td>
+                                                                        <td>
+                                                                            定型パターンは透過PINGを使っています。<br> 背景を真っ白で作成してもJPEG画像では圧縮率によってノイズが入るので好ましくありません。
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr valign="top">
+                                                                        <td rowspan="2">線の太さ</td>
+                                                                        <td>
+                                                                            画面サイズはFHD(1920×1080)を基準にしています。<br> 実際に表示されるサイズに合わせて線幅も縮小されます。
+                                                                        </td>
+                                                                        <td>例えば540×540の画像読み込むと10ポイントの線幅は5ポイントになります。10ポイントに表示させるには20ポイントの線幅で描画して下さい。</td>
+                                                                    </tr>
+                                                                    <tr valign="top">
+                                                                        <td colspan="2">
+                                                                            トレース（塗りつぶし）に使う線の太さは100%が得点できる様、切り上げ算出で少し太めに設定されます。
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr valign="top">
+                                                                        <td rowspan="2">線の色</td>
+                                                                        <td>
+                                                                            必ず単色にして下さい。
+                                                                        </td>
+                                                                        <td>複数の色を使うと塗り面積の多い色だけが判定対象になります。</td>
+                                                                    </tr>
+                                                                    <tr valign="top">
+                                                                        <td>
+                                                                            できるだけ単純な色にして下さい。
+                                                                        </td>
+                                                                        <td>
+                                                                            トレース（塗りつぶし）に使う色はイラストレーターのカラーパレットを参考にした補色のアルゴリズムを使っていますが、色によっては反対とは思えない色になりますのでご了承ください。
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                                作成するツールは<a href="http://download.microsoft.com/download/8/3/2/8326FD52-3C69-4BD5-BE8C-EB509A5ACB7A/Web_Trial_ja.exe">Expression
+                                                                Design 4</a>など、ドロー系のアプリケーションがお勧めです。
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-12 col-sm-4">
+                                                            <div style="background-color: #eeeeee;margin: 10px;width: fit-content;">
+                                                                <input type="file" 　name="files[]" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p></p>
+
+                                                    <div class="row">
+                                                        <div class="col-xs-12 col-sm-12">
+                                                            <div style="padding: 10px;background-color: #dff0d8;">
+                                                                その他
+                                                                <ul>
+                                                                    <li>
+                                                                        <h4>手書きで作成</h4> 作成中；現在フリーハンドのみ
+                                                                        <br> 詳細は「手書きで作成で表示されるツール」をご参照ください。
+                                                                    </li>
+                                                                    <li>
+                                                                        <h4>もう一度</h4> トレースした線を消して、評価前の状態に戻します。
+                                                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                            トレース元画像の読込みが完了した時点、もしくは作成して確定した時点でトレース元画像のピクセル配列を一旦記憶しています。「もう一度」を選択すると画面を消去して記録したピクセル配列を再度書き込みます。
+                                                                        </p>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p></p>
+                                                    <div class="row">
+                                                        <div class="col-xs-12 col-sm-3">
+                                                            <img src="henkei_menu.png" class="phorRes" style="width:100%;" align="top" alt="henkei_menu">
+                                                        </div>
+                                                        <div class="col-xs-12 col-sm-9">
+                                                            <div style="padding: 10px;background-color: #dff0d8;">
+                                                                「変形」はトレース元として表示している画像をどうするかを設定するセレクタです。
+                                                                <br> 作成中
+                                                                <ol>
+                                                                    <li>
+                                                                        <h4>オリジナル</h4> 変形を加えた後で元に戻します。
+                                                                    </li>
+                                                                    <li>
+                                                                        <h4>回転</h4> 表記した方形へ回転、反転を行います。
+                                                                        <ul>
+                                                                            <li>
+                                                                                右へ90度回転
+                                                                            </li>
+                                                                            <li>
+                                                                                左へ90度回転
+                                                                            </li>
+                                                                            <li>
+                                                                                180度回転
+                                                                            </li>
+                                                                            <li>
+                                                                                上下反転
+                                                                            </li>
+                                                                            <li>
+                                                                                左右反転
+                                                                            </li>
+                                                                        </ul>
+                                                                    </li>
+                                                                    <li>
+                                                                        <h4>オリジナルにする</h4> 表示している状態を「オリジナル」として、トレース元画像を変更するまで保持します。
+                                                                    </li>
+                                                                    <li>
+                                                                        <h4>保存</h4> 表示している状態を画像ファイルにしてご利用中のPCに保存します。
+                                                                        <br> 「トレース元図形」の「ファイルから読込み」で再利用できます。
+                                                                    </li>
+                                                                </ol>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p></p>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" id="editerAria">
+                                    <div class="col-sm-12">
+                                        <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
+                                        <div class="panel-group">
+                                            <div class="panel panel-default">
+                                                <div class="panel-title">
+                                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#editerAria_body" aria-expanded="false" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
+                                                        「手書きで作成」で表示されるツール
+                                                    </div>
+                                                </div>
+
+                                                <div id="editerAria_body" class="panel-collapse collapse in" aria-expanded="true">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-4">
+                                                                    <img src="edit_start.png" class="phorRes" style="width:100%;" align="top" alt="toolserect">
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-8">
+                                                                    「トレース元画像」で「手書きで作成」を選択するとトレースラインを消去して、表示されている画像をどうするかを伺います。
+                                                                    <ul>
+                                                                        <li>
+                                                                            OK で表示されている元画像を全消去します。
+                                                                        </li>
+                                                                        <li>
+                                                                            NO で元画像を保持し、追記できる様にします。
+                                                                        </li>
+                                                                        <li>
+                                                                            「手書きで作成」へのモード切替をキャンセルする場合はタイトルバー右端のクローズボックスで閉じます。
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                            <P></P>
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-12">
+                                                                    <img src="edit_bar.png" class="phorRes" style="width:100%;" alt="edit_bar">
+                                                                </div>
+                                                            </div>
+                                                            <P></P>
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-12">
+                                                                    「手書きで作成」モードに切替わると上記のツールパレットに切り替わります
+                                                                    <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;">
+                                                                        <ul>
+                                                                            <li>
+                                                                                簡易なビットマップ編集ツールです。<br> 恒久的に使うパターンや完成度を求める方にはPCなどで作成した画像を設定で確認できる「作成したファイルの保存場所」に保存して利用する事をお勧めします。
+                                                                            </li>
+                                                                            <li>
+                                                                                ご利用の環境（スマートフォン/タブレットのOSなどの違い）でご利用できない機能も有ります。
+                                                                            </li>
+                                                                            <li>
+                                                                                制作時点で判明しているご利用できない機能についてはメニューをグレーアウト（選択不能）にしています。
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-2">
+                                                                    <img src="edit_tool.png" class="phorRes" style="width:100%;" alt="edit_tool">
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-10">
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        <h4>ツール選択セレクタ</h4> 何を書き込むかを選択するセレクタです。
+                                                                        <ol>
+                                                                            <li>
+                                                                                <h4>フリーハンド</h4> マウスの動きに合わせて線を書き込みます。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>直線</h4> 以下の四角や円と同じく、マウスのボタンを押した所を始点、離した所を終点に直線を引きます。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>三角</h4> マウスのボタンを押した所から離した所の範囲で三角を線で描きます。
+                                                                                <br> 上から下に範囲選択すれば上を頂点に、下から上に範囲選択すれば下を頂点にします。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>矩形</h4> マウスのボタンを押した所を左上、離した所を右下の範囲で四角を描きます。
+                                                                                <!-- <br> コントロールキーを押しながらドラッグすると正方形になります。 -->
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>楕円</h4> マウスのボタンを押した所を左上、離した所を右下の範囲に収まる円を描きます。
+                                                                                <!-- <br> コントロールキーを押しながらドラッグすると真円になります。 -->
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>テキスト</h4>
+                                                                                <div class="row">
+                                                                                    <div class="col-xs-12 col-sm-6">
+                                                                                        書込む文字、フォント、サイズ、スタイルを設定して下さい。
+                                                                                        <img src="textinput.png" align="top" style="width:100%;" alt="textinput">
+                                                                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                                            ご注意；入りきらなければカットされます。
+                                                                                        </p>
+                                                                                    </div>
+                                                                                    <div class="col-xs-12 col-sm-6">
+                                                                                        クリックした処から文字を記入します。
+                                                                                        <img src="textinput_img.png" align="top" style="width:90%;" alt="textinput_img">
+                                                                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                                            クリックした位置からほぼ、文字の（先頭、ベースライン）辺りの座標で書き込まれます。
+                                                                                        </p>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                                <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                                    お使いのPC、ブラウザなど実行環境に依存します。
+                                                                                </p>
+
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>消しゴム</h4>背景と同じ白色で描いてある線を塗りつぶします。<br> 太さは「線の太さ」、消される形状は「先端」の設定が反映されます。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>選択範囲を消去</h4> ドラッグした範囲にあるピクセルを消去します。
+                                                                            </li>
+                                                                            <!-- <li>
+                                                                            <h4>選択</h4> ドラッグした範囲にあるピクセルを選択します。
+                                                                            <br> 選択後、Deleteキーで範囲内のピクセルを消去します。
+                                                                        </li> -->
+                                                                            <!-- <li>
+                                                                            <h4>カラーピッカー</h4> マウスポイントのピクセルカラーを描画エリアの外に表示します。(テスト用です。)
+                                                                            <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;">
+                                                                                よくあるペイントアプリケーションなら、特定部分の色を取得して再利用する「スポイド」機能ですが、このアプリケーションは単色の線形を扱いますので、アンチエリアスでどのくらい中間色が生成されているかを確認したい時のテストツールです。
+                                                                            </div>
+                                                                        </li> -->
+                                                                            <li>
+                                                                                <h4>確定</h4> 「手書きで作成」する機能を終了し、書込まれたピクセルデータを読み取ります。
+                                                                                <br> 完了すると書込まれている（着色された部分の）ピクセル数を表示します。
+                                                                            </li>
+                                                                        </ol>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <p></p>
+                                                            <div class="row" style="margin-top: 10px;">
+                                                                <div class="col-xs-8 col-sm-10">
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        <h4>線色パレット</h4>
+                                                                        <img src="color_paret.png" class="phorRes" alt="colorparetbt" style="width:20px"> をクリックすると線の色を設定するカラーパレットを表示します。
+                                                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                            必ず単色にして下さい。 複数の色を使うと塗り面積の多い色だけが判定対象になります。
+                                                                        </p>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-4 col-sm-2">
+                                                                    <img src="colorparet.png" class="phorRes" style="width:100%;" alt="colorparet">
+                                                                </div>
+                                                            </div>
+                                                            <p></p>
+                                                            <div class="row" style="margin-top: 10px;">
+                                                                <div class="col-xs-2 col-sm-1">
+                                                                    <img src="edit_width.png" class="phorRes" style="width:100%;" alt="edit_width">
+                                                                </div>
+                                                                <div class="col-xs-10 col-sm-11">
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        <h4>線の太さセレクタ</h4> 線の太さを設定します。
+                                                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                            細くするほど難しくなりますので、デフォルトは10ポイントにしています。
+                                                                        </p>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <p></p>
+                                                            <div class="row" style="margin-top: 10px;">
+                                                                <div class="col-xs-10 col-sm-11">
+                                                                    <div style="padding: 10px;background-color: #dff0d8;">
+                                                                        <h4>先端形状セレクタ</h4> 線の先端形状を設定します。
+                                                                        <ol>
+                                                                            <li>
+                                                                                <h4>丸</h4> マウスアップしたポイントを中心に線の太さ分の円弧が描かれます。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>四角</h4> マウスアップしたポイントを中心に線の太さ分の四角が描かれます。
+                                                                            </li>
+                                                                            <li>
+                                                                                <h4>無し</h4> マウスアップしたポイントまでの線が描かれます。
+                                                                            </li>
+                                                                        </ol>
+                                                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
+                                                                            微小ながらマウスボタンを離したポイントから、どんなはみ出し方をするかという設置です。
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-2 col-sm-1">
+                                                                    <img src="edit_caps.png" class="phorRes" style="width:100%;" alt="linecapsselect">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row" id="trace">
+                                    <div class="col-sm-12">
+                                        <div class="panel-group">
+                                            <div class="panel panel-default">
+                                                <div class="panel-title">
+                                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#trace_body" aria-expanded="true" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
+                                                        トレースモードで表示されるボタン
+                                                    </div>
+                                                </div>
+
+                                                <div id="trace_body" class="panel-collapse collapse in" aria-expanded="true">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-12">
+                                                                    <h3><img src="mirror_h.png" style="width:40px;" alt="trase"><img
+                                                                        src="mirror_v.png" style="width:40px;" alt="mirror_v">鏡面動作</h3>
+                                                                    <div style="margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                        <img src="mirror_h.png" style="width:20px;" alt="trase">アイコンをタップすると<img src="mirror_h_t.png" style="width:20px;" alt="trase">に変化し、パッドをトレースする向きとトレースラインが書込まれる方向が上下に反転します。
+                                                                    </div>
+                                                                    同様に
+                                                                    <div style="margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                        <img src="mirror_v.png" style="width:20px;" alt="mirror_v">アイコンをタップすると<img src="mirror_v_t.png" style="width:20px;" alt="mirror_v_t">に変化し、パッドをトレースする向きとトレースラインが書込まれる方向が左右に反転します。
+                                                                    </div>
+                                                                    <div style="margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                        二つともタップしておけば上下左右同時に反転します。
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <p>
+                                                            </P>
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-12">
+                                                                    <h3><img src="judge_off.png" style="width:40px;" alt="judge_off">判定
+                                                                    / 自動判定<img src="judge_on.png" style="width:40px;" alt="judge_on"></h3>
+                                                                    <div style="margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                        <img src="judge_off.png" style="width:20px;" alt="trase">アイコンをタップすると、その時点のトレース状況でスコアの算定を行います。
+                                                                    </div>
+                                                                    <div style="margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                        <img src="judge_off.png" style="width:20px;" alt="judge_off">アイコンをタッチ(ロングタップ)すると<img src="judge_on.png" style="width:20px;" alt="judge_on">に変化し、自動判定モードに変わります。<br> 自動判定モードでは画面から指を離したタイミング（タッチエンド）でスコアを算出します。
+                                                                    </div>
+                                                                    トレース元が
+                                                                    <ul>
+                                                                        <li>書き終わりまで指を離す事が無い一筆書きの時は自動判定をon</li>
+                                                                        <li>文字など指を離す事が有る時は自動判定をoff</li>
+                                                                    </ul>
+                                                                    といった使い分けでご利用ください。
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row" id="links">
+                                    <div class="col-sm-12">
+                                        <div class="panel-group">
+                                            <div class="panel panel-default">
+                                                <div class="panel-title">
+                                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#links_body" aria-expanded="true" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
+                                                        設定（プリファレンス）
+                                                    </div>
+                                                </div>
+
+                                                <div id="links_body" class="panel-collapse collapse in" aria-expanded="true">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-8">
+                                                                    リカバリーブラインAndroidでは右の項目を設定値として保持します。
+                                                                    <div style="margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                        「接続設定」はリカバリーブラインwebのURLで固定値です。<br>変更できません
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-4">
+                                                                    <img src="pref000.png" class="phorRes" style="width:100%;" alt="pref000">
+                                                                </div>
+                                                            </div>
+                                                            <p></p>
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-3">
+                                                                    <img src="pref010.png" class="phorRes" style="width:100%;" alt="pref010">
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-7">
+                                                                    <h4>トレース設定</h4>> トレース操作の基本設定値です
+                                                                    <ul>
+                                                                        <li>
+                                                                            最初に表示する元画像
+                                                                            <ul>
+                                                                                <li>
+                                                                                    デフォルトは定例パターン01です。
+                                                                                </li>
+                                                                            </ul>
+                                                                        </li>
+                                                                        <li>
+                                                                            最後に使った画像からスタート
+                                                                            <ul>
+                                                                                <li>
+                                                                                    終了時にその時使っている画像ファイル名を記録し、「最初に表示する元画像」を更新します。
+                                                                                </li>
+                                                                            </ul>
+                                                                        </li>
+                                                                        <li>
+                                                                            以下の項目はアプリケーション起動時にon / off どちらからスタートするかを指定します。
+                                                                            <ul>
+                                                                                <li>
+                                                                                    上下鏡面動作
+                                                                                </li>
+                                                                                <li>
+                                                                                    左右鏡面動作
+                                                                                </li>
+                                                                                <li>
+                                                                                    トレース後に自動判定
+                                                                                </li>
+                                                                            </ul>
+                                                                        </li>
+                                                                        <li>
+                                                                            トレース線の太さ
+                                                                            <ul>
+                                                                                <li>
+                                                                                    元画像の線の太さ（一番多く使われてる太さを抽出）に対して、消し込みに使うトレース線の太さを何％増しにするかを指定します。
+                                                                                </li>
+                                                                                <li>
+                                                                                    0%でトレース元と同じ太さ<br> 難度は最も上がります。
+                                                                                </li>
+                                                                                <li>
+                                                                                    100％でトレース元の２倍になります。
+                                                                                </li>
+                                                                                <li>
+                                                                                    <div style="margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                                        デフォルトは50％です。
+                                                                                    </div>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-2">
+                                                                    <img src="pref016.png" class="phorRes" style="width:100%;" alt="pref016">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <p></p>
+
+
+                                                        <div class="row">
+                                                            <div class="col-xs-12 col-sm-9">
+                                                                <h4>その他の設定</h4>
+                                                                <ul>
+                                                                    <li>
+                                                                        作成したファイルの保存場所。
+                                                                        <ul>
+                                                                            <li>
+                                                                                ご利用の端末で使用できる場所にこのアプリの手書き作成や、元画像の変形で作成した画像を保存します。
+                                                                                <div style="margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                                    セキュリティの設定なので変更できない場合は、インストール時に書込める場所を検索して固定値にします。
+                                                                                </div>
+                                                                            </li>
+                                                                            <li>
+                                                                                自動回転阻止
+                                                                                <div style="margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                                    トレース中や手書き編集中など、画面の回転が発生してそれまで書込んだものが破棄される事を阻止します。
+                                                                                </div>
+                                                                                <div style="margin-bottom: 10px;background-color: #e7f9fe;">
+                                                                                    リセットを簡単にしたい」というご要望もありますのでデフォルトはONで設定項目にしました。
+                                                                                </div>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="col-xs-12 col-sm-3">
+                                                                <img src="pref310.png" class="phorRes" style="width:100%;" alt="pref310">
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-10 col-sm-10" style="background-color: #F6CEF5;">
+                                        <!-- <ul>
+                                        <li>
+                                            作成中につき変更中です
+                                        </li>
+                                    </ul> -->
+                                    </div>
+                                    <div class="col-xs-1 col-sm-1" data-toggle="collapse" style="height: 60px;text-align: right;" data-target="#usage_body" aria-expanded="true">
                                         <img src="close.png" class="phorRes" alt="close" style="position: absolute;bottom: 5px;right: 5px;">
                                     </div>
                                 </div>
@@ -234,981 +1217,100 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row " id="toPC">
-            <div class="col-sm-12">
-                <div class="panel-group">
-                    <div class="panel panel-default">
-                        <div class="panel-title">
-                            <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;"
-                                data-target="#to_pc_body" aria-expanded="true">
-                                <h3>PCの大きな画面で</h3>
-                            </div>
-                        </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-2">
+                    <!-- <a href="../about_and/"> -->
+                    <img src="qrcord.png" class="phorRes" style="width:100%;" alt="qrcord">
+                    <!-- </a> -->
+                </div>
+                <div class="col-xs-8 col-sm-8">
+                    ダウンロードはこのQRコードで
+                    <div style="height:82px;padding: 20px;margin-top:20px;margin-bottom: 10px;background-color: #eeaaaa;">
+                        現在開発中につき、
+                        <ul>
+                            <li>
+                                開発中の機能はその旨を示すアラートが表示されます。
+                            </li>
+                            <li>
+                                調整しきれていませんので起動に時間がかかります。
+                            </li>
+                        </ul>
 
-                        <div id="to_pc_body" class="panel-collapse collapse in" aria-expanded="true">
-                            <div class="panel panel-default">
-                                <div id="toweb_body" class="panel-collapse collapse in" aria-expanded="true">
-                                    <div class="panel-body">
-                                        <div class="panel-group">
-                                            <div class="panel-heading btn collapse_bt" data-toggle="collapse" aria-expanded="true" style="width: 100%;font-size: large;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
-                                                PCのWebブラウザーとリンク
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-6 col-sm-3">
-                                                    <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                        PCのブラウザでリカバリーブラインwebを開いてください。
-                                                    </div>
-                                                    <img src="pc_rb.png" style="width:100%;" alt="pc_rb">
-                                                </div>
-                                                <div class="col-xs-6 col-sm-3">
-                                                    <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                        アプリ画面の左端をスワイプ。もしくはtoolBar左のハンバーガーメニューをタップして開くドロワーメニューから「QRコードから接続」をタップ
-                                                    </div>
-                                                    <img src="sa_drwer_mwnu.png" style="width:75%;" alt="sa_drwer_mwnu">
-                                                </div>
-                                                <div class="col-xs-6 col-sm-3">
-                                                    <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                        リカバリーブラインWebで表示されたQRコードをアプリケーションのリーダーで読み取り。
-                                                    </div>
-                                                    <img src="qract02.png" style="width:100%;" alt="qract02">
-                                                    <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                        読込みに成功するとURLが書込まれた大きなボタンが表示されます。それをタップしてスマートホンをpadとして接続します。
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-3">
-                                                    <div style="padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                        スマートフォンでトレース
-                                                    </div>
-                                                    <img src="pad_phot.png" style="width:60%;" alt="pad_phot">
-                                                    <div style="padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                        トレース以外の操作はPCで
-                                                    </div>
-                                                    <img src="pc_rb_end.png" style="width:60%;" alt="pc_rb_end">
-                                                </div>
-                                            </div>
-                                            <p>
-                                            </P>
-                                            <div class="row">
-                                                <div class="col-xs-11 col-sm-11" style="background-color: #F6CEF5;">
-                                                    <ul>
-                                                        <li>
-                                                            パッドと操作部を別の端末で表示する時はインターネットに接続してWebSoket(チャットの様な仕掛け)を使います。
-                                                        </li>
-                                                        <li>
-                                                            複数の方がリカバリーブラインのアプリケーションwebページ(リカバリーブラインweb)へアクセスしても動作が混在しない様「room」という概念で切り分けています。
-                                                        </li>
-                                                        <li>
-                                                            roomはご利用された方がリカバリーブラインweb(仮)にアクセスした日時のタイムスタンプをキーに切り分けます。
-                                                        </li>
-                                                        <li>
-                                                            Padを接続すると、その時点でroomで使用している線の色、太さ、先端形状をトレースの初期値として送ります。
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-xs-1 col-sm-1" data-toggle="collapse" style="height: 90px;text-align: right;" data-target="#to_pc_body" aria-expanded="true">
-                                                    <img src="close.png" class="phorRes" alt="close" style="position: absolute;bottom: 5px;right: 5px;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+
                 </div>
             </div>
+
         </div>
 
-        <div class="row " id="other_screen">
-            <div class="col-sm-12">
-                <div class="panel-group">
-                    <div class="panel panel-default">
-                        <div class="panel-title">
-                            <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;"
-                                data-target="#other_screen_body" aria-expanded="true">
-                                <h3>別画面からの操作で更に難易度を上げましょう</h3>
-                            </div>
-                        </div>
-
-                        <div id="other_screen_body" class="panel-collapse collapse in" aria-expanded="true">
-                            <div class="panel-body">
-                                <div class="panel-group">
-                                    <div class="panel-heading btn collapse_bt" data-toggle="collapse" aria-expanded="true" style="width: 100%;font-size: large;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
-                                        もう一台、AndroidのスマートホンかタブレットにリカバリーブラインAndroidをインストール
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-6 col-sm-3">
-                                            <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                ドロワーメニューから「メイン画面として接続」をタップ
-                                            </div>
-                                            <img src="sa_drwer_mwnu.png" style="width:75%;" align="top" alt="sa_drwer_mwnu">
-                                        </div>
-                                        <div class="col-xs-6 col-sm-3">
-                                            <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                リカバリーブラインwebをスマートホンの全画面で表示します。
-                                            </div>
-                                            <img src="open_client.png" style="width:100%;" align="top" alt="open_client">
-                                            <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                左上に表示された<img src="../menu.png" style="width:20px;" alt="menu">アイコンをクリックすると<img
-                                                    src="open_client_menu.png" style="width:60%;" alt="trase">リストが表示されます。
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-6 col-sm-3">
-                                            <img src="open_client_menu01.png" style="width:75%;" align="top" alt="qract02"><br>の「接続先選択」で
-                                            <img src="open_client_qr.png" style="width:80%;" align="top" alt="qrcord"><br>を表示。
-                                        </div>
-                                        <div class="col-xs-6 col-sm-3">
-                                            <div style="height:110px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                「PCの大きな画面で」で紹介した要領でリカバリーブラインAndroidをインストールした２台目のスマートホンをpadとして接続
-                                            </div>
-                                            <img src="open_client_end.png" style="width:100%;" alt="sumalink">
-                                            <img src="pad_phot.png" style="width:50%;" alt="pad_phot">
-                                        </div>
-                                    </div>
-
-                                    <p>
-                                    </P>
-                                    <div class="row">
-                                        <div class="col-xs-11 col-sm-11" style="background-color: #F6CEF5;">
-                                            <ul>
-                                                <li>
-                                                    スマートホン同士の接続もWebSoketの仕掛けを使います。
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-xs-1 col-sm-1" data-toggle="collapse" style="height: 60px;text-align: right;" data-target="#other_screen_body"
-                                            aria-expanded="true">
-                                            <img src="close.png" class="phorRes" alt="close" style="position: absolute;bottom: 5px;right: 5px;">
-                                        </div>
-                                    </div>
 
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <script type="text/javascript">
+            var isDebug = true;
+            var isSmaphoDebug = false;
+            // var ua;
+            // var isMobile=false;				//現在使用しているのはスマホ
+            // var urlStr;
 
-        <div class="row " id="usage">
-            <div class="col-sm-12">
-                <div class="panel-group">
-                    <div class="panel panel-default">
-                        <div class="panel-title">
-                            <div class="panel-heading btn collapse_bt" data-toggle="collapse" style="background-color: #fcf8e3;width: 100%;font-size: large; text-align: left;"
-                                data-target="#usage_body" aria-expanded="true">
-                                <h3>機能と使い方</h3>
-                            </div>
-                        </div>
-
-                        <div id="usage_body" class="panel-collapse collapse in" aria-expanded="true">
-
-                            <div class="row" id="over_view_">
-                                <div class="col-sm-12">
-                                    <div class="panel-group">
-                                        <div class="panel panel-default">
-                                            <div class="panel-title">
-                                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#over_view_body" aria-expanded="true" style="width: 100%;font-size: large;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
-                                                    全体構成
-                                                </div>
-                                            </div>
-
-                                            <div id="over_view_body" class="panel-collapse collapse in" aria-expanded="true">
-                                                <div class="panel-body">
-                                                    <div class="panel-group">
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-12">
-                                                                <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                    リカバリーブラインAndroid(仮)は縦でも横でも同じ使い方になる様、toolbarの下にもう一行、「トレース」と「手書き編集」それぞれのツールパレットを用意しました。
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-5">
-                                                                <img src="beginning_l.png" class="phorRes" style="width:100%;" alt="beginning_l">
-                                                            </div>
-                                                            <div class="col-xs-12 col-sm-7">
-                                                                <img src="optionmenu.png" class="phorRes" style="width:100%;" alt="optionmenu">
-                                                                <div style="height:82px;padding: 20px;margin-top: 20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                    また機能に直結する各ボタンと画面遷移を合わせてtoolbar右のオプションメニューにも用意していますので、使いやすい方からご利用ください。
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row" id="functions">
-                                <div class="col-sm-12">
-                                    <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
-                                    <div class="panel-group">
-                                        <div class="panel panel-default">
-                                            <div class="panel-title">
-                                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#functions_body" aria-expanded="true" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
-                                                    <img src="hanbarger_ll.png" style="width:20px;" alt="hanbarger_l">ドロワーメニュー
-                                                </div>
-                                            </div>
-
-                                            <div id="functions_body" class="panel-collapse collapse in" aria-expanded="true">
-                                                <div class="panel-body">
-                                                    <div class="panel-group">
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-12">
-                                                                toolbar左のハンバーガーアイコンのタップ、もしくは画面左からのスワイプで引きだされる画面遷移と線画面で共通する項目です。
-                                                            </div>
-                                                        </div>
-                                                        </P>
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-3">
-                                                                <img src="sa_drwer_mwnu.png" class="phorRes" style="width:100%;" alt="sa_drwer_mwnu">
-                                                            </div>
-                                                            <div class="col-xs-12 col-sm-9">
-                                                                <div style="padding: 10px;background-color: #dff0d8;">
-                                                                    ドロワーの内容は
-                                                                    <ul>
-                                                                        <li>
-                                                                            このアプリに用意した、その時使っている画面以外への遷移
-                                                                        </li>
-                                                                        <li>
-                                                                            設定画面への遷移
-                                                                        </li>
-                                                                        <li>
-                                                                            終了ボタン
-                                                                            <ul>
-                                                                                <li>
-                                                                                    バックボタン、ホームボタンでもアプリを終了できます。
-                                                                                </li>
-                                                                            </ul>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                                <p></p>
-                                                                <div style="padding: 10px;background-color: #dff0d8;">
-                                                                    その他にtoolbarには
-                                                                    <ul>
-                                                                        <li>
-                                                                            タイトルと差替えにスコアの根拠になるピクセル数の表示
-                                                                            <ul>
-                                                                                <li>
-                                                                                    残りピクセル数 / 最初のピクセル数
-                                                                                </li>
-                                                                            </ul>
-                                                                        </li>
-                                                                        <li>
-                                                                            <img src="modoru_bt.png" style="width:20px;" alt="戻る">アイコンをタップするとトレースした線を消し、トレース前の状態に戻します。
-                                                                        </li>
-                                                                        <li>
-                                                                            toolbar右の<img src="hanbarger_r.png" style="width:20px;"
-                                                                                alt="hanbarger_r">ボタンはオプションメニューを表示します。
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row" id="jobSelect">
-                                <div class="col-sm-12">
-                                    <div class="panel-group">
-                                        <div class="panel panel-default">
-                                            <div class="panel-title">
-                                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#jobSelect_body" aria-expanded="true" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
-                                                    <img src="../edit.png" style="width:20px;" align="left" alt="edit">トレース元画像
-                                                </div>
-                                            </div>
-
-                                            <div id="jobSelect_body" class="panel-collapse collapse in" aria-expanded="true">
-                                                <div class="panel-body">
-                                                    <div class="panel-group">
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-12">
-                                                                <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                    起動直後はすぐにトレースが始められる様、設定で指定した画面（デフォルトは定例パターン1）をセットした「トレースモード」で起動します。
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- </div> -->
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-sm-6">
-                                                        <div style="padding: 20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                            <img src="../edit.png" style="width:20px;" align="left" alt="edit">アイコンをクリックすると右の様な「定例パターン」
-                                                            ダイアログが表示されます。
-                                                        </div>
-                                                        <div style="padding: 20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                            キャンセルする場合はタイトルバー右端のクローズボックスで閉じます。<br> (web版と使い方を揃える為のカスタムIFです)
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-sm-6">
-                                                        <img src="patarnselect.png" class="phorRes" style="width:100%;" align="top" alt="patarnselect">                                                        </div>
-                                                </div>
-                                                <p></p>
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-sm-4">
-                                                        <img src="trace_menu.png" class="phorRes" style="width:100%;" align="top" alt="trace_menu">
-                                                    </div>
-                                                    <div class="col-xs-12 col-sm-8">
-                                                        タッチ（ロングタップ）するとトレース元画像の操作メニューを表示します。
-
-                                                    </div>
-                                                </div>
-                                                <p></p>
-
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-sm-8" style="padding: 10px;background-color: #dff0d8;">
-                                                        <h4>ファイルから読み込み</h4>
-                                                        <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;">
-                                                            <ul>
-                                                                <li>
-                                                                    制作中の機能ですので暫定仕様です。
-                                                                </li>
-                                                                <li>
-                                                                    ファイル選択後、読み込みが完了してダイアログが消えます。
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                        <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;">
-                                                            使用できる画像の目安
-                                                            <table style="border-collapse: collapse;">
-                                                                <tr valign="top">
-                                                                    <td style="width: 80px;">サイズ</td>
-                                                                    <td>縦横比１：１～16：9</td>
-                                                                    <td>
-                                                                        幅が960pxなら高さは540px。回転可能な様に正方形をベースにする事が望ましいです。<br>                                                                        定型パターンは540×540を基本にしています。
-                                                                    </td>
-                                                                </tr>
-
-                                                                <tr valign="top">
-                                                                    <td>ファイル</td>
-                                                                    <td>
-                                                                        PINGもしくはGIF
-                                                                    </td>
-                                                                    <td>
-                                                                        定型パターンは透過PINGを使っています。<br> 背景を真っ白で作成してもJPEG画像では圧縮率によってノイズが入るので好ましくありません。
-                                                                    </td>
-                                                                </tr>
-
-                                                                <tr valign="top">
-                                                                    <td rowspan="2">線の太さ</td>
-                                                                    <td>
-                                                                        画面サイズはFHD(1920×1080)を基準にしています。<br> 実際に表示されるサイズに合わせて線幅も縮小されます。
-                                                                    </td>
-                                                                    <td>例えば540×540の画像読み込むと10ポイントの線幅は5ポイントになります。10ポイントに表示させるには20ポイントの線幅で描画して下さい。</td>
-                                                                </tr>
-                                                                <tr valign="top">
-                                                                    <td colspan="2">
-                                                                        トレース（塗りつぶし）に使う線の太さは100%が得点できる様、切り上げ算出で少し太めに設定されます。
-                                                                    </td>
-                                                                </tr>
-
-                                                                <tr valign="top">
-                                                                    <td rowspan="2">線の色</td>
-                                                                    <td>
-                                                                        必ず単色にして下さい。
-                                                                    </td>
-                                                                    <td>複数の色を使うと塗り面積の多い色だけが判定対象になります。</td>
-                                                                </tr>
-                                                                <tr valign="top">
-                                                                    <td>
-                                                                        できるだけ単純な色にして下さい。
-                                                                    </td>
-                                                                    <td>
-                                                                        トレース（塗りつぶし）に使う色はイラストレーターのカラーパレットを参考にした補色のアルゴリズムを使っていますが、色によっては反対とは思えない色になりますのでご了承ください。
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                            作成するツールは<a href="http://download.microsoft.com/download/8/3/2/8326FD52-3C69-4BD5-BE8C-EB509A5ACB7A/Web_Trial_ja.exe">Expression
-                                                                Design 4</a>など、ドロー系のアプリケーションがお勧めです。
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-12 col-sm-4">
-                                                        <div style="background-color: #eeeeee;margin: 10px;width: fit-content;">
-                                                            <input type="file" 　name="files[]" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <p></p>
-
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-sm-12">
-                                                        <div style="padding: 10px;background-color: #dff0d8;">
-                                                            その他
-                                                            <ul>
-                                                                <li>
-                                                                    <h4>手書きで作成</h4> 作成中；現在フリーハンドのみ
-                                                                    <br> 詳細は「手書きで作成で表示されるツール」をご参照ください。
-                                                                </li>
-                                                                <li>
-                                                                    <h4>もう一度</h4> トレースした線を消して、評価前の状態に戻します。
-                                                                    <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
-                                                                        トレース元画像の読込みが完了した時点、もしくは作成して確定した時点でトレース元画像のピクセル配列を一旦記憶しています。「もう一度」を選択すると画面を消去して記録したピクセル配列を再度書き込みます。
-                                                                    </p>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <p></p>
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-sm-3">
-                                                        <img src="henkei_menu.png" class="phorRes" style="width:100%;" align="top" alt="henkei_menu">
-                                                    </div>
-                                                    <div class="col-xs-12 col-sm-9">
-                                                        <div style="padding: 10px;background-color: #dff0d8;">
-                                                            「変形」はトレース元として表示している画像をどうするかを設定するセレクタです。
-                                                            <br> 作成中
-                                                            <ol>
-                                                                <li>
-                                                                    <h4>オリジナル</h4> 変形を加えた後で元に戻します。
-                                                                </li>
-                                                                <li>
-                                                                    <h4>回転</h4> 表記した方形へ回転、反転を行います。
-                                                                    <ul>
-                                                                        <li>
-                                                                            右へ90度回転
-                                                                        </li>
-                                                                        <li>
-                                                                            左へ90度回転
-                                                                        </li>
-                                                                        <li>
-                                                                            180度回転
-                                                                        </li>
-                                                                        <li>
-                                                                            上下反転
-                                                                        </li>
-                                                                        <li>
-                                                                            左右反転
-                                                                        </li>
-                                                                    </ul>
-                                                                </li>
-                                                                <li>
-                                                                    <h4>オリジナルにする</h4> 表示している状態を「オリジナル」として、トレース元画像を変更するまで保持します。
-                                                                </li>
-                                                                <li>
-                                                                    <h4>保存</h4> 表示している状態を画像ファイルにしてご利用中のPCに保存します。
-                                                                    <br> 「トレース元図形」の「ファイルから読込み」で再利用できます。
-                                                                </li>
-                                                            </ol>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <p></p>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row" id="editerAria">
-                                <div class="col-sm-12">
-                                    <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
-                                    <div class="panel-group">
-                                        <div class="panel panel-default">
-                                            <div class="panel-title">
-                                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#editerAria_body" aria-expanded="false" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
-                                                    「手書きで作成」で表示されるツール
-                                                </div>
-                                            </div>
-
-                                            <div id="editerAria_body" class="panel-collapse collapse in" aria-expanded="true">
-                                                <div class="panel-body">
-                                                    <div class="panel-group">
-
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-4">
-                                                                <img src="edit_start.png" class="phorRes" style="width:100%;" align="top" alt="toolserect">
-                                                            </div>
-                                                            <div class="col-xs-12 col-sm-8">
-                                                                「トレース元画像」で「手書きで作成」を選択するとトレースラインを消去して、表示されている画像をどうするかを伺います。
-                                                                <ul>
-                                                                    <li>
-                                                                        OK で表示されている元画像を全消去します。
-                                                                    </li>
-                                                                    <li>
-                                                                        NO で元画像を保持し、追記できる様にします。
-                                                                    </li>
-                                                                    <li>
-                                                                        「手書きで作成」へのモード切替をキャンセルする場合はタイトルバー右端のクローズボックスで閉じます。
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                        <P></P>
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-12">
-                                                                <img src="edit_bar.png" class="phorRes" style="width:100%;" alt="edit_bar">
-                                                            </div>
-                                                        </div>
-                                                        <P></P>
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-12">
-                                                                「手書きで作成」モードに切替わると上記のツールパレットに切り替わります
-                                                                <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;">
-                                                                    <ul>
-                                                                        <li>
-                                                                            簡易なビットマップ編集ツールです。<br> 恒久的に使うパターンや完成度を求める方にはPCなどで作成した画像を設定で確認できる「作成したファイルの保存場所」に保存して利用する事をお勧めします。
-                                                                        </li>
-                                                                        <li>
-                                                                            ご利用の環境（スマートフォン/タブレットのOSなどの違い）でご利用できない機能も有ります。
-                                                                        </li>
-                                                                        <li>
-                                                                            制作時点で判明しているご利用できない機能についてはメニューをグレーアウト（選択不能）にしています。
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-2">
-                                                                <img src="edit_tool.png" class="phorRes" style="width:100%;" alt="edit_tool">
-                                                            </div>
-                                                            <div class="col-xs-12 col-sm-10">
-                                                                <div style="padding: 10px;background-color: #dff0d8;">
-                                                                    <h4>ツール選択セレクタ</h4>
-                                                                    何を書き込むかを選択するセレクタです。
-                                                                    <ol>
-                                                                        <li>
-                                                                            <h4>フリーハンド</h4> マウスの動きに合わせて線を書き込みます。
-                                                                        </li>
-                                                                        <li>
-                                                                            <h4>直線</h4> 以下の四角や円と同じく、マウスのボタンを押した所を始点、離した所を終点に直線を引きます。
-                                                                        </li>
-                                                                        <li>
-                                                                            <h4>三角</h4> マウスのボタンを押した所から離した所の範囲で三角を線で描きます。
-                                                                            <br> 上から下に範囲選択すれば上を頂点に、下から上に範囲選択すれば下を頂点にします。
-                                                                        </li>
-                                                                        <li>
-                                                                            <h4>矩形</h4> マウスのボタンを押した所を左上、離した所を右下の範囲で四角を描きます。
-                                                                            <!-- <br> コントロールキーを押しながらドラッグすると正方形になります。 -->
-                                                                        </li>
-                                                                        <li>
-                                                                            <h4>楕円</h4> マウスのボタンを押した所を左上、離した所を右下の範囲に収まる円を描きます。
-                                                                            <!-- <br> コントロールキーを押しながらドラッグすると真円になります。 -->
-                                                                        </li>
-                                                                        <li>
-                                                                            <h4>テキスト</h4>
-                                                                            <div class="row">
-                                                                                <div class="col-xs-12 col-sm-6">
-                                                                                    書込む文字、フォント、サイズ、スタイルを設定して下さい。
-                                                                                    <img src="textinput.png" align="top" style="width:100%;" alt="textinput">
-                                                                                    <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
-                                                                                        ご注意；入りきらなければカットされます。
-                                                                                    </p>
-                                                                                </div>
-                                                                                <div class="col-xs-12 col-sm-6">
-                                                                                    クリックした処から文字を記入します。
-                                                                                    <img src="textinput_img.png" align="top" style="width:90%;" alt="textinput_img">
-                                                                                    <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
-                                                                                        クリックした位置からほぼ、文字の（先頭、ベースライン）辺りの座標で書き込まれます。
-                                                                                    </p>
-
-                                                                                </div>
-                                                                            </div>
-                                                                            <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
-                                                                                お使いのPC、ブラウザなど実行環境に依存します。
-                                                                            </p>
-
-                                                                        </li>
-                                                                        <li>
-                                                                            <h4>消しゴム</h4>背景と同じ白色で描いてある線を塗りつぶします。<br> 太さは「線の太さ」、消される形状は「先端」の設定が反映されます。
-                                                                        </li>
-                                                                        <li>
-                                                                            <h4>選択範囲を消去</h4> ドラッグした範囲にあるピクセルを消去します。
-                                                                        </li>
-                                                                        <!-- <li>
-                                                                            <h4>選択</h4> ドラッグした範囲にあるピクセルを選択します。
-                                                                            <br> 選択後、Deleteキーで範囲内のピクセルを消去します。
-                                                                        </li> -->
-                                                                        <!-- <li>
-                                                                            <h4>カラーピッカー</h4> マウスポイントのピクセルカラーを描画エリアの外に表示します。(テスト用です。)
-                                                                            <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;">
-                                                                                よくあるペイントアプリケーションなら、特定部分の色を取得して再利用する「スポイド」機能ですが、このアプリケーションは単色の線形を扱いますので、アンチエリアスでどのくらい中間色が生成されているかを確認したい時のテストツールです。
-                                                                            </div>
-                                                                        </li> -->
-                                                                        <li>
-                                                                            <h4>確定</h4> 「手書きで作成」する機能を終了し、書込まれたピクセルデータを読み取ります。
-                                                                            <br> 完了すると書込まれている（着色された部分の）ピクセル数を表示します。
-                                                                        </li>
-                                                                    </ol>
-
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <p></p>
-                                                        <div class="row" style="margin-top: 10px;">
-                                                            <div class="col-xs-8 col-sm-10">
-                                                                <div style="padding: 10px;background-color: #dff0d8;">
-                                                                    <h4>線色パレット</h4>
-                                                                    <img src="color_paret.png" class="phorRes" alt="colorparetbt" style="width:20px">                                                                    をクリックすると線の色を設定するカラーパレットを表示します。
-                                                                    <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
-                                                                        必ず単色にして下さい。 複数の色を使うと塗り面積の多い色だけが判定対象になります。
-                                                                    </p>
-
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-xs-4 col-sm-2">
-                                                                <img src="colorparet.png" class="phorRes" style="width:100%;" alt="colorparet">
-                                                            </div>
-                                                        </div>
-                                                        <p></p>
-                                                        <div class="row" style="margin-top: 10px;">
-                                                            <div class="col-xs-2 col-sm-1">
-                                                                <img src="edit_width.png" class="phorRes" style="width:100%;" alt="edit_width">
-                                                            </div>
-                                                            <div class="col-xs-10 col-sm-11">
-                                                                <div style="padding: 10px;background-color: #dff0d8;">
-                                                                    <h4>線の太さセレクタ</h4>
-                                                                    線の太さを設定します。
-                                                                    <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
-                                                                        細くするほど難しくなりますので、デフォルトは10ポイントにしています。
-                                                                    </p>
-
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <p></p>
-                                                        <div class="row" style="margin-top: 10px;">
-                                                            <div class="col-xs-10 col-sm-11">
-                                                                <div style="padding: 10px;background-color: #dff0d8;">
-                                                                    <h4>先端形状セレクタ</h4>
-                                                                    線の先端形状を設定します。
-                                                                    <ol>
-                                                                        <li>
-                                                                            <h4>丸</h4> マウスアップしたポイントを中心に線の太さ分の円弧が描かれます。
-                                                                        </li>
-                                                                        <li>
-                                                                            <h4>四角</h4> マウスアップしたポイントを中心に線の太さ分の四角が描かれます。
-                                                                        </li>
-                                                                        <li>
-                                                                            <h4>無し</h4> マウスアップしたポイントまでの線が描かれます。
-                                                                        </li>
-                                                                    </ol>
-                                                                    <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
-                                                                        微小ながらマウスボタンを離したポイントから、どんなはみ出し方をするかという設置です。
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-xs-2 col-sm-1">
-                                                                <img src="edit_caps.png" class="phorRes" style="width:100%;" alt="linecapsselect">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="row" id="trace">
-                                <div class="col-sm-12">
-                                    <div class="panel-group">
-                                        <div class="panel panel-default">
-                                            <div class="panel-title">
-                                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#trace_body" aria-expanded="true" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
-                                                    トレースモードで表示されるボタン
-                                                </div>
-                                            </div>
-
-                                            <div id="trace_body" class="panel-collapse collapse in" aria-expanded="true">
-                                                <div class="panel-body">
-                                                    <div class="panel-group">
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-12">
-                                                                <h3><img src="mirror_h.png" style="width:40px;" alt="trase"><img
-                                                                        src="mirror_v.png" style="width:40px;" alt="mirror_v">鏡面動作</h3>
-                                                                <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                    <img src="mirror_h.png" style="width:20px;" alt="trase">アイコンをタップすると<img
-                                                                        src="mirror_h_t.png" style="width:20px;" alt="trase">に変化し、パッドをトレースする向きとトレースラインが書込まれる方向が上下に反転します。
-                                                                </div>
-                                                                同様に
-                                                                <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                    <img src="mirror_v.png" style="width:20px;" alt="mirror_v">アイコンをタップすると<img
-                                                                        src="mirror_v_t.png" style="width:20px;" alt="mirror_v_t">に変化し、パッドをトレースする向きとトレースラインが書込まれる方向が左右に反転します。
-                                                                </div>
-                                                                <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                    二つともタップしておけば上下左右同時に反転します。
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <p>
-                                                        </P>
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-12">
-                                                                <h3><img src="judge_off.png" style="width:40px;" alt="judge_off">判定
-                                                                    / 自動判定<img src="judge_on.png" style="width:40px;" alt="judge_on"></h3>
-                                                                <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                    <img src="judge_off.png" style="width:20px;" alt="trase">アイコンをタップすると、その時点のトレース状況でスコアの算定を行います。
-                                                                </div>
-                                                                <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                    <img src="judge_off.png" style="width:20px;" alt="judge_off">アイコンをタッチ(ロングタップ)すると<img
-                                                                        src="judge_on.png" style="width:20px;" alt="judge_on">に変化し、自動判定モードに変わります。<br>                                                                    自動判定モードでは画面から指を離したタイミング（タッチエンド）でスコアを算出します。
-                                                                </div>
-                                                                トレース元が
-                                                                <ul>
-                                                                    <li>書き終わりまで指を離す事が無い一筆書きの時は自動判定をon</li>
-                                                                    <li>文字など指を離す事が有る時は自動判定をoff</li>
-                                                                </ul>
-                                                                といった使い分けでご利用ください。
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="row" id="links">
-                                <div class="col-sm-12">
-                                    <div class="panel-group">
-                                        <div class="panel panel-default">
-                                            <div class="panel-title">
-                                                <div class="panel-heading btn collapse_bt" data-toggle="collapse" data-target="#links_body" aria-expanded="true" style="width: 99%;background-color: #3c763d;color: white;text-align: left;margin: 5px;">
-                                                    設定（プリファレンス）
-                                                </div>
-                                            </div>
-
-                                            <div id="links_body" class="panel-collapse collapse in" aria-expanded="true">
-                                                <div class="panel-body">
-                                                    <div class="panel-group">
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-8">
-                                                                リカバリーブラインAndroidでは右の項目を設定値として保持します。
-                                                                <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                    「接続設定」はリカバリーブラインwebのURLで固定値です。<br>変更できません
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-xs-12 col-sm-4">
-                                                                <img src="pref000.png" class="phorRes" style="width:100%;" alt="pref000">
-                                                            </div>
-                                                        </div>
-                                                        <p></p>
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-sm-3">
-                                                                <img src="pref010.png" class="phorRes" style="width:100%;" alt="pref010">
-                                                            </div>
-                                                            <div class="col-xs-12 col-sm-7">
-                                                                <h4>トレース設定</h4>> トレース操作の基本設定値です
-                                                                <ul>
-                                                                    <li>
-                                                                        最初に表示する元画像
-                                                                        <ul>
-                                                                            <li>
-                                                                                デフォルトは定例パターン01です。
-                                                                            </li>
-                                                                        </ul>
-                                                                    </li>
-                                                                    <li>
-                                                                        最後に使った画像からスタート
-                                                                        <ul>
-                                                                            <li>
-                                                                                終了時にその時使っている画像ファイル名を記録し、「最初に表示する元画像」を更新します。
-                                                                            </li>
-                                                                        </ul>
-                                                                    </li>
-                                                                    <li>
-                                                                        以下の項目はアプリケーション起動時にon / off どちらからスタートするかを指定します。
-                                                                        <ul>
-                                                                            <li>
-                                                                                上下鏡面動作
-                                                                            </li>
-                                                                            <li>
-                                                                                左右鏡面動作
-                                                                            </li>
-                                                                            <li>
-                                                                                トレース後に自動判定
-                                                                            </li>
-                                                                        </ul>
-                                                                    </li>
-                                                                    <li>
-                                                                        トレース線の太さ
-                                                                        <ul>
-                                                                            <li>
-                                                                                元画像の線の太さ（一番多く使われてる太さを抽出）に対して、消し込みに使うトレース線の太さを何％増しにするかを指定します。
-                                                                            </li>
-                                                                            <li>
-                                                                                0%でトレース元と同じ太さ<br> 難度は最も上がります。
-                                                                            </li>
-                                                                            <li>
-                                                                                100％でトレース元の２倍になります。
-                                                                            </li>
-                                                                            <li>
-                                                                                <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                                    デフォルトは50％です。
-                                                                                </div>
-                                                                            </li>
-                                                                        </ul>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="col-xs-12 col-sm-2">
-                                                                <img src="pref016.png" class="phorRes" style="width:100%;" alt="pref016">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <p></p>
-
-
-                                                    <div class="row">
-                                                        <div class="col-xs-12 col-sm-9">
-                                                            <h4>その他の設定</h4>
-                                                            <ul>
-                                                                <li>
-                                                                    作成したファイルの保存場所。
-                                                                    <ul>
-                                                                        <li>
-                                                                            ご利用の端末で使用できる場所にこのアプリの手書き作成や、元画像の変形で作成した画像を保存します。
-                                                                            <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                                セキュリティの設定なので変更できない場合は、インストール時に書込める場所を検索して固定値にします。
-                                                                            </div>
-                                                                        </li>
-                                                                        <li>
-                                                                            自動回転阻止
-                                                                            <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                                トレース中や手書き編集中など、画面の回転が発生してそれまで書込んだものが破棄される事を阻止します。
-                                                                            </div>
-                                                                            <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                                リセットを簡単にしたい」というご要望もありますのでデフォルトはONで設定項目にしました。
-                                                                            </div>
-                                                                        </li>
-                                                                    </ul>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                        <div class="col-xs-12 col-sm-3">
-                                                            <img src="pref310.png" class="phorRes" style="width:100%;" alt="pref310">
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-xs-10 col-sm-10" style="background-color: #F6CEF5;">
-                                    <!-- <ul>
-                                        <li>
-                                            作成中につき変更中です
-                                        </li>
-                                    </ul> -->
-                                </div>
-                                <div class="col-xs-1 col-sm-1" data-toggle="collapse" style="height: 60px;text-align: right;" data-target="#usage_body" aria-expanded="true">
-                                    <img src="close.png" class="phorRes" alt="close" style="position: absolute;bottom: 5px;right: 5px;">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-xs-4 col-sm-2">
-                <!-- <a href="../about_and/"> -->
-                <img src="qrcord.png" class="phorRes" style="width:100%;" alt="qrcord">
-                <!-- </a> -->
-            </div>
-            <div class="col-xs-8 col-sm-10">
-                ダウンロードはこのQRコードで
-            </div>
-        </div>
-
-    </div>
-
-
-
-    <script type="text/javascript">
-        var isDebug = true;
-        var isSmaphoDebug = false;
-        // var ua;
-        // var isMobile=false;				//現在使用しているのはスマホ
-        // var urlStr;
-
-        function myLog(dbMsg) {
-            if (isDebug) {
-                console.log(dbMsg);
-                eventComent.innerHTML = dbMsg;
+            function myLog(dbMsg) {
+                if (isDebug) {
+                    console.log(dbMsg);
+                    eventComent.innerHTML = dbMsg;
+                }
             }
-        }
 
-        function mobileLog(dbMsg) {
-            if (isMobile & isSmaphoDebug) {
-                alert(dbMsg);
+            function mobileLog(dbMsg) {
+                if (isMobile & isSmaphoDebug) {
+                    alert(dbMsg);
+                }
             }
-        }
-        /**
-         *全て折りたたむ
-         */
-        function collapseAll() {
-            // $(function () {
-            $("#functions_body").collapse('hide');
-            $("#over_view_body").collapse('hide');
+            /**
+             *全て折りたたむ
+             */
+            function collapseAll() {
+                // $(function () {
+                $("#functions_body").collapse('hide');
+                $("#over_view_body").collapse('hide');
 
-            $("#editerAria_body").collapse('hide');
-            $("#jobSelect_body").collapse('hide');
-            $("#trace_body").collapse('hide');
-            $("#links_body").collapse('hide');
-            // $("#panelCollapse").collapse('show'); //デフォルトでオープン
-            $("#about_recovary_brain_body").collapse('hide'); //デフォルトでクローズ
-            $("#beginning_recovary_brain_body").collapse('hide');
-            $("#mirror_body").collapse('hide');
-            $("#other_screen_body").collapse('hide');
-            $("#to_pc_body").collapse('hide'); //
-            $("#usage_body").collapse('hide'); //
-        }
+                $("#editerAria_body").collapse('hide');
+                $("#jobSelect_body").collapse('hide');
+                $("#trace_body").collapse('hide');
+                $("#links_body").collapse('hide');
+                // $("#panelCollapse").collapse('show'); //デフォルトでオープン
+                $("#about_recovary_brain_body").collapse('hide'); //デフォルトでクローズ
+                $("#beginning_recovary_brain_body").collapse('hide');
+                $("#mirror_body").collapse('hide');
+                $("#other_screen_body").collapse('hide');
+                $("#to_pc_body").collapse('hide'); //
+                $("#usage_body").collapse('hide'); //
+            }
 
-        function formatPage() {
-            // $(function() {
-            var headerHight = $('#header').outerHeight(true); //ヘッダの高さ
-            // console.log(headerHight);
-            $('a[href^="#"]').click(function () {
-                var href = $(this).attr("href");
-                var target = $(href == "#" || href == "" ? 'html' : href);
-                var position = target.offset().top - headerHight; //ヘッダの高さ分位置をずらす
-                $("html, body").animate({
-                    scrollTop: position
-                }, 550, "swing");
-                return false;
-            });
-        }
+            function formatPage() {
+                // $(function() {
+                var headerHight = $('#header').outerHeight(true); //ヘッダの高さ
+                // console.log(headerHight);
+                $('a[href^="#"]').click(function() {
+                    var href = $(this).attr("href");
+                    var target = $(href == "#" || href == "" ? 'html' : href);
+                    var position = target.offset().top - headerHight; //ヘッダの高さ分位置をずらす
+                    $("html, body").animate({
+                        scrollTop: position
+                    }, 550, "swing");
+                    return false;
+                });
+            }
 
-        window.onload = function () { // onload	;	ページ読み込み時に実行したい処理
-            var dbMsg = "[onload]";
-            collapseAll();
-            formatPage();
-        }
+            window.onload = function() { // onload	;	ページ読み込み時に実行したい処理
+                var dbMsg = "[onload]";
+                collapseAll();
+                formatPage();
+            }
 
-    </script>
-</body>
-<!-- text below generated by geocities.jp -->
-<!-- </object>
+        </script>
+    </body>
+    <!-- text below generated by geocities.jp -->
+    <!-- </object>
 </layer>
 </div>
 </span>
