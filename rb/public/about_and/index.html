@@ -205,7 +205,11 @@
                                                                                         <li>
                                                                                             このヒット率を塗りつぶしで得た得点に積算して最終的なスコアとします。
                                                                                         </li>
-                                                                                    </ul>
+                                                                                        <li>
+                                                                                                例えば残り0pxでトレース線の太さが元画像が同じならスコアは100点ですが、
+                                                                                                トレース線の太さを２倍にすれば、ヒット率は50％になるので50点です。
+                                                                                            </li>
+                                                                                        </ul>
                                                                                 </li>
                                                                             </ol>
                                                                             また、トレースの開始まではで探りで元画像の開始点を捜す事になるかと思います。（オレンジ色の部分）<br> この部分はトレース線が元画像に接した処で消去しますので「関係ない所を塗りつぶす」行為（ヒット率を下げる減点）には含めません。
@@ -238,6 +242,23 @@
                                                                                             ただし画面を切り替えた時（ドロワーメニューから呼び出すQRコードリーダーなど）から戻った時は起動状態に戻ります。
                                                                                         </li>
                                                                                     </ul>
+                                                                                </li>
+                                                                                <li>
+                                                                                機能の呼び出し方も法則を持たせて、慣れやすい様に善処します。
+                                                                                <ul>
+                                                                                    <li>
+                                                                                      状態表示が必要な物と使用頻度の多いものはtoolBarやツールパレット
+                                                                                    </li>
+                                                                                    <li>
+                                                                                       誤操作の原因になるものや、その画面の固有機能はオプションメニュー
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        画面遷移はドロワーメニュー
+                                                                                    </li>
+                                                                                    <li>
+                                                                                       起動時点の基本的な動作設定や使用頻度が少ない機能は設定画面（プリファレンス）
+                                                                                    </li>
+                                                                                </ul>
                                                                                 </li>
                                                                             </ol>
                                                                         </div>
@@ -285,24 +306,28 @@
                                 <div class="panel-body">
                                     <div class="panel-group">
                                         <div class="row">
-                                            <div class="col-xs-6 col-sm-9">
+                                            <div class="col-xs-6 col-sm-8">
                                                 <img src="mirror_h.png" style="width:20px;" alt="trase">アイコンをクリックすると<img src="mirror_h_t.png" style="width:20px;" alt="trase">に変化し、パッドをトレースする向きとトレースラインが書込まれる方向が上下に反転します。<br><br>同様に
                                                 <img src="mirror_v.png" style="width:20px;" alt="mirror_v">アイコンをクリックすると<img src="mirror_v_t.png" style="width:20px;" alt="mirror_v_t">に変化し、パッドをトレースする向きとトレースラインが書込まれる方向が左右に反転します。<br><br> 二つともタップしておけば上下左右同時に反転します。
                                             </div>
-                                            <div class="col-xs-6 col-sm-3">
-                                                <img src="mirror_p2.png" class="phorRes" style="width:100%;  margin-bottom: 5px;" alt="mirror_p2">
+                                            <div class="col-xs-6 col-sm-4">
+                                                <img src="mirror_p2.png" class="phorRes" style="width:40%;  margin-bottom: 5px;" alt="mirror_p2">
+                                                <img src="mirror_p1.png" class="phorRes" style="width:50%;" align="right" alt="mirror_p1">
                                             </div>
                                         </div>
 
                                     </div>
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-9" style="background-color: #D6CEFF;font-size: large;">
+                                        <div class="col-xs-12 col-sm-12" style="background-color: #D6CEFF;font-size: large;">
                                             パッドの左右入れ替え
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-9">
-                                            リカバリーブラインAndroidは設定画面で横向きの時、Padを左右のいずれにするかを選択できます。
+                                        <div class="col-xs-6 col-sm-2">
+                                            <img src="memn_p2l.png" class="phorRes" style="width:100%;  margin-bottom: 5px;" alt="mirror_p2">
+                                        </div>
+                                        <div class="col-xs-12 col-sm-10">
+                                            リカバリーブラインAndroidは横向きの時、Padを左右のいずれにするかを選択できます。
                                             <ul>
                                                 <li>
                                                     左利きの方
@@ -311,20 +336,34 @@
                                                     利き手と反対側の手を使って難易度を上げたいとき
                                                 </li>
                                             </ul>
-                                            など、用途に応じて切り替え可能です。<br> 初期値は右がPadです。
-
-                                        </div>
-                                        <div class="col-xs-6 col-sm-3">
-                                            <img src="mirror_p1.png" class="phorRes" style="width:100%;" align="top" alt="mirror_p1">
+                                            など、用途に応じて切り替え可能です。<br> 初期値は右がPadです。<br><br>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-xs-6 col-sm-2">
+                                            <img src="memn_p2r.png" class="phorRes" style="width:100%;" alt="mirror_p1">
+                                        </div>
+                                        <div class="col-xs-12 col-sm-10">
+                                              切り替え方は
+                                            <ul>
+                                                <li>
+                                                    設定画面「トレース設定」の「左側にPad」にチェックを入れて再起動
+                                                </li>
+                                                　もしくは
+                                                <li>
+                                                    オプションメニューの「左側にPad」 （自動的に再起動されまさす）
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
                                     <p>
                                     </P>
                                     <div class="row">
                                         <div class="col-xs-11 col-sm-11" style="background-color: #F6CEF5;">
-                                            <h3>
-                                            この機能で鏡越しに手元に置かれた紙に書かれた線をトレースする機能を実現します。
-                                        </h3>
+                                            <h4>
+                                            これらの機能で「鏡越しに手元に置かれた紙に書かれた線をトレースする」などの難易度を再現します。
+                                        </h4>
                                         </div>
                                         <div class="col-xs-1 col-sm-1" data-toggle="collapse" style="height: 60px;text-align: right;" data-target="#mirror_body" aria-expanded="true">
                                             <img src="close.png" class="phorRes" alt="close" style="position: absolute;bottom: 5px;right: 5px;">
@@ -658,7 +697,8 @@
                                                             <img src="trace_menu.png" class="phorRes" style="width:100%;" align="top" alt="trace_menu">
                                                         </div>
                                                         <div class="col-xs-12 col-sm-8">
-                                                            タッチ（ロングタップ）するとトレース元画像の操作メニューを表示します。
+                                                            タッチ（ロングタップ）するとトレース元画像の操作メニューを表示します。<br><br><br>
+                                                            <img src="fileselect.png" class="phorRes" style="width:80%;" align="bottom"" alt="fileselect">
 
                                                         </div>
                                                     </div>
@@ -694,7 +734,7 @@
                                                                             PINGもしくはGIF
                                                                         </td>
                                                                         <td>
-                                                                            定型パターンは透過PINGを使っています。<br> 背景を真っ白で作成してもJPEG画像では圧縮率によってノイズが入るので好ましくありません。
+                                                                            定型パターンは透過PINGを使っています。(背景は白でも構いません)<br> 背景を真っ白で作成してもJPEG画像では圧縮率によってノイズが入るので好ましくありません。
                                                                         </td>
                                                                     </tr>
 
@@ -1201,12 +1241,7 @@
 
                                 <div class="row">
                                     <div class="col-xs-10 col-sm-10" style="background-color: #F6CEF5;">
-                                        <!-- <ul>
-                                        <li>
-                                            作成中につき変更中です
-                                        </li>
-                                    </ul> -->
-                                    </div>
+                                     </div>
                                     <div class="col-xs-1 col-sm-1" data-toggle="collapse" style="height: 60px;text-align: right;" data-target="#usage_body" aria-expanded="true">
                                         <img src="close.png" class="phorRes" alt="close" style="position: absolute;bottom: 5px;right: 5px;">
                                     </div>
@@ -1219,21 +1254,41 @@
             </div>
 
             <div class="row">
-                <div class="col-xs-4 col-sm-2">
+                <div class="col-xs-4 col-sm-3">
                     <!-- <a href="../about_and/"> -->
                     <img src="qrcord.png" class="phorRes" style="width:100%;" alt="qrcord">
                     <!-- </a> -->
                 </div>
-                <div class="col-xs-8 col-sm-8">
+                <div class="col-xs-8 col-sm-9">
                     ダウンロードはこのQRコードで
-                    <div style="height:82px;padding: 20px;margin-top:20px;margin-bottom: 10px;background-color: #eeaaaa;">
+                    <div style="padding: 20px;margin-top:20px;margin-bottom: 10px;background-color: #eecccc;">
                         現在開発中につき、
                         <ul>
                             <li>
                                 開発中の機能はその旨を示すアラートが表示されます。
                             </li>
                             <li>
-                                調整しきれていませんので起動に時間がかかります。
+                                対応中の項目は
+                                <ol>
+                                    <li>
+                                        起動処理の最適化<br>
+                                        調整しきれていませんのでインストール時は特に時間がかかります。<br>
+                                        <img src="kidoucyuu.png" class="phorRes" alt="kidoucyuu" style="width:300px;"><br>
+                                        このトーストが消えるまでお待ちください。
+                                    </li>
+                                    <li>
+                                        オプションメニュー、ドロワーメニューの項目調整
+                                    </li>
+                                    <li>
+                                        手書き機能
+                                    </li>
+                                    <li>
+                                        次回のスタートファイル
+                                    </li>
+                                    <li>
+                                        英訳
+                                    </li>
+                                </ol>
                             </li>
                         </ul>
 
