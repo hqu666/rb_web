@@ -45,7 +45,7 @@
                                 <img src="splash_log.png" class="phorRes" style="width:100%;" alt="splash_log">
                             </div>
                             <div class="col-xs-8 col-sm-8">
-                                <div style="text-align: right;">更新日 2018/9/2</div>
+                                <div style="text-align: right;">更新日 2018/9/4</div>
                                 <h1>Android版リカバリーブラインの使い方</h1>
                             </div>
                             <div class="col-xs-2 col-sm-2">
@@ -125,7 +125,7 @@
                                                                     <div class="row">
                                                                         <div class="col-xs-6 col-sm-4">
                                                                             <div style="height:82px;padding: 20px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                                アプリケーションを起動すると「リカバリーブライン」を知って頂く為の「スタート画面が表示されます。
+                                                                                アプリケーションを起動すると「リカバリーブライン」を知って頂く為の「スタート画面」が表示されます。
                                                                             </div>
                                                                             <img src="beginning1.png" style="width:75%;" align="top" alt="beginning1"><br>
                                                                         </div>
@@ -224,7 +224,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="row">
-                                                                        <div class="col-xs-12 col-sm-12">
+                                                                        <div class="col-xs-12 col-sm-9">
                                                                             <ol>
                                                                                 <li>
                                                                                     起動した時の向きで固定
@@ -261,6 +261,45 @@
                                                                                 </ul>
                                                                                 </li>
                                                                             </ol>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 col-sm-9">
+                                                                            <ol  start="3">
+                                                                            <li>
+                                                                                トレース元画像の自動送り
+                                                                                <ul>
+                                                                                    元々は縦持ちの時にtoolBarに表示するスコアが表示しきれないので作った機能ですが
+                                                                                    <li>
+                                                                                        判定が終わった時点でダイアログを表示し、判定内容を分かりやすくします。
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        操作できる機能は
+                                                                                        <ol>
+                                                                                            <li>
+                                                                                                 「次へ」で定例パターンリストの順で次のトレース元画像へ切り替えます。
+                                                                                            </li>
+                                                                                            <li>
+                                                                                                「もう一度」でトレースを消してスコアをリセットし、同じトレース元画像に再トライする準備をします。 <br>
+                                                                                                <img src="modoru_bt.png" style="width:20px;" alt="edit">アイコンのタップと同じ動作です。
+                                                                                            </li>
+                                                                                            <li>
+                                                                                                クローズボックスでこのダイアログを閉じればでトレース継続（追記）できます。
+                                                                                                <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;">
+                                                                                                    ヒット率は下がるので点数は上がりません。
+                                                                                                </div>
+                                                                                            </li>
+                                                                                        </ol>
+                                                                                    </li>
+
+                                                                                        <img src="../edit.png" style="width:20px;" alt="edit">アイコンをタップして「定例パターン」 ダイアログを操作しなくても簡易に順送りできます。
+
+                                                                                </ul>
+                                                                            </li>
+                                                                            </ol>
+                                                                        </div>
+                                                                        <div class="col-xs-12 col-sm-3">
+                                                                            <img src="judge_dlog.png" style="width:100%;"  alt="judge_dlog">
                                                                         </div>
                                                                     </div>
                                                                     <p>
@@ -324,7 +363,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-6 col-sm-2">
-                                            <img src="memn_p2l.png" class="phorRes" style="width:100%;  margin-bottom: 5px;" alt="mirror_p2">
+                                            <img src="memn_p2l.png" class="phorRes" style="width:100%;  margin-bottom: 5px;" alt="左表示">
                                         </div>
                                         <div class="col-xs-12 col-sm-10">
                                             リカバリーブラインAndroidは横向きの時、Padを左右のいずれにするかを選択できます。
@@ -341,7 +380,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-6 col-sm-2">
-                                            <img src="memn_p2r.png" class="phorRes" style="width:100%;" alt="mirror_p1">
+                                            <img src="memn_p2r.png" class="phorRes" style="width:100%;" alt="右表示">
                                         </div>
                                         <div class="col-xs-12 col-sm-10">
                                               切り替え方は
@@ -351,7 +390,7 @@
                                                 </li>
                                                 　もしくは
                                                 <li>
-                                                    オプションメニューの「左側にPad」 （自動的に再起動されまさす）
+                                                    オプションメニューの「左側にPad」 （自動的に再起動されます。反応するまで少々時間がかかります）
                                                 </li>
                                             </ul>
                                         </div>
@@ -398,7 +437,8 @@
                                                 <div class="row">
                                                     <div class="col-xs-6 col-sm-3">
                                                         <div style="height:82px;padding: 10px;margin-top:20px;margin-bottom: 10px;background-color: #e7f9fe;">
-                                                            PCのブラウザでリカバリーブラインwebを開いてください。
+                                                            PCのブラウザで
+                                                            <a href="http://ec2-18-182-237-90.ap-northeast-1.compute.amazonaws.com:3080/" target="_blank">リカバリーブラインweb</a>を開いてください。
                                                         </div>
                                                         <img src="pc_rb.png" style="width:100%;" alt="pc_rb">
                                                     </div>
@@ -785,8 +825,7 @@
                                                                 その他
                                                                 <ul>
                                                                     <li>
-                                                                        <h4>手書きで作成</h4> 作成中；現在フリーハンドのみ
-                                                                        <br> 詳細は「手書きで作成で表示されるツール」をご参照ください。
+                                                                        <h4>手書きで作成</h4> 詳細は「手書きで作成で表示されるツール」をご参照ください。
                                                                     </li>
                                                                     <li>
                                                                         <h4>もう一度</h4> トレースした線を消して、評価前の状態に戻します。
@@ -931,7 +970,7 @@
                                                                 <div class="col-xs-12 col-sm-10">
                                                                     <div style="padding: 10px;background-color: #dff0d8;">
                                                                         <h4>ツール選択セレクタ</h4> 何を書き込むかを選択するセレクタです。
-                                                                        <ol>
+                                                                        <ul>
                                                                             <li>
                                                                                 <h4>フリーハンド</h4> タッチの動きに合わせて線を書き込みます。
                                                                             </li>
@@ -957,19 +996,47 @@
                                                                             <li>
                                                                                 <h4>テキスト</h4>
                                                                                 <div class="row">
-                                                                                    <div class="col-xs-12 col-sm-6">
-                                                                                        書込む文字、フォント、サイズ、スタイルを設定して下さい。
-                                                                                        <img src="textinput.png" align="top" style="width:100%;" alt="textinput">
+                                                                                    <div class="col-xs-12 col-sm-8">
+                                                                                        <ul style="list-style-type:none">
+                                                                                            <li>
+                                                                                                <img src="textinput.png" align="top" style="width:100%;" alt="textinput">
+                                                                                            </li>
+                                                                                            <li>
+                                                                                                書込む文字とサイズを設定して下さい。
+                                                                                            </li>
+                                                                                            <li>
+                                                                                                「確定」ボタンをタップ後、
+                                                                                                <ol>
+                                                                                                    <li>
+                                                                                                        ドラックしている間は位置調整
+                                                                                                    </li>
+                                                                                                    <li>
+                                                                                                        画面から指を離した所で位置確定
+                                                                                                    </li>
+                                                                                                </ol>
+                                                                                            </li>
+
+                                                                                        </ul>
                                                                                         <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
                                                                                             ご注意；入りきらなければカットされます。
                                                                                         </p>
                                                                                     </div>
-                                                                                    <div class="col-xs-12 col-sm-6">
-                                                                                        文字のベースラインを直線を描く要領で指定して下さい。
+                                                                                    <div class="col-xs-12 col-sm-4">
                                                                                         <img src="textinput_img.png" align="top" style="width:90%;" alt="textinput_img">
-                                                                                        <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
-                                                                                            ベースラインに合わせた角度で文字が書き込まれます。
-                                                                                        </p>
+                                                                                        <ul style="list-style-type:none">
+                                                                                            確定したポイントで
+                                                                                            <li>
+                                                                                                x=文字の先頭
+                                                                                            </li>
+                                                                                            <li>
+                                                                                                y=文字のベースライン
+                                                                                            </li>
+                                                                                            の位置で文字が書込まれます
+                                                                                        </ul>
+
+                                                                                        <!--<p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">-->
+                                                                                            <!--ベースラインに合わせた角度で文字が書き込まれます。-->
+                                                                                        <!--</p>-->
 
                                                                                     </div>
                                                                                 </div>
@@ -1012,7 +1079,20 @@
                                                                         <p class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;font-size: small;">
                                                                             必ず単色にして下さい。 複数の色を使うと塗り面積の多い色だけが判定対象になります。
                                                                         </p>
-                                                                        リング部分をタップして色を選択し、四角の中で明るさを設定します。
+                                                                        <ul style="list-style-type:none">
+                                                                            <li>
+                                                                                リング部分をタップして色を選択
+                                                                            </li>
+                                                                            <li>
+                                                                                四角の中で明るさを設定
+                                                                            </li>
+                                                                            <li>
+                                                                                「OK」ボタンで確定
+                                                                            </li>
+                                                                            <li>
+                                                                                バックキーでキャンセルです
+                                                                            </li>
+                                                                        </ul>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-xs-4 col-sm-2">
@@ -1146,6 +1226,7 @@
                                                                     <div style="margin-bottom: 10px;background-color: #e7f9fe;">
                                                                         「接続設定」はリカバリーブラインwebのURLで固定値です。<br>変更できません
                                                                     </div>
+                                                                    尚、開発中は開発環境へのwifi接続切り替えに使用していますので誤って切り替えた場合は「http://ec-2」で始まる接続先に戻してください。
                                                                 </div>
                                                                 <div class="col-xs-12 col-sm-4">
                                                                     <img src="pref000.png" class="phorRes" style="width:100%;" alt="pref000">
@@ -1157,7 +1238,7 @@
                                                                     <img src="pref010.png" class="phorRes" style="width:100%;" alt="pref010">
                                                                 </div>
                                                                 <div class="col-xs-12 col-sm-7">
-                                                                    <h4>トレース設定</h4>> トレース操作の基本設定値です
+                                                                    <h4>トレース設定</h4>>トレース操作の基本設定値です
                                                                     <ul>
                                                                         <li>
                                                                             最初に表示する元画像
@@ -1168,10 +1249,13 @@
                                                                             </ul>
                                                                         </li>
                                                                         <li>
-                                                                            最後に使った画像からスタート
+                                                                            自動送り
                                                                             <ul>
                                                                                 <li>
-                                                                                    終了時にその時使っている画像ファイル名を記録し、「最初に表示する元画像」を更新します。
+                                                                                    開発中；得点が算出された時点でダイアログを表示し、次の定例パターンに送るか否かをお尋ねします。
+                                                                                </li>
+                                                                                <li>
+                                                                                    定例パターンが確定された時点で「定例パターンリスト」の並びで次になっているファイルを次回起動時のファイルとして設定します。
                                                                                 </li>
                                                                             </ul>
                                                                         </li>
@@ -1203,7 +1287,7 @@
                                                                                 </li>
                                                                                 <li>
                                                                                     <div style="margin-bottom: 10px;background-color: #e7f9fe;">
-                                                                                        デフォルトは50％です。
+                                                                                        デフォルトは10％です。
                                                                                     </div>
                                                                                 </li>
                                                                             </ul>
@@ -1289,31 +1373,19 @@
                         現在開発中につき、
                         <ul>
                             <li>
-                                横向きで使って下さい。
-                            </li>
-                            <li>
-                                特にインストール直後など、一枚目の元画像が表示されない時は再起動して下さい。（内蔵した画像が展開しきれていない事が有ります）
-                            </li>
-                            <li>
                                 開発中の機能はその旨を示すアラートが表示されます。
                             </li>
                             <li>
                                 対応中の項目は
                                 <ol>
                                     <li>
-                                        起動処理の最適化<br>
-                                        調整しきれていませんのでインストール時は特に時間がかかります。<br>
-                                        <img src="kidoucyuu.png" class="phorRes" alt="kidoucyuu" style="width:300px;"><br>
-                                        このトーストが消えるまでお待ちください。
-                                    </li>
-                                    <li>
-                                        オプションメニュー、ドロワーメニューの項目調整
+                                        オプションメニュー、ドロワーメニューの項目調整（ご要望に応じて対応機能を追加します）
                                     </li>
                                     <li>
                                         トレース線の太さ（特に文字を使うと線の太さが不均一なので元画像の正しい線の太さが取得できません）
                                     </li>
                                     <li>
-                                        次回のスタートファイル
+                                        トレース元ピクセル数の読み取りも不安定な部分が有りますので１００点を超えるスコアが表示される事が有ります。
                                     </li>
                                     <li>
                                         英訳
