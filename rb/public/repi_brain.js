@@ -20,7 +20,6 @@
 
 	var orgComp = document.getElementById('orgComp');							//元データの描画結果
 	var useComp = document.getElementById('useComp');							//判定ボタン；トレース後の描画結果
-	// useComp.style.display="none";												//判定ボタン
 
 	var graficOptions = document.getElementById('graficOptions');				//グラフィック設定
 	var lineWidthSelect = document.getElementById('lineWidthSelect');			//線の太さ
@@ -40,7 +39,8 @@
 	};
 	var isMirror=false;				//上下鏡面動作
 	var is_h_Mirror=false;				//左右鏡面動作
-	var isAutoJudge=false;				//トレース後に自動判定
+	var
+	isAutoJudge=true;				//トレース後に自動判定
 	var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
 	var orgCount=0;
 	var compCount=0;
@@ -655,9 +655,9 @@
 		isAutoJudge = document.getElementById('autojudgeCB').checked;
 		dbMsg += ",isAutoJudge="+isAutoJudge;
 		if(isAutoJudge){
-			useComp.style.display="none";												//判定ボタン
+			useComp.src="judge_on.png";												//判定ボタン
 		}else {
-			useComp.style.display="inline-block";												//判定ボタン
+			useComp.src="judge_off.png";
 		}
 		myLog(dbMsg);
 		socket.emit('setautojudge', {
@@ -757,9 +757,9 @@
 		dbMsg += ",isAutoJudge="+isAutoJudge;
 		document.getElementById('autojudgeCB').checked=isAutoJudge;
 		if(isAutoJudge){
-			useComp.style.display="none";												//判定ボタン
+			useComp.src="judge_on.png";												//判定ボタン
 		}else {
-			useComp.style.display="inline-block";												//判定ボタン
+			useComp.src="judge_off.png";
 		}
 		myLog(dbMsg);
 		mobileLog(dbMsg);
@@ -1720,7 +1720,7 @@
 			 });
 			lineWidth = widthrray[1].name;			//0pxが最多になる
 			dbMsg += ">最多lineWidth>"+ lineWidth;
-			currentWidth=Math.ceil(lineWidth*2.0);				//トレース戦は太めに
+			currentWidth=Math.ceil(lineWidth*1.2);				//トレース戦は太めに
 			dbMsg += ">>"+ currentWidth;
 			setLineWidthVal(currentWidth);										//セレクタの表示も変更
 			dbMsg += "；Y軸上"+widthrray[0].value+"個所";
@@ -1738,9 +1738,9 @@
 		}
 		scoreBrock.style.display="inline-block";			//BD
 		if(isAutoJudge){
-			useComp.style.display="none";												//判定ボタン
+			useComp.src="judge_on.png";												//判定ボタン
 		}else {
-			useComp.style.display="inline-block";												//判定ボタン
+			useComp.src="judge_off.png";
 		}
 		myLog(dbMsg);
 	}
@@ -1778,9 +1778,9 @@
 		scoreBrock.style.display="inline-block";
 		document.getElementById("makeAfter").style.display="inline-block";			 //トレース元画像の表示方向
 		if(isAutoJudge){
-			useComp.style.display="none";												//判定ボタン
+			useComp.src="judge_on.png";												//判定ボタン
 		}else {
-			useComp.style.display="inline-block";												//判定ボタン
+			useComp.src="judge_off.png";
 		}
 		document.getElementById('scoreTF').innerHTML = 0+"";
 		// orgColor = current.color;
@@ -1990,7 +1990,7 @@
 			jobSelect.options[4].disabled = false;										//もう一度
 			document.getElementById("again_bt").style.display="inline-block";
 		// }
-		myLog(dbMsg);
+//		myLog(dbMsg);
 		return dCount;
 		// return onSuccess(dCount);
     // });
