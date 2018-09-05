@@ -200,7 +200,8 @@
 							<option value="trace">トレース設定</option>
 							<option value="about">このページの使い方</option>
 						</select>
-						<!-- display: inline-block; -->
+							<img src="mirror_h.png" alt="上下反転動作"  style="width: 30px;padding-bottom: 14px;"  id="mirror_h">
+							<img src="mirror_v.png" alt="左右反転動作"  style="width: 30px;padding-bottom: 14px;" id="mirror_v">
 						<span id="scoreBrock" style="margin-left: 10px;margin-right:10px">
 							スコア
 							<span id="scoreTF" style="font-size: x-large">
@@ -349,8 +350,8 @@
 							// if(isMobile){
 							// applican.wifi.getCurrentIPv4Address(getCurrentIPv4Address_Success, getCurrentIPv4Address_Error);
 							var wifiURL; //='<?php echo $_SERVER['REMOTE_ADDR']; ?>';
-						//	var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
-							wifiURL = '192.168.3.8'; //自宅
+							var wifiURL = '192.168.100.6'; //課題；取得方法；Javascriptでは取得できない
+					//		wifiURL = '192.168.3.8'; //自宅
 							dbMsg += "　,wifiURL=" + wifiURL;
 							setURL = urlStr.replace('127.0.0.1', wifiURL); //'http://192.168.3.10:3080'
 							// }

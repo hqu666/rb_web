@@ -18,6 +18,8 @@
 	var editerAria = document.getElementById('editerAria');						//上記の編集パーツ
 	var scoreBrock = document.getElementById('scoreBrock');						//スコア表示
 
+	var mirror_h = document.getElementById('mirror_h');							//上下反転動作
+	var mirror_v = document.getElementById('mirror_v');							//左右反転動作
 	var orgComp = document.getElementById('orgComp');							//元データの描画結果
 	var useComp = document.getElementById('useComp');							//判定ボタン；トレース後の描画結果
 
@@ -238,8 +240,18 @@
 		dbMsg += " ,isMobile="+isMobile;
 		isMirror = document.getElementById('mirrorCB').checked;
 		dbMsg += ",isMirror="+isMirror;
+		if(isMirror){
+    		document.getElementById("mirror_h").src = "mirror_h.png"
+  		}else{
+     		document.getElementById("mirror_h").src  = "mirror_h_t.png"
+  		}
 		is_h_Mirror = document.getElementById('mirror_h_CB').checked;
 		dbMsg += ",is_h_Mirror="+is_h_Mirror;
+		if(is_h_Mirror){
+    		document.getElementById("mirror_v").src="mirror_v.png" ;
+  		}else{
+    		document.getElementById("mirror_v").src = "mirror_v_t.png"
+  		}
 		document.getElementById('compInfo').style.display="none";					//手書き完了後表示
 
 		var roomPostion = urlStr.indexOf('room');
@@ -438,9 +450,15 @@
 		 	isComp=false;														//比較中解除
 			if(is_h_Mirror){														//鏡面動作になっていたら
 				document.getElementById('mirror_h_CB').click();					//解除
+				document.getElementById("mirror_v").src="mirror_v.png" ;
+			}else{
+				document.getElementById("mirror_v").src="mirror_v_t.png" ;
 			}
 			if(isMirror){														//鏡面動作になっていたら
 				document.getElementById('mirrorCB').click();					//解除
+				document.getElementById("mirror_h").src="mirror_h.png" ;
+			}else{
+				document.getElementById("mirror_h").src="mirror_h_t.png" ;
 			}
 			document.getElementById("allclear").click();						//画面を初期化して
 			editerAria.style.display="contents";							//編集ツール表示
@@ -491,6 +509,50 @@
 		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 
 		jobSelect.value = 'none';											//none		comp
+	}
+
+	/**
+	*上下反転動作
+	*/
+	mirror_h.onclick = function () {
+		var dbMsg = "[mirror_h]";
+        dbMsg += ",上下鏡面="+isMirror;
+		if(isMirror){
+			isMirror =false;
+			document.getElementById("mirror_h").src="mirror_h.png" ;
+		}else{
+			isMirror =true;
+			document.getElementById("mirror_h").src= "mirror_h_t.png"
+		}
+		document.getElementById('mirrorCB').checked=isMirror;
+		dbMsg += ",room=" + roomVal;
+		myLog(dbMsg);
+		socket.emit('setmirror', {
+			room : "/" + roomVal ,
+			bool:isMirror
+		});
+	}
+
+	/**
+	*左右反転動作
+	*/
+	mirror_v.onclick = function () {
+		var dbMsg = "[mirror_v]";
+		dbMsg += ",左右鏡面="+is_h_Mirror;
+		if(is_h_Mirror){
+			is_h_Mirror =false;
+			document.getElementById("mirror_v").src="mirror_v.png" ;
+		}else{
+			is_h_Mirror =true;
+			document.getElementById("mirror_v").src="mirror_v_t.png" ;
+		}
+		document.getElementById('mirror_h_CB').checked=isMirror;
+		dbMsg += ",room=" + roomVal;
+		myLog(dbMsg);
+		socket.emit('setmirror_h', {
+			room : "/" + roomVal ,
+			bool:is_h_Mirror
+		});
 	}
 
 	/**
@@ -627,6 +689,11 @@
 		dbMsg += ",room=" + roomVal;
 		isMirror = document.getElementById('mirrorCB').checked;
 		dbMsg += ",上下鏡面="+isMirror;
+		if(isMirror){
+ 			document.getElementById("mirror_h").src="mirror_h.png" ;
+ 		}else{
+  			document.getElementById("mirror_h").src = "mirror_h_t.png"
+ 		}
 		myLog(dbMsg);
 		socket.emit('setmirror', {
 			room : "/" + roomVal ,
@@ -634,11 +701,16 @@
 		});
 	}
 
-	document.getElementById('mirror_h_CB').onchange = function () {				//先端形状
+	document.getElementById('mirror_h_CB').onchange = function () {
 		var dbMsg = "[mirror_h_CB]";
 		dbMsg += ",room=" + roomVal;
 		is_h_Mirror = document.getElementById('mirror_h_CB').checked;
 		dbMsg += ",左右鏡面="+is_h_Mirror;
+		if(is_h_Mirror){
+			document.getElementById("mirror_v").src="mirror_v.png" ;
+		}else{
+			document.getElementById("mirror_v").src = "mirror_v_t.png"
+		}
 		myLog(dbMsg);
 		socket.emit('setmirror_h', {
 			room : "/" + roomVal ,
@@ -738,6 +810,11 @@
 		isMirror = data.bool;
 		dbMsg += ",isMirror="+isMirror;
 		document.getElementById('mirrorCB').checked=isMirror;
+		if(isMirror){
+ 			document.getElementById("mirror_h").src="mirror_h.png" ;
+ 		}else{
+  			document.getElementById("mirror_h").src = "mirror_h_t.png"
+ 		}
 		myLog(dbMsg);
 		mobileLog(dbMsg);
 	});
@@ -747,6 +824,11 @@
 		is_h_Mirror = data.bool;
 		dbMsg += ",左右鏡面="+is_h_Mirror;
 		document.getElementById('mirror_h_CB').checked=is_h_Mirror;
+		if(is_h_Mirror){
+   			document.getElementById("mirror_v").src="mirror_v.png" ;
+  		}else{
+    		document.getElementById("mirror_v").src = "mirror_v_t.png"
+  		}
 		myLog(dbMsg);
 		mobileLog(dbMsg);
 	});
