@@ -80,13 +80,14 @@
 	var drowTextSize ="240px";
 	var drowTextStyle ="";
 // }
-
+   	var originWidth = currentWidth; 			//トレース元の太さ
 	// var req = new XMLHttpRequest();
 	// req.open("GET", "util.js", false);
 	// req.send("");
 	var isDebug =true;
 	var isSmaphoDebug =false;
 	var isMobile=false;				//現在使用しているのはスマホ
+ 	var isReceiver=false;				//レシーバー側
 
 	function myLog(dbMsg) {
 		// req.myLog(dbMsg);
@@ -241,17 +242,17 @@
 		isMirror = document.getElementById('mirrorCB').checked;
 		dbMsg += ",isMirror="+isMirror;
 		if(isMirror){
-    		document.getElementById("mirror_h").src = "mirror_h.png"
+       		document.getElementById("mirror_h").src  = "mirror_h_t.png"
   		}else{
-     		document.getElementById("mirror_h").src  = "mirror_h_t.png"
-  		}
+   			document.getElementById("mirror_h").src = "mirror_h.png"
+		}
 		is_h_Mirror = document.getElementById('mirror_h_CB').checked;
 		dbMsg += ",is_h_Mirror="+is_h_Mirror;
 		if(is_h_Mirror){
-    		document.getElementById("mirror_v").src="mirror_v.png" ;
+      		document.getElementById("mirror_v").src = "mirror_v_t.png"
   		}else{
-    		document.getElementById("mirror_v").src = "mirror_v_t.png"
-  		}
+    		document.getElementById("mirror_v").src="mirror_v.png" ;
+		}
 		document.getElementById('compInfo').style.display="none";					//手書き完了後表示
 
 		var roomPostion = urlStr.indexOf('room');
@@ -264,6 +265,7 @@
 		   bitmapRead(srcName);
 		}
 		if (-1 <reciverPostion) {						//レシーバーの時は
+		 	isReceiver= true;				//レシーバー側
 			var colorPostion = urlStr.indexOf('color');
 			var parms =  urlStr.substring(colorPostion ,urlStr.length).split('?');
 			var parmVar ="";
@@ -450,15 +452,15 @@
 		 	isComp=false;														//比較中解除
 			if(is_h_Mirror){														//鏡面動作になっていたら
 				document.getElementById('mirror_h_CB').click();					//解除
-				document.getElementById("mirror_v").src="mirror_v.png" ;
-			}else{
 				document.getElementById("mirror_v").src="mirror_v_t.png" ;
+			}else{
+				document.getElementById("mirror_v").src="mirror_v.png" ;
 			}
 			if(isMirror){														//鏡面動作になっていたら
 				document.getElementById('mirrorCB').click();					//解除
-				document.getElementById("mirror_h").src="mirror_h.png" ;
-			}else{
 				document.getElementById("mirror_h").src="mirror_h_t.png" ;
+			}else{
+				document.getElementById("mirror_h").src="mirror_h.png" ;
 			}
 			document.getElementById("allclear").click();						//画面を初期化して
 			editerAria.style.display="contents";							//編集ツール表示
@@ -544,9 +546,9 @@
 			document.getElementById("mirror_v").src="mirror_v.png" ;
 		}else{
 			is_h_Mirror =true;
-			document.getElementById("mirror_v").src="mirror_v_t.png" ;
+//			document.getElementById("mirror_v").src="mirror_v_t.png" ;
 		}
-		document.getElementById('mirror_h_CB').checked=isMirror;
+		document.getElementById('mirror_h_CB').checked=is_h_Mirror;
 		dbMsg += ",room=" + roomVal;
 		myLog(dbMsg);
 		socket.emit('setmirror_h', {
@@ -684,16 +686,34 @@
 		myLog(dbMsg);
 	}
 
+  	document.getElementById('traseLineWidthSelect').onchange = function () {				//トレース線の増分
+  		var dbMsg = "[traseLineWidthSelect]";
+  		dbMsg += ",room=" + roomVal;
+  		var tLineMagnification = this.value  * 0.1;
+			dbMsg += ",倍率="+ tLineMagnification;
+			  stereoTypeCheck(canvas);
+//		dbMsg += ",currentWidth="+ currentWidth;
+//		currentWidth =  currentWidth * (1 +tLineMagnification );
+//		dbMsg += ">>"+ currentWidth;
+//		socket.emit('changeLineWidth', {
+//			room : "/" + roomVal ,
+//			width:currentWidth
+//		});
+		// context.lineWidth = currentWidth*1;
+		myLog(dbMsg);
+  	}
+
+
 	document.getElementById('mirrorCB').onchange = function () {				//先端形状
 		var dbMsg = "[mirrorCB]";
 		dbMsg += ",room=" + roomVal;
 		isMirror = document.getElementById('mirrorCB').checked;
 		dbMsg += ",上下鏡面="+isMirror;
 		if(isMirror){
- 			document.getElementById("mirror_h").src="mirror_h.png" ;
+   			document.getElementById("mirror_h").src = "mirror_h_t.png"
  		}else{
-  			document.getElementById("mirror_h").src = "mirror_h_t.png"
- 		}
+ 			document.getElementById("mirror_h").src="mirror_h.png" ;
+		}
 		myLog(dbMsg);
 		socket.emit('setmirror', {
 			room : "/" + roomVal ,
@@ -707,9 +727,9 @@
 		is_h_Mirror = document.getElementById('mirror_h_CB').checked;
 		dbMsg += ",左右鏡面="+is_h_Mirror;
 		if(is_h_Mirror){
-			document.getElementById("mirror_v").src="mirror_v.png" ;
-		}else{
 			document.getElementById("mirror_v").src = "mirror_v_t.png"
+		}else{
+			document.getElementById("mirror_v").src="mirror_v.png" ;
 		}
 		myLog(dbMsg);
 		socket.emit('setmirror_h', {
@@ -811,10 +831,10 @@
 		dbMsg += ",isMirror="+isMirror;
 		document.getElementById('mirrorCB').checked=isMirror;
 		if(isMirror){
- 			document.getElementById("mirror_h").src="mirror_h.png" ;
+   			document.getElementById("mirror_h").src = "mirror_h_t.png"
  		}else{
-  			document.getElementById("mirror_h").src = "mirror_h_t.png"
- 		}
+ 			document.getElementById("mirror_h").src="mirror_h.png" ;
+		}
 		myLog(dbMsg);
 		mobileLog(dbMsg);
 	});
@@ -825,10 +845,10 @@
 		dbMsg += ",左右鏡面="+is_h_Mirror;
 		document.getElementById('mirror_h_CB').checked=is_h_Mirror;
 		if(is_h_Mirror){
-   			document.getElementById("mirror_v").src="mirror_v.png" ;
+			document.getElementById("mirror_v").src = "mirror_v_t.png"
   		}else{
-    		document.getElementById("mirror_v").src = "mirror_v_t.png"
-  		}
+ 			document.getElementById("mirror_v").src="mirror_v.png" ;
+ 		}
 		myLog(dbMsg);
 		mobileLog(dbMsg);
 	});
@@ -1692,7 +1712,7 @@
 	/**
 	* 使用されている色と線幅を取得
 	* トレースラインの色と太さの設定と送信
-	* @param {*} canvas 捜査対象
+	@param 	 {*} canvas 操作対象
 	*/
 	function stereoTypeCheck(canvas) {
 	    var tag = "[stereoTypeCheck]";
@@ -1802,7 +1822,9 @@
 			 });
 			lineWidth = widthrray[1].name;			//0pxが最多になる
 			dbMsg += ">最多lineWidth>"+ lineWidth;
-			currentWidth=Math.ceil(lineWidth*1.2);				//トレース戦は太めに
+			var tLineMagnification =document.getElementById('traseLineWidthSelect').value * 0.1;
+			dbMsg += ",倍率="+ tLineMagnification;
+			currentWidth=Math.ceil(lineWidth*(1+tLineMagnification));				//トレース戦は太めに
 			dbMsg += ">>"+ currentWidth;
 			setLineWidthVal(currentWidth);										//セレクタの表示も変更
 			dbMsg += "；Y軸上"+widthrray[0].value+"個所";
@@ -1888,6 +1910,7 @@
 		});
 		setOriginPixcel();
 		document.getElementById("again_bt").style.display="none";
+
 		myLog(dbMsg);
 	}
 /**
@@ -1932,6 +1955,9 @@
 		return "#" + col.match(/\d+/g).map(function(a){return ("0" + parseInt(a).toString(16)).slice(-2).toLowerCase()}).join("");
 	}
 
+/**
+*スコアの書き込み
+*/
 	function scoreDrow() {
 		var dbMsg = "[scoreDrow]";
 		var score =100;
@@ -1952,8 +1978,25 @@
 		dbMsg += "/"+ orgCount;
 		 score =  Math.round((orgCount-compCount)/orgCount*100);
 		 dbMsg +="；score=" + score;
-		 document.getElementById('scoreTF').innerHTML = score+"";
-		document.getElementById('compTF').innerHTML = compCount+"";
+		 var scoreAdd = score;
+		var addStr = "無し";
+//		dbMsg += ",上下鏡面="+isMirror;
+//		if(isMirror){
+//			addStr =  "\n加点　　鏡面;上下　2倍";
+//			scoreAdd = scoreAdd * 2;
+//		}
+//		dbMsg += ",左右鏡面="+is_h_Mirror;
+//		if(is_h_Mirror){
+//				scoreAdd = scoreAdd * 2;
+//			if(addStr ==""){
+//				addStr =  "\n加点　　鏡面;左右　2倍";
+//			} else{
+//				addStr +=  " × 左右　2倍";
+//			}
+//		}
+ 		 document.getElementById('scoreTF').innerHTML = scoreAdd+"";
+ 		document.getElementById('compTF').innerHTML = compCount+"";
+
 		// const prom =scoreCount();
 		// prom.then((compCount) => {
 		// 	dbMsg += ",compCount="+ compCount;
@@ -1970,6 +2013,17 @@
 		// 	dbMsg += "カウント失敗";
 		// });
 
+//		if( isReceiver ){			//レシーバー側
+//			$('#modalTitol').innerHTML = "トレース結果";
+//		  	document.getElementById("modalTitolIcon").src="judge_on.png" ;
+//			document.getElementById("modalComent").style.display="block";
+//   			var wStr = 	"スコア　　" + scoreAdd +"点(加減前；" + score +"点\n" +
+//						"残数　　　"+compCount+ " / " +orgCount  +"px\n" +
+//						"ヒット率　" +"点\n" +
+//						 "線の太さ;元=" + originWidth + " : トレース=" + "px" + currentWidth +"px" + addStr;
+//   			$('#modalComent').innerHTML = wStr;
+//		  $('#modal_box').modal('show');
+//		}
 		myLog(dbMsg);
 	}
 
