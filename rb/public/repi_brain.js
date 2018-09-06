@@ -340,11 +340,18 @@
 	  document.getElementById("modalImgList").style.display="none";
 	  document.getElementById("madalInput").style.display="none";
 	  document.getElementById("progressBase").style.display="none";
+	  document.getElementById("progressBs").style.display="none";
+
 	  document.getElementById("urlInfoAria").style.display="none";
 	  document.getElementById("traceAria").style.display="none";
 	  editerAria.style.display="none";
 	  document.getElementById('files').style.display="none";
 	  document.getElementById('compInfo').style.display="none";					//手書き完了後表示
+
+	  document.getElementById('judg_modolu').style.display="none";
+	  document.getElementById('judg_next').style.display="none";
+	   document.getElementById('modal_sum').style.display="block";
+
 	  if(isMobile){
 		  // jobSelect.options[2].unwrap(‘<span>’);									//ファイルから読み込み
 		  // jobSelect.options[2].hide();									//ファイルから読み込み
@@ -570,9 +577,9 @@
 		dbMsg += "lineWidth=" + lWidth;
 		dbMsg += ",orgColo="+ orgColor;
 		$('#modalComent').innerHTML =  "を線幅" +lWidth+"で分割\n" ;
-		$('#modal_box').modal('show');
+//		$('#modal_box').modal('show');
 		scoreDrow();
-		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+//		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 
 		jobSelect.value = 'none';			//none		comp
 	}
@@ -805,9 +812,20 @@
 		myLog(dbMsg);
 	}
 
+   	document.getElementById("judg_modolu").onclick = function() {
+   		var dbMsg = "[judg_modolu]";
+   		drowAgain();
+   		myLog(dbMsg);
+   	}
+
+   	document.getElementById("judg_next").onclick = function() {
+   		var dbMsg = "[judg_next]";
+   		myLog(dbMsg);
+   	}
+
 //socket.ioイベント受信////////////////////////////////////////////////////////////////////////////
 	socket.on('conect_comp', function(data) {
-		var dbMsg = "recive:all conect_comp";
+		var dbMsg = "recive:all conect_comp";      //接続完了
 		myLog(dbMsg);
 		$('#modal_box').modal('hide');
 	});
@@ -877,6 +895,7 @@
 		current.color =data.color;
 		colorPalet.value=current.color;
 		currentWidth= data.width;
+		originWidth  =data.originWidth;
 		setLineWidthVal(currentWidth);
 		currentLineCap =  data.lineCap;
 		lineCapSelect.value=currentLineCap;
@@ -895,6 +914,9 @@
 		var dbMsg = "recive:changeLineWidth;";
 		currentWidth = data.width;
 		dbMsg += "="+currentWidth;
+		originWidth = data.originWidth;
+		dbMsg += ",originWidth="+originWidth;
+
 		setLineWidthVal(currentWidth);										//セレクタの表示も変更
 		myLog(dbMsg);
 	});
@@ -1422,13 +1444,13 @@
 		myLog(dbMsg);
 	}
 
-	document.getElementById("modal_sum").onclick = function (){
-		var dbMsg = "[modal_sum]";
-		drowTextStr = $("#madalInput1").val();
-		dbMsg += "drowTextStr="+drowTextStr;
-		$('#modal_box').modal('hide');
-		myLog(dbMsg);
-	}
+//	document.getElementById("modal_sum").onclick = function (){
+//		var dbMsg = "[modal_sum]";
+//		drowTextStr = $("#madalInput1").val();
+//		dbMsg += "drowTextStr="+drowTextStr;
+//		$('#modal_box').modal('hide');
+//		myLog(dbMsg);
+//	}
 
 	function colorPick() {
 		canvas.addEventListener('mousemove', colorPickBody);
@@ -1799,7 +1821,7 @@
 				}
 			}			//xPos
 		}				//yPos
-		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+//		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 		dbMsg += ">checkCount>"+checkCount;
 		dbMsg += ">抽出色2>"+colorArray2.length +"色；";	// + colorArray.toString();
 		dbMsg += ">抽出色>"+colorArray.length +"色；";	// + colorArray.toString();
@@ -1820,18 +1842,19 @@
 			widthrray.sort( function(a, b) {
 				 return a.value > b.value ? -1 : 1;
 			 });
-			lineWidth = widthrray[1].name;			//0pxが最多になる
-			dbMsg += ">最多lineWidth>"+ lineWidth;
+			originWidth = widthrray[1].name;			//0pxが最多になる
+			dbMsg += ">最多lineWidth>"+ originWidth;
 			var tLineMagnification =document.getElementById('traseLineWidthSelect').value * 0.1;
 			dbMsg += ",倍率="+ tLineMagnification;
-			currentWidth=Math.ceil(lineWidth*(1+tLineMagnification));				//トレース戦は太めに
+			currentWidth=Math.ceil(originWidth*(1+tLineMagnification));				//トレース戦は太めに
 			dbMsg += ">>"+ currentWidth;
 			setLineWidthVal(currentWidth);										//セレクタの表示も変更
 			dbMsg += "；Y軸上"+widthrray[0].value+"個所";
 			dbMsg += ",room=" + roomVal;
 			socket.emit('changeLineWidth', {
 				room : "/" + roomVal ,
-				width:currentWidth
+				width:currentWidth ,
+				originWidth:originWidth
 			});
 		}
 		scoreStartRady();
@@ -1979,21 +2002,21 @@
 		 score =  Math.round((orgCount-compCount)/orgCount*100);
 		 dbMsg +="；score=" + score;
 		 var scoreAdd = score;
-		var addStr = "無し";
-//		dbMsg += ",上下鏡面="+isMirror;
-//		if(isMirror){
-//			addStr =  "\n加点　　鏡面;上下　2倍";
-//			scoreAdd = scoreAdd * 2;
-//		}
-//		dbMsg += ",左右鏡面="+is_h_Mirror;
-//		if(is_h_Mirror){
-//				scoreAdd = scoreAdd * 2;
-//			if(addStr ==""){
-//				addStr =  "\n加点　　鏡面;左右　2倍";
-//			} else{
-//				addStr +=  " × 左右　2倍";
-//			}
-//		}
+		var addStr = "加点　　無し";
+		dbMsg += ",上下鏡面="+isMirror;
+		if(isMirror){
+			addStr =  "\n加点　　鏡面;上下　2倍";
+			scoreAdd = scoreAdd * 2;
+		}
+		dbMsg += ",左右鏡面="+is_h_Mirror;
+		if(is_h_Mirror){
+				scoreAdd = scoreAdd * 2;
+			if(addStr ==""){
+				addStr =  "\n加点　　鏡面;左右　2倍";
+			} else{
+				addStr +=  " × 左右　2倍";
+			}
+		}
  		 document.getElementById('scoreTF').innerHTML = scoreAdd+"";
  		document.getElementById('compTF').innerHTML = compCount+"";
 
@@ -2014,15 +2037,21 @@
 		// });
 
 //		if( isReceiver ){			//レシーバー側
-//			$('#modalTitol').innerHTML = "トレース結果";
-//		  	document.getElementById("modalTitolIcon").src="judge_on.png" ;
-//			document.getElementById("modalComent").style.display="block";
-//   			var wStr = 	"スコア　　" + scoreAdd +"点(加減前；" + score +"点\n" +
-//						"残数　　　"+compCount+ " / " +orgCount  +"px\n" +
-//						"ヒット率　" +"点\n" +
-//						 "線の太さ;元=" + originWidth + " : トレース=" + "px" + currentWidth +"px" + addStr;
-//   			$('#modalComent').innerHTML = wStr;
-//		  $('#modal_box').modal('show');
+//			$('#modal_box').modal('hide');
+			dialogReset();
+		  document.getElementById('modal_sum').style.display="none";
+			document.getElementById("modalTitol").innerHTML = "トレース結果";
+			document.getElementById("modalTitolIcon").src="judge_on.png" ;
+			document.getElementById("modalComent").style.display="block";
+   			var wStr = 	"<pre>スコア　　" + scoreAdd +"点　(加減前；" + score +"点)\n"+
+						"残数　　　"+compCount+ " / " +orgCount  +"px\n" +
+						"ヒット率　" +"%\n"  +
+						 "線の太さ　元=" + originWidth + " : トレース=" + "px" + currentWidth +"px\n"+
+						  addStr +"</pre>";
+   			document.getElementById("modalComent").innerHTML = wStr;		// innerHTML
+		  document.getElementById('judg_modolu').style.display="inline-block";
+		  document.getElementById('judg_next').style.display="inline-block";
+			$('#modal_box').modal('show');
 //		}
 		myLog(dbMsg);
 	}
@@ -2116,7 +2145,7 @@
 		}
 		// $('body').removeClass('modal-open'); // 1； body に自動的に付与されるクラスを削除する。このクラスがついたままだと、 画面スクロールが効かなくなる
 		// $('.modal-backdrop').remove();       // 2；モーダルの背景（黒い部分）を削除する処理。この処理を行わないとモーダルは消えても、背景が残ったままになり、 クリックが効かないままになる
-		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+//		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 		// document.getElementById("progressBs").style.display="none";
 		// removeLoading();
 //			document.getElementById("progressFleam").style.display="none";			 // ここでstyleは無効

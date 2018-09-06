@@ -28,16 +28,19 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="box_inner">
+
 						<div class="modal-header" style="background-color: #160865;color: #ffffff;">
-							<img id="modalTitolIcon" src="conect.png" width="20px" style="border: white;border-width: 5px;border-color: white;">
+							<img id="modalTitolIcon" src="conect.png" align="left"  width="20px" style="border: white;border-width: 5px;border-color: white;margin-right: 5px;">
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 								<i class="glyphicon glyphicon-remove" style="background-color: white; "></i>
 							</button>
-							<div　lass="modal-title" id="modalTitol">
+							<div id="modalTitol">
+								<!--class="modal-title"-->
 								タイトル
+							</div>
 						</div>
-					</div>
-					<div class="modal-body" style="margin-left: 5px;">
+
+						<div class="modal-body" style="margin-left: 5px;">
 						<div class="row" id="modalComent" style="padding-left: 5px;display:none">
 							コメント
 						</div>
@@ -169,19 +172,13 @@
 
 					</div>
 
-					<div class="modal-footer">
-
-						<button type="button" class="btn btn-primary" id="modal_sum" data-dismiss="modal">確定</button>
-						<!-- <button class="btn btn-default" data-dismiss="modal">
-					            data-dismiss="modal"
-					         </button>
-					         <button class="btn btn-danger" data-bind="click: close">
-					           data-bind="click: close"
-					         </button>
-					         <button class="btn btn-default" data-dismiss="modal">
-					           data-dismiss="modal"
-					         </button>
-						 </div> -->
+						<div class="modal-footer">
+							<span style="float: right;">
+								<button type="button" class="btn info" id="judg_modolu" data-dismiss="modal">もう一度</button>
+								<button type="button" class="btn success" id="judg_next" data-dismiss="modal">次へ</button>
+								<button type="button" class="btn btn-primary" id="modal_sum" data-dismiss="modal">確定</button>
+							</span>
+						</div>
 					</div>
 				</div>
 			</div>
