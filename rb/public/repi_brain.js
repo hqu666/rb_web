@@ -6,6 +6,8 @@
 	var room ;				// =  socket.connect("127.0.0.1:3080/" + roomVal);				// = io.connect("http://localhost:3000/room1");
 	var ua =navigator.userAgent;
 	var srcName="";																	//トレース元のファイル名
+	var stereoTypeList[];
+
 	var canvas = document.getElementsByClassName('whiteboard')[0];				//描画領域
 	var jobSelect = document.getElementById('jobSelect');						//元データの作り方
 	jobSelect.options[0].disabled = true;										//>選択して下さい
@@ -814,12 +816,18 @@
 
    	document.getElementById("judg_modolu").onclick = function() {
    		var dbMsg = "[judg_modolu]";
-   		drowAgain();
+		socket.emit('scre_dlog_modolu', {
+			room : "/" + roomVal
+		});
    		myLog(dbMsg);
    	}
 
    	document.getElementById("judg_next").onclick = function() {
    		var dbMsg = "[judg_next]";
+		socket.emit('scre_dlog_next', {
+			room : "/" + roomVal
+		});
+
    		myLog(dbMsg);
    	}
 
@@ -933,6 +941,28 @@
 		var dbMsg = "recive:all clear";
 		myLog(dbMsg);
 		allClear();
+	});
+
+	socket.on('scre_dlog_show', function(data) {
+		var dbMsg = "recive:scre_dlog_show";
+		myLog(dbMsg);
+		var scoreStr = data.scoreStr;
+		dbMsg += "="+scoreStr;
+		scoreDrowPad(scoreStr);
+	});
+
+	socket.on('scre_dlog_modolu', function(data) {
+		var dbMsg = "recive:scre_dlog_modolu";
+		myLog(dbMsg);
+        drowAgain();
+		$('#modal_box').modal('hide');
+	});
+
+	socket.on('scre_dlog_next', function(data) {
+		var dbMsg = "recive:scre_dlog_next";
+		myLog(dbMsg);
+		sendNextStereoType();
+		$('#modal_box').modal('hide');
 	});
 
 //イベント反映
@@ -1468,10 +1498,33 @@
 	  // document.getElementById('eventComent').textContent = rgba + ",Hex("+ cColor+ ")";
 	}
 //ファイル操作//////////////////////////////////////////
+var setStereoTypeList[];
 /**
-*input type="file"からファイルを読み込む
-*	https://www.html5rocks.com/ja/tutorials/file/dndfiles/
+次の定例ファイルへ
 */
+ 	function setStereoTypeList() {
+ 		var dbMsg = "[setStereoTypeList]";
+
+ 		myLog(dbMsg);
+ 		return setStereoTypeList;
+ 	}
+
+/**
+次の定例ファイルへ
+*/
+ 	function sendNextStereoType() {
+ 		var dbMsg = "[sendNextStereoType]";
+ 		dbMsg += "setStereoTypeList";
+ 		if(stereoTypeList){
+
+//                     	var srcName="";																	//トレース元のファイル名
+
+		}else{
+		  stereoTypeList = setStereoTypeList();
+		   sendNextStereoType() ;
+		}
+ 		myLog(dbMsg);
+ 	}
 
 /**
 *input type="file"からファイルを読み込む
@@ -2017,8 +2070,19 @@
 				addStr +=  " × 左右　2倍";
 			}
 		}
+
  		 document.getElementById('scoreTF').innerHTML = scoreAdd+"";
  		document.getElementById('compTF').innerHTML = compCount+"";
+
+		var wStr = 	"<pre>スコア　　" + scoreAdd +"点　(加減前；" + score +"点)\n"+
+				"残数　　　"+compCount+ " / " +orgCount  +"px\n" +
+				"ヒット率　" +"%\n"  +
+				 "線の太さ　元=" + originWidth + " : トレース=" + "px" + currentWidth +"px\n"+
+				  addStr +"</pre>";
+		socket.emit('scre_dlog_show', {
+				room : "/" + roomVal ,
+				scoreStr:wStr
+		});
 
 		// const prom =scoreCount();
 		// prom.then((compCount) => {
@@ -2035,19 +2099,19 @@
 		// }).catch((err) => {
 		// 	dbMsg += "カウント失敗";
 		// });
+		myLog(dbMsg);
+	}
 
+	function scoreDrowPad(wStr) {
+		var dbMsg = "[scoreDrowPad]";
+		dbMsg += ",isReceiver=" + isReceiver;
+		dbMsg += ",wStr=" + wStr;
 //		if( isReceiver ){			//レシーバー側
-//			$('#modal_box').modal('hide');
 			dialogReset();
 		  document.getElementById('modal_sum').style.display="none";
 			document.getElementById("modalTitol").innerHTML = "トレース結果";
 			document.getElementById("modalTitolIcon").src="judge_on.png" ;
 			document.getElementById("modalComent").style.display="block";
-   			var wStr = 	"<pre>スコア　　" + scoreAdd +"点　(加減前；" + score +"点)\n"+
-						"残数　　　"+compCount+ " / " +orgCount  +"px\n" +
-						"ヒット率　" +"%\n"  +
-						 "線の太さ　元=" + originWidth + " : トレース=" + "px" + currentWidth +"px\n"+
-						  addStr +"</pre>";
    			document.getElementById("modalComent").innerHTML = wStr;		// innerHTML
 		  document.getElementById('judg_modolu').style.display="inline-block";
 		  document.getElementById('judg_next').style.display="inline-block";
@@ -2056,8 +2120,7 @@
 		myLog(dbMsg);
 	}
 
-
-	function scoreStart() {
+		function scoreStart() {
 		var dbMsg = "[scoreStart]";
 		scoreStartRady();
 		orgCount=0;

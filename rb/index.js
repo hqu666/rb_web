@@ -137,6 +137,26 @@ function onConnection(socket){
         sendSocet('conect_comp' , socket , data);
     });
 
+    socket.on('scre_dlog_show', (data) => {                                       //スコアダイアログ表示
+        var dbMsg = "[scre_dlog_show]";
+        myLog(dbMsg);
+        sendSocet('scre_dlog_show' , socket , data);
+    });
+
+    socket.on('scre_dlog_modolu', (data) => {                                       //スコアダイアログからもう一度try
+        var dbMsg = "[scre_dlog_modolu]";
+        myLog(dbMsg);
+        sendSocet('scre_dlog_modolu' , socket , data);
+    });
+
+    socket
+    .on
+    ('scre_dlog_next', (data) => {                                       //スコアダイアログから次の課題へ送る
+        var dbMsg = "[scre_dlog_next]";
+        myLog(dbMsg);
+        sendSocet('scre_dlog_next' , socket , data);
+    });
+
     socket.on('conect_start', (data) => {                                     //onloadから呼ばれる接続開始
         var dbMsg = "[conect_start]nickname=" + data.room;                //タイムスタンプ
         dbMsg += ",socket=" + socket.id;
