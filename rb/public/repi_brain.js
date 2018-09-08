@@ -6,7 +6,7 @@
 	var room ;				// =  socket.connect("127.0.0.1:3080/" + roomVal);				// = io.connect("http://localhost:3000/room1");
 	var ua =navigator.userAgent;
 	var srcName="";																	//トレース元のファイル名
-	var stereoTypeList[];
+	var stereoTypeList;
 
 	var canvas = document.getElementsByClassName('whiteboard')[0];				//描画領域
 	var jobSelect = document.getElementById('jobSelect');						//元データの作り方
@@ -487,12 +487,12 @@
 
 	}
 
-	document.getElementById("modalImgList").onclick = function (event) {					 // カラーパレットからの移し替え
+	document.getElementById("modalImgList").onclick = function (event) {					 // 定例リストの選択結果反映
 		 var tag = "[modalImgList]";
 		 var $getListAItems = document.getElementById( "modalImgList" ).children;
 		 for( var $i = 0; $i < $getListAItems.length; $i++ ){
 			 $getListAItems[$i].onclick =function(){
-			 srcName =this.src;			 // current.color = e.target.className.split(' ')[1];
+			 	srcName =this.src;			 // current.color = e.target.className.split(' ')[1];
 			 	var dbMsg = tag + ",src=" + srcName;
 			 	myLog(dbMsg);
 				$('#modal_box').modal('hide');
@@ -961,8 +961,11 @@
 	socket.on('scre_dlog_next', function(data) {
 		var dbMsg = "recive:scre_dlog_next";
 		myLog(dbMsg);
-		sendNextStereoType();
-		$('#modal_box').modal('hide');
+		dbMsg = "recive:isReceiver=" + isReceiver;
+		if(! isReceiver){
+			sendNextStereoType();
+			$('#modal_box').modal('hide');
+		}
 	});
 
 //イベント反映
@@ -1498,15 +1501,28 @@
 	  // document.getElementById('eventComent').textContent = rgba + ",Hex("+ cColor+ ")";
 	}
 //ファイル操作//////////////////////////////////////////
-var setStereoTypeList[];
 /**
-次の定例ファイルへ
+定例ファイルをリストアップ
 */
  	function setStereoTypeList() {
  		var dbMsg = "[setStereoTypeList]";
-
+		stereoTypeList = new Array();
+		for (i=0; i< 5; i++) {
+			var wStr="st";
+			if( i < 10){
+				wStr= "st00" + (i+1);
+			}else if( i < 100){
+				wStr= "st0" + (i+1);
+			}else{
+				wStr= "st" + (i+1);
+			}
+			stereoTypeList[i] = wStr;
+			dbMsg += "(" + i  + ")"+stereoTypeList[i];
+		}
+		var fileLen = stereoTypeList.length;
+  		 	dbMsg += ">>" + fileLen+ "件";
  		myLog(dbMsg);
- 		return setStereoTypeList;
+ 		return stereoTypeList;
  	}
 
 /**
@@ -1514,11 +1530,27 @@ var setStereoTypeList[];
 */
  	function sendNextStereoType() {
  		var dbMsg = "[sendNextStereoType]";
- 		dbMsg += "setStereoTypeList";
- 		if(stereoTypeList){
-
-//                     	var srcName="";																	//トレース元のファイル名
-
+ 		dbMsg += "現在=" + srcName;
+ 		dbMsg += ",stereoTypeListは";
+ 		stereoTypeList = setStereoTypeList() ;
+		var fileLen = stereoTypeList.length;
+		dbMsg += fileLen+ "件";
+ 		if
+ 		(0<fileLen){
+			dbMsg += "=" + stereoTypeList.length + "件";
+			var sName = srcName.replace("/stereotype/" , "");
+			sName = sName.replace(".png" , "");
+			var nowIndex = stereoTypeList.indexOf(sName);																	//トレース元のファイル名
+  			dbMsg += "中" + nowIndex + "番目";
+  			var nextIndex = nowIndex + 1;
+  			if( fileLen <= nextIndex ){
+  				nextIndex =0;
+  			}
+  			dbMsg += ">>次は" + nextIndex;
+  			sName = stereoTypeList[nextIndex];
+  			srcName = "/stereotype/" + sName + ".png";
+  			dbMsg += ">>" + srcName;
+		   bitmapRead(srcName);
 		}else{
 		  stereoTypeList = setStereoTypeList();
 		   sendNextStereoType() ;
@@ -1588,6 +1620,20 @@ var setStereoTypeList[];
 	function stereoTypeStart() {
 	    var tag = "[stereoTypeStart]";
 		var dbMsg = tag ;
+		stereoTypeList=setStereoTypeList();
+		var fileLen = stereoTypeList.length;
+  	 	dbMsg += fileLen+ "件";
+		var wrStr = "";
+		for (i=0; i<fileLen; i++) {
+			dbMsg += "(" + i  + ")"+stereoTypeList[i];
+			wrStr += "<input type=" + '"' + "image" + '"' +
+							" src=" +'"'+ "/stereotype/" +stereoTypeList[i] + ".png" + '"'  +
+							"alt="  +'"'+ stereoTypeList[i] +'"'+
+							" id="  +'"'+ stereoTypeList[i] + "_bt"  + '"'  +
+							" style="  +'"'+ "border-radius: 4px; width:18%;" +'"'+ ">" +"\n";
+		}
+		document.getElementById("modalImgList").innerHTML = wrStr;
+
 		document.getElementById("allclear").click();
 		// editerAria.style.display="contents";
 		document.getElementById("modalTitol").innerHTML = "定型パターン選択";
