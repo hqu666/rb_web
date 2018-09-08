@@ -54,6 +54,7 @@
 	var orgColor='#00ff00';
 	var stdColor=orgColor;
 	var compColor='#ffffff';
+	var tCount =0;    														//トレース線のピクセル数
 	var oRed;
 	var oGreen;
 	var oBule;
@@ -592,12 +593,12 @@
 	  	 // $("#toControlDialog").dialog("open");
 	  }
 
-	  document.getElementById("pcUrlQR").onclick = function() {
-		  var dbMsg = "[pcUrlQR]";
-		  var optionVal = 'location=no,toolbar=no,menubar=no';
-		  window.open(urlStr + '?reciver=pad', "操作画面", optionVal);
-		  $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
-	  }
+//	  document.getElementById("pcUrlQR").onclick = function() {
+//		  var dbMsg = "[pcUrlQR]";
+//		  var optionVal = 'location=no,toolbar=no,menubar=no';
+//		  window.open(urlStr + '?reciver=pad', "操作画面", optionVal);
+//		  $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+//	  }
 
 	    document.getElementById("urlQR").onclick = function() {
 	  	  var dbMsg = "[urlQR]";
@@ -922,8 +923,8 @@
 		var dbMsg = "recive:changeLineWidth;";
 		currentWidth = data.width;
 		dbMsg += "="+currentWidth;
-		originWidth = data.originWidth;
-		dbMsg += ",originWidth="+originWidth;
+//		originWidth = data.originWidth;
+//		dbMsg += ",originWidth="+originWidth;
 
 		setLineWidthVal(currentWidth);										//セレクタの表示も変更
 		myLog(dbMsg);
@@ -1876,9 +1877,9 @@
 				var cColor = rgb2hex("rgb("+ cRed + ", " + cGreen + ", " + cBule +")");
 				if(cColor!='#000000' && cColor!='#ffffff' ){	//真っ白はもしくは真っ黒もしk儒はデータ無し							&& cAlpha == 1
 					// dbMsg += "("+ xPos + ","+ yPos + ")carentPos=" + carentPos +";" + cColor;
-					if(bColor == cColor){
+					if(bColor == cColor){    //同じ色が続いたら
 						lineWidth++;
-						if(0<lineWidth){
+						if(1<lineWidth){
 							checkCount++;
 							if(colorArray2.indexOf(cColor) == -1){							//カラーコードだけの単純配列に無ければ
 								colorArray2.push(cColor);
@@ -1900,10 +1901,10 @@
 						}
 					}else{
 						bColor = cColor;
-						if(widthrray2.indexOf(lineWidth) == -1){							//カラーコードだけの単純配列に無ければ
+						if(widthrray2.indexOf(lineWidth +"") == -1){							//カラーコードだけの単純配列に無ければ
 							widthrray2.push(lineWidth);
 							widthrray[widthrray.length]={ name:lineWidth, value:1 };		//カウント付きの連想配列にも要素追加
-						}else{
+						}else if(1<lineWidth){
 							var rIndex = widthrray.filter(function(item, index){
 							  if (item.name == lineWidth){
 								var rObj = widthrray[index];
@@ -2093,42 +2094,55 @@
 		// $('#modalComent').innerHTML =  "を線幅" +lWidth+"で分割\n" ;
 		// $('#modal_box').modal();
 		// compCount =setTimeout(scoreCount,1000);
-		$('#modalTitol').innerHTML = "どれだけトレースできたかを確認しています";
+//		$('#modalTitol').innerHTML = "どれだけトレースできたかを確認しています";
 		compCount =scoreCount(canvas , orgColor);
 		dbMsg += "compCount"+ compCount;
 		orgCount=document.getElementById('orgTF').innerHTML;
-		dbMsg += "/"+ orgCount;
-		 score =  Math.round((orgCount-compCount)/orgCount*100);
+		dbMsg += "/org;"+ orgCount +  ",tCount"+ tCount;
+		 score =  (orgCount-compCount)/orgCount;
 		 dbMsg +="；score=" + score;
-		 var scoreAdd = score;
-		var addStr = "加点　　無し";
-		dbMsg += ",上下鏡面="+isMirror;
-		if(isMirror){
-			addStr =  "\n加点　　鏡面;上下　2倍";
-			scoreAdd = scoreAdd * 2;
-		}
-		dbMsg += ",左右鏡面="+is_h_Mirror;
-		if(is_h_Mirror){
+		var scoreAdd =  Math.round(score*100);
+		 if(0<tCount){
+			 var rateHit = 100 * (orgCount-compCount)/tCount;
+			 dbMsg +=",rateHit=" + rateHit;
+			 scoreAdd = score * rateHit/100;
+			var addStr = "加点　　　無し";
+			dbMsg += ",上下鏡面="+isMirror;
+			if(isMirror){
+				addStr =  "\n加点　　鏡面;上下　2倍";
 				scoreAdd = scoreAdd * 2;
-			if(addStr ==""){
-				addStr =  "\n加点　　鏡面;左右　2倍";
-			} else{
-				addStr +=  " × 左右　2倍";
 			}
+			dbMsg += ",左右鏡面="+is_h_Mirror;
+			if(is_h_Mirror){
+					scoreAdd = scoreAdd * 2;
+				if(addStr ==""){
+					addStr =  "\n加点　　鏡面;左右　2倍";
+				} else{
+					addStr +=  " × 左右　2倍";
+				}
+			}
+			scoreAdd =  Math.round(scoreAdd*100);
+			document.getElementById('traceTF').style.display="inline-block";
+			document.getElementById('hitTF').style.display="inline-block";
+  			document.getElementById('traceTF').innerHTML = tCount+"";
+  			rateHit= Math.round(rateHit);
+    		document.getElementById('hitTF').innerHTML = rateHit+"";
+			var wStr = 	"<pre>スコア　　" + scoreAdd +"点　(加減前；" +  Math.round(score*100) +"点)\n"+
+					"残数　　　"+compCount+ " / " +orgCount  +"px\n" +
+					"ヒット率　" + rateHit +"% ,トレース=" + tCount +"px\n"  +
+					 "線の太さ　元=" + originWidth + " : トレース=" + currentWidth +"px\n"+
+					  addStr +"</pre>";
+			socket.emit('scre_dlog_show', {
+					room : "/" + roomVal ,
+					scoreStr:wStr
+			});
+		 }else{
+			document.getElementById('traceTF').style.display="none";
+			document.getElementById('hitTF').style.display="none";
 		}
-
- 		 document.getElementById('scoreTF').innerHTML = scoreAdd+"";
+ 		document.getElementById('scoreTF').innerHTML = scoreAdd+"";
  		document.getElementById('compTF').innerHTML = compCount+"";
 
-		var wStr = 	"<pre>スコア　　" + scoreAdd +"点　(加減前；" + score +"点)\n"+
-				"残数　　　"+compCount+ " / " +orgCount  +"px\n" +
-				"ヒット率　" +"%\n"  +
-				 "線の太さ　元=" + originWidth + " : トレース=" + "px" + currentWidth +"px\n"+
-				  addStr +"</pre>";
-		socket.emit('scre_dlog_show', {
-				room : "/" + roomVal ,
-				scoreStr:wStr
-		});
 
 		// const prom =scoreCount();
 		// prom.then((compCount) => {
@@ -2198,7 +2212,8 @@
 
 	function scoreCount(canvas  , orgColor) {
 		var dbMsg = "[scoreCount]orgColor="+ orgColor;
-		var dCount =0;
+		var dCount =0;    														//トレース元画像の残り
+		tCount =0;    														//トレース線のピクセル数
 		var checkCount = 0;														//色がついている部分
 		var cWidth = canvas.width;
 		var cHeight = canvas.height;
@@ -2248,6 +2263,10 @@
 						dbMsg += "("+ xPos + ","+ yPos + ")"+cColor;
 						dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
 						dCount++;
+					} else if(compColor == cColor){													//トレース線のピクセル数
+						dbMsg += "("+ xPos + ","+ yPos + ")"+cColor;
+						dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
+						tCount++;
 					}
 				}
 			}
@@ -2258,7 +2277,7 @@
 		// document.getElementById("progressBs").style.display="none";
 		// removeLoading();
 //			document.getElementById("progressFleam").style.display="none";			 // ここでstyleは無効
-		dbMsg += ">>>dCount=" + dCount +"/" + checkCount;
+		dbMsg += ">>残=" + dCount +"/トレース=" + tCount +"/" + checkCount;
 		// if(0 < originPixcel.length){
 			document.getElementById("makeAfter").style.display="inline-block";			 //トレース元画像の表示方向
 			jobSelect.options[4].disabled = false;										//もう一度

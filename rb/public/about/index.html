@@ -30,45 +30,16 @@
 
     <body style="padding: 5px;">
         <div id="wrapper">
-            <!-- <div id="header">
-            <ul class="nav nav-tabs nav-justified">
-                <li role="presentation"><a href="../dotnet/">.NET/C#</a></li>
-                <li role="presentation" class="active"><a href="#">webプログラム実験室</a></li>
-                <li role="presentation"><a href="../android/">Andriod</a></li>
-            </ul>
-        </div> -->
             <div id="contents">
                 <div class="row" id='pagetop'>
                     <div class="panel panel-default">
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="col-xs-12 col-sm-12">
-                                    <div style="text-align: right;">更新日 2018/8/14</div>
+                                    <div style="text-align: right;">更新日 2018/9/8</div>
                                     <h1>リカバリーブラインWeb(仮)の使い方</h1>
-                                    <!-- <h4>PHPやデータベースが使えないサーバ環境で、何が何処までできるか試しています。</h4>
-                                <div class="alert alert-danger" role="alert" style="width:96%;height: auto;margin-left: 10px;">
-                                    まだまだ勉強中ですのでソースや手法を公開するのはお恥ずかしく、またご依頼頂いて作成した物の源泉や頂いた案件の実験もありますので詳細な解説はご容赦ください。
-                                </div> -->
                                 </div>
                             </div>
-                            <!-- <div class="col-xs-12 col-sm-5" style="text-align: right;">
-                                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3146425308522831" data-ad-slot="4219928305" data-ad-format="auto"></ins>
-                                <script>
-                                    (adsbygoogle = window.adsbygoogle || []).push({});
-                                </script>
-
-                                <script type="text/javascript">
-                                    var nend_params = {
-                                        "media": 32269,
-                                        "site": 206990,
-                                        "spot": 583222,
-                                        "type": 1,
-                                        "oriented": 1
-                                    };
-                                </script>
-                                <script type="text/javascript" src="https://js1.nend.net/js/nendAdLoader.js"></script>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -76,7 +47,6 @@
 
             <div class="row " id="about">
                 <div class="col-sm-12">
-                    <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
                     <div class="panel-group">
                         <div class="panel panel-default">
                             <div class="panel-title">
@@ -88,7 +58,6 @@
                             </div>
 
                             <div id="about_recovary_brain_body" class="panel-collapse collapse in" aria-expanded="true">
-                                <!--class="panel-collapse collapse" -->
                                 <div class="panel-body">
                                     <div class="panel-group">
                                         <div class="row">
@@ -106,7 +75,6 @@
                                         </div>
                                         <div class="row" id="toweb">
                                             <div class="col-sm-12">
-                                                <!--free_strage> id="msg_pict_send_row" style="width: 96vw;padding: 10px;margin: 1vw;"free_strage>-->
                                                 <div class="panel-group">
                                                     <div class="panel panel-default">
                                                         <div class="panel-title">
@@ -127,9 +95,10 @@
                                                                     </P>
                                                                     <div class="row">
                                                                         <div class="col-xs-12 col-sm-3">
-                                                                            web起動時
+                                                                            起動時して
                                                                             <img src="beginning1.png" style="width:100%;" align="top" alt="beginning1">
-
+                                                                            <img src="../conect.png" style="width:20px;" align="left" alt="trase">アイコンをクリックして接続用ダイアログを表示。
+                                                                            <img src="link_dlog.png" style="width:100%;" align="top" alt="link_dlog">
                                                                         </div>
                                                                         <div class="col-xs-12 col-sm-3">
                                                                             スマートフォンでトレース
@@ -341,16 +310,61 @@
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6">
                                             <img src="../trase.png" style="width:20px;" align="left" alt="trase">アイコンをクリックして表示するダイアログ、PCではフッターに表示されるGRコードで表示されているWebページとリンクした別画面を開く事が出来ます。
-                                            <h3>
+                                            <h4>
                                                     「書き込みが行われる画面」と「トレースする手元」に視線を分離すると難易度は更に上がります。
-                                                </h3>
+                                                </h4>
+                                            <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;">
+                                                padを接続した時点でこのダイアログは閉じます。<br>
+                                                <ul>
+                                                    <li>
+                                                        ダイアログがと閉じない時は正常な接続ができていません。<br>
+                                                        このページを再読込みして、pad側も再接続して下さい。
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
                                             <img src="link_dlog.png" class="phorRes" style="width:100%;" align="top" alt="link_dlog">
                                         </div>
                                     </div>
                                     <p></p>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6">
+                                            <img src="judgDlog.png" class="phorRes" style="width:100%;" align="top" alt="judgDlog">
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6">
+                                            <h4>
+                                                判定が行われると左図の様なダイアログが表示されます。
+                                            </h4>
+                                            離れた位置からpadを操作している時でも手元のパッドから以下の操作ができます。
+                                            <!--<ul>-->
+                                                <!--<li>-->
+                                                    <ol>
+                                                        操作できる機能は
+                                                        <li>
+                                                            「次へ」で定例パターンリストの順で次のトレース元画像へ切り替えます。
+                                                        </li>
+                                                        <li>
+                                                            「もう一度」でトレースを消してスコアをリセットし、同じトレース元画像に再トライする準備をします。 <br>
+                                                            <img src="../modoru_bt.png" style="width:20px;" alt="edit">アイコンのタップと同じ動作です。
+                                                        </li>
+                                                        <li>
+                                                            クローズボックスでこのダイアログを閉じればでトレース継続（追記）できます。
+                                                            <div class="alert btn-sm" style="background-color: #F6CEF5;border-radius: 15px;">
+                                                                ヒット率は下がるので点数は上がりません。
+                                                            </div>
+                                                        </li>
+                                                    </ol>
+                                                <!--</li>-->
 
+                                                <img src="../edit.png" style="width:20px;" alt="edit">アイコンをタップして「定例パターン」 ダイアログを操作しなくても簡易に順送りできます。
+
+                                            <!--</ul>-->
+                                            <!--</li>-->
+                                            <!--</ol>-->
+                                        </div>
+                                    </div>
+                                    <p></p>
 
 
                                     <div class="row">
@@ -961,10 +975,42 @@
         </div>
 
         <div class="row">
-            <div class="col-xs-12 col-sm-12">
+            <div class="col-xs-2 col-sm-2">
                 <a href="../about_and/">
-                    <img src="../about_and/ic_launcher.png" class="phorRes" style="width:5%;" align="left" alt="ic_launcher"> 専用アプリをご用意しました。
+                    専用アプリをご用意しました。
+                    <img src="../about_and/ic_launcher.png" class="phorRes" style="width:100%;" align="down" alt="ic_launcher">
                 </a>
+            </div>
+            <div class="col-xs-10 col-sm-10">
+                <div class="alert btn-sm" role="alert" style="background-color: #F6CEF5;border-radius: 15px;">
+                    現在、以下を修正しています。
+                    <ol>
+                        <li>
+                            トレース元画像の読み込み後、表示角度の回転にバグが有ります。
+                        </li>
+                        <li>
+                            スマホなど別の機器をパッドにした場合、パケットが途切れるタイミングで「ハネ」が発生します
+                        </li>
+                        <li>
+                            自動判定の切り替えを判定ボタンのロングタッチに切替中です。
+                        </li>
+                        <li>
+                            アカウント管理、アクセス制限が設けられていません
+                        </li>
+                        <li>
+                            得点の精度に問題が有ります。
+                            <ol>
+                                <li>
+                                    トレース元画像のピクセル数、線の太さが正確に取得できていません。
+                                </li>
+                                <li>
+                                    トレース開始点を探す時点で書き込まれる無駄なトレース線が消せないのでヒット率は下がります。
+                                </li>
+                            </ol>
+                        </li>
+                    </ol>
+                </div>
+
             </div>
         </div>
 
