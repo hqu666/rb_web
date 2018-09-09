@@ -1843,18 +1843,8 @@
 		var cHeight = canvas.height;
 		var dbMsg = tag+"["+ cWidth + "×"+ cHeight + "]";
 		var context = canvas.getContext('2d');
-//		var canvasImageData = context.getImageData(0, 0, canvas.width, canvas.height);
-//		var canvasRGBA = canvasImageData.data;
-
-		var canvasImageData = context.getImageData(0, 0, cWidth, cHeight);
+		var canvasImageData = context.getImageData(0, 0, canvas.width, canvas.height);
 		var canvasRGBA = canvasImageData.data;
-		if(originPixcel){
-			dbMsg += ",originPixcel="+originPixcel.length;
-			if(0==originPixcel.length){
-				 originPixcel = canvasImageData.data;
-			}
-		}
-
 
 		var colorArray = new Array();
 		var colorArray2 = new Array();
@@ -1863,8 +1853,8 @@
 		oBule = 255;
 		bColor= rgb2hex("rgb("+ 255 + ", " + 255 + ", " + 255 +")");
 		var lineWidth=0;
-		var widthrray = new Array();
-		var widthrray2 = new Array();
+//		var widthrray = new Array();
+//		var widthrray2 = new Array();
 		var checkCount = 0;
 		// $('#modal_box').modal();
 		// $('#modalTitol').innerHTML = "読み込んだ画像の確認";
@@ -1890,8 +1880,8 @@
 				if(cColor!='#000000' && cColor!='#ffffff' ){	//真っ白はもしくは真っ黒もしk儒はデータ無し							&& cAlpha == 1
 					// dbMsg += "("+ xPos + ","+ yPos + ")carentPos=" + carentPos +";" + cColor;
 					if(bColor == cColor){    //同じ色が続いたら
-						lineWidth++;
-						if(1<lineWidth){
+//						lineWidth++;
+//						if(1<lineWidth){
 							checkCount++;
 							if(colorArray2.indexOf(cColor) == -1){							//カラーコードだけの単純配列に無ければ
 								colorArray2.push(cColor);
@@ -1910,31 +1900,31 @@
 								  }
 								});
 							}
-						}
+//						}
 					}else{
 						bColor = cColor;
-						if(1<lineWidth){
-							var checkName =lineWidth +"";
-							if(widthrray2.indexOf(checkName) == -1){							//カラーコードだけの単純配列に無ければ
-								widthrray2.push(checkName);
-								widthrray[widthrray.length]={ name:checkName, value:1 };		//カウント付きの連想配列にも要素追加
-							}else{
-//							 	dbMsg += "("+ xPos + ","+ yPos + ")carentPos=" + carentPos +";" + cColor +",Width=" + checkName;
-								var rIndex = widthrray.filter(function(item, index){
-								  if (item.name == lineWidth){
-									var rObj = widthrray[index];
-									var rValue = rObj['value']+1;
-									//									dbMsg += ",value="+ rObj['value']+ ">>"+ rValue;
-									widthrray[index]={ name:checkName, value:rValue };
-									return index;
-								  }
-								});
-							}
-						}
-						lineWidth=0;
+//						if(1<lineWidth){
+//							var checkName =lineWidth +"";
+//							if(widthrray2.indexOf(checkName) == -1){							//カラーコードだけの単純配列に無ければ
+//								widthrray2.push(checkName);
+//								widthrray[widthrray.length]={ name:checkName, value:1 };		//カウント付きの連想配列にも要素追加
+//							}else{
+////							 	dbMsg += "("+ xPos + ","+ yPos + ")carentPos=" + carentPos +";" + cColor +",Width=" + checkName;
+//								var rIndex = widthrray.filter(function(item, index){
+//								  if (item.name == lineWidth){
+//									var rObj = widthrray[index];
+//									var rValue = rObj['value']+1;
+//									//									dbMsg += ",value="+ rObj['value']+ ">>"+ rValue;
+//									widthrray[index]={ name:checkName, value:rValue };
+//									return index;
+//								  }
+//								});
+//							}
+//						}
+//						lineWidth=0;
 					}
 				}else{
-					lineWidth=0;
+//					lineWidth=0;
 				}
 			}			//xPos
 		}				//yPos
@@ -1959,24 +1949,24 @@
 
 		document.getElementById('compTF').innerHTML = orgCount+"";
 		document.getElementById('orgTF').innerHTML = orgCount+"";
-		if(0<widthrray.length){
-			widthrray.sort( function(a, b) {
-				 return a.value > b.value ? -1 : 1;
-			 });
-			originWidth = widthrray[0].name;			//0pxが最多になる
-			dbMsg += ">最多lineWidth>"+ originWidth + ":Y軸上="+ widthrray[0].value +"箇所";
-			var tLineMagnification =document.getElementById('traseLineWidthSelect').value * 0.1;
-			dbMsg += ",倍率="+ tLineMagnification;
-			currentWidth=Math.ceil(originWidth*(1+tLineMagnification));				//トレース戦は太めに
-			dbMsg += ">>"+ currentWidth;
-			setLineWidthVal(currentWidth);										//セレクタの表示も変更
-			dbMsg += ",room=" + roomVal;
-			socket.emit('change_line_width', {
-				room : "/" + roomVal ,
-				width:currentWidth ,
-				originWidth:originWidth
-			});
-		}
+//		if(0<widthrray.length){
+//			widthrray.sort( function(a, b) {
+//				 return a.value > b.value ? -1 : 1;
+//			 });
+//			originWidth = widthrray[0].name;			//0pxが最多になる
+//			dbMsg += ">最多lineWidth>"+ originWidth + ":Y軸上="+ widthrray[0].value +"箇所";
+//			var tLineMagnification =document.getElementById('traseLineWidthSelect').value * 0.1;
+//			dbMsg += ",倍率="+ tLineMagnification;
+//			currentWidth=Math.ceil(originWidth*(1+tLineMagnification));				//トレース戦は太めに
+//			dbMsg += ">>"+ currentWidth;
+//			setLineWidthVal(currentWidth);										//セレクタの表示も変更
+//			dbMsg += ",room=" + roomVal;
+//			socket.emit('change_line_width', {
+//				room : "/" + roomVal ,
+//				width:currentWidth ,
+//				originWidth:originWidth
+//			});
+//		}
 		scoreStartRady();
 		if(isDebug){
 			document.getElementById('scoreComent').innerHTML = colorArray.length +"色中 対象 "+orgColor + " ;線＝" + originWidth +"PX" + ">トレース>" + currentWidth +"PX";
@@ -2267,8 +2257,11 @@
 			//    max: cWidth,
 			//    disabled: false
 			//  });
-		}
-
+		}else if(compColor == orgColor){													//読込み直後
+  		}
+		var widthrray = new Array();
+		var widthrray2 = new Array();
+		var lineWidth = 0;
 		for (var yPos = 0;yPos < cHeight;yPos++) {
 			var pVar = Math.round(yPos/cHeight*100);
 //			document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
@@ -2288,10 +2281,32 @@
 //						dbMsg += "("+ xPos + ","+ yPos + ")"+cColor;
 //						dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
 						dCount++;
+						lineWidth++;
 					} else if(compColor == cColor){													//トレース線のピクセル数
 //						dbMsg += "("+ xPos + ","+ yPos + ")"+cColor;
 //						dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
 						tCount++;
+						lineWidth++;
+					} else{
+//						bColor = cColor;
+						if(1<lineWidth){
+							var checkName =lineWidth +"";
+							if(widthrray2.indexOf(checkName) == -1){							//カラーコードだけの単純配列に無ければ
+								widthrray2.push(checkName);
+								widthrray[widthrray.length]={ name:checkName, value:1 };		//カウント付きの連想配列にも要素追加
+							}else{
+								var rIndex = widthrray.filter(function(item, index){
+								  if (item.name == lineWidth){
+									var rObj = widthrray[index];
+									var rValue = rObj['value']+1;
+//							 	dbMsg += "("+ xPos + ","+ yPos + ")carentPos=" + carentPos +";" + cColor +",Width=" + checkName +  ",value="+ rObj['value']+ ">>"+ rValue;
+									widthrray[index]={ name:checkName, value:rValue };
+									return index;
+								  }
+								});
+							}
+						}
+						lineWidth=0;
 					}
 				}
 			}
@@ -2308,6 +2323,25 @@
 				jobSelect.options[4].disabled = false;										//もう一度
 				document.getElementById("again_bt").style.display="inline-block";
 			// }
+		}else{
+			if(0<widthrray.length){
+				widthrray.sort( function(a, b) {
+					 return a.value > b.value ? -1 : 1;
+				 });
+				originWidth = widthrray[0].name;			//0pxが最多になる
+				dbMsg += ">最多lineWidth>"+ originWidth + ":Y軸上="+ widthrray[0].value +"箇所";
+				var tLineMagnification =document.getElementById('traseLineWidthSelect').value * 0.1;
+				dbMsg += ",倍率="+ tLineMagnification;
+				currentWidth=Math.ceil(originWidth*(1+tLineMagnification));				//トレース戦は太めに
+				dbMsg += ">>"+ currentWidth;
+				setLineWidthVal(currentWidth);										//セレクタの表示も変更
+				dbMsg += ",room=" + roomVal;
+				socket.emit('change_line_width', {
+					room : "/" + roomVal ,
+					width:currentWidth ,
+					originWidth:originWidth
+				});
+			}
 		}
 		dbMsg += ">>残=" + dCount +"/トレース=" + tCount +"/" + checkCount;
 		myLog(dbMsg);
