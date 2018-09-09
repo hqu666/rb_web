@@ -99,10 +99,10 @@ function onConnection(socket){
     sendSocet('changeColor' , socket , data);
     });
 
-    socket.on('changeLineWidth', (data) => {
-        var dbMsg = "[changeLineWidth]" ;
+    socket.on('change_line_width', (data) => {
+        var dbMsg = "[change_line_width]" ;
         currentWidth = data.width;
-        sendSocet('changeLineWidth' , socket , data);
+        sendSocet('change_line_width' , socket , data);
     });
 
     socket.on('changeLineCap', (data) => {

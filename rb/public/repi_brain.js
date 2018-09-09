@@ -380,6 +380,7 @@
 	}
 	dbMsg += ">>"+setVal;
 	lineWidthSelect.value=setVal;
+
 	currentWidth =setVal;
 	myLog(dbMsg);
 }
@@ -675,7 +676,7 @@
 		dbMsg += ",room=" + roomVal;
 		currentWidth =  this.value;
 		dbMsg += ",selectWidth="+ currentWidth;
-		socket.emit('changeLineWidth', {
+		socket.emit('change_line_width', {
 			room : "/" + roomVal ,
 			width:currentWidth
 		});
@@ -705,7 +706,7 @@
 //		dbMsg += ",currentWidth="+ currentWidth;
 //		currentWidth =  currentWidth * (1 +tLineMagnification );
 //		dbMsg += ">>"+ currentWidth;
-//		socket.emit('changeLineWidth', {
+//		socket.emit('change_line_width', {
 //			room : "/" + roomVal ,
 //			width:currentWidth
 //		});
@@ -919,8 +920,8 @@
 		myLog(dbMsg);
 	});
 
-	socket.on('changeLineWidth', function(data) {
-		var dbMsg = "recive:changeLineWidth;";
+	socket.on('change_line_width', function(data) {
+		var dbMsg = "recive:change_line_width;";
 		currentWidth = data.width;
 		dbMsg += "="+currentWidth;
 //		originWidth = data.originWidth;
@@ -1842,8 +1843,19 @@
 		var cHeight = canvas.height;
 		var dbMsg = tag+"["+ cWidth + "×"+ cHeight + "]";
 		var context = canvas.getContext('2d');
-		var canvasImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+//		var canvasImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+//		var canvasRGBA = canvasImageData.data;
+
+		var canvasImageData = context.getImageData(0, 0, cWidth, cHeight);
 		var canvasRGBA = canvasImageData.data;
+		if(originPixcel){
+			dbMsg += ",originPixcel="+originPixcel.length;
+			if(0==originPixcel.length){
+				 originPixcel = canvasImageData.data;
+			}
+		}
+
+
 		var colorArray = new Array();
 		var colorArray2 = new Array();
 		oRed = 255;
@@ -1864,9 +1876,9 @@
 		// for (var i = 0;i < canvasRGBA.length;i+=4) {
 		for (var yPos = 0;yPos < canvas.height;yPos++) {
 			var pVar = Math.round(yPos/cHeight*100);
-			document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
-			// $(".progress-bar").css("width", String(pVar) + "%");		// $('.progressBs').css("width", String(pVar) + "%")では反映されない
-			document.getElementById("progressBs").style.width =  String(pVar) + "%";
+//			document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
+//			// $(".progress-bar").css("width", String(pVar) + "%");		// $('.progressBs').css("width", String(pVar) + "%")では反映されない
+//			document.getElementById("progressBs").style.width =  String(pVar) + "%";
 			for (var xPos = 0;xPos < canvas.width;xPos++) {
 				var carentPos =	(yPos*(canvas.width*4)) + (xPos*4);
 				// var carentPos =(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4);
@@ -1901,18 +1913,23 @@
 						}
 					}else{
 						bColor = cColor;
-						if(widthrray2.indexOf(lineWidth +"") == -1){							//カラーコードだけの単純配列に無ければ
-							widthrray2.push(lineWidth);
-							widthrray[widthrray.length]={ name:lineWidth, value:1 };		//カウント付きの連想配列にも要素追加
-						}else if(1<lineWidth){
-							var rIndex = widthrray.filter(function(item, index){
-							  if (item.name == lineWidth){
-								var rObj = widthrray[index];
-								var rValue = rObj['value']+1;
-								widthrray[index]={ name:lineWidth, value:rValue };
-								return index;
-							  }
-							});
+						if(1<lineWidth){
+							var checkName =lineWidth +"";
+							if(widthrray2.indexOf(checkName) == -1){							//カラーコードだけの単純配列に無ければ
+								widthrray2.push(checkName);
+								widthrray[widthrray.length]={ name:checkName, value:1 };		//カウント付きの連想配列にも要素追加
+							}else{
+//							 	dbMsg += "("+ xPos + ","+ yPos + ")carentPos=" + carentPos +";" + cColor +",Width=" + checkName;
+								var rIndex = widthrray.filter(function(item, index){
+								  if (item.name == lineWidth){
+									var rObj = widthrray[index];
+									var rValue = rObj['value']+1;
+									//									dbMsg += ",value="+ rObj['value']+ ">>"+ rValue;
+									widthrray[index]={ name:checkName, value:rValue };
+									return index;
+								  }
+								});
+							}
 						}
 						lineWidth=0;
 					}
@@ -1923,7 +1940,7 @@
 		}				//yPos
 //		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 		dbMsg += ">checkCount>"+checkCount;
-		dbMsg += ">抽出色2>"+colorArray2.length +"色；";	// + colorArray.toString();
+//		dbMsg += ">抽出色2>"+colorArray2.length +"色；";	// + colorArray.toString();
 		dbMsg += ">抽出色>"+colorArray.length +"色；";	// + colorArray.toString();
 		if(0<colorArray.length){
 			colorArray.sort( function(a, b) {
@@ -1934,24 +1951,27 @@
 			colorPalet.value=orgColor;
 			current.color=orgColor;
 			orgCount = colorArray[0].value;										//対象色の点数
-			dbMsg += ">評価点>"+orgCount;
+			dbMsg += ",評価点="+orgCount;
 		}
+		compColor= orgColor;
+		orgCount = scoreCount(canvas  , orgColor);								//評価時と同じ方法で再カウント
+ 			dbMsg += ">>"+orgCount;
+
 		document.getElementById('compTF').innerHTML = orgCount+"";
 		document.getElementById('orgTF').innerHTML = orgCount+"";
 		if(0<widthrray.length){
 			widthrray.sort( function(a, b) {
 				 return a.value > b.value ? -1 : 1;
 			 });
-			originWidth = widthrray[1].name;			//0pxが最多になる
-			dbMsg += ">最多lineWidth>"+ originWidth;
+			originWidth = widthrray[0].name;			//0pxが最多になる
+			dbMsg += ">最多lineWidth>"+ originWidth + ":Y軸上="+ widthrray[0].value +"箇所";
 			var tLineMagnification =document.getElementById('traseLineWidthSelect').value * 0.1;
 			dbMsg += ",倍率="+ tLineMagnification;
 			currentWidth=Math.ceil(originWidth*(1+tLineMagnification));				//トレース戦は太めに
 			dbMsg += ">>"+ currentWidth;
 			setLineWidthVal(currentWidth);										//セレクタの表示も変更
-			dbMsg += "；Y軸上"+widthrray[0].value+"個所";
 			dbMsg += ",room=" + roomVal;
-			socket.emit('changeLineWidth', {
+			socket.emit('change_line_width', {
 				room : "/" + roomVal ,
 				width:currentWidth ,
 				originWidth:originWidth
@@ -1959,7 +1979,7 @@
 		}
 		scoreStartRady();
 		if(isDebug){
-			document.getElementById('scoreComent').innerHTML = colorArray.length +"色中 対象 "+orgColor + " ;線＝" + lineWidth +"PX" + ">トレース>" + currentWidth +"PX";
+			document.getElementById('scoreComent').innerHTML = colorArray.length +"色中 対象 "+orgColor + " ;線＝" + originWidth +"PX" + ">トレース>" + currentWidth +"PX";
 			var rgba = 'rgba(' + oRed + ',' +oGreen +',' + oBule + ',' + (255 / 255) + ')';
 			document.getElementById('scoreComent').style.background =  rgba;		//r=63,g=72,b=204 ="#3fcc48が正解
 		}
@@ -2029,6 +2049,7 @@
 			room : "/" + roomVal ,
 			color: compColor,
 			width: currentWidth,
+			originWidth:originWidth,
 			lineCap:currentLineCap
 		});
 		setOriginPixcel();
@@ -2102,7 +2123,7 @@
 		 score =  (orgCount-compCount)/orgCount;
 		 dbMsg +="；score=" + score;
 		var scoreAdd =  Math.round(score*100);
-		 if(0<tCount){
+		 if(0<tCount ){
 			 var rateHit = 100 * (orgCount-compCount)/tCount;
 			 dbMsg +=",rateHit=" + rateHit;
 			 scoreAdd = score * rateHit/100;
@@ -2227,28 +2248,32 @@
 				 originPixcel = canvasImageData.data;
 			}
 		}
-		// $('body').addClass('modal-open');
-		// $("#progressFleam").css("display", "block");
-		$('#modal_box').modal();
-		dialogReset();
-		document.getElementById("progressBase").style.display="block";
-		document.getElementById("modalComent").style.display="block";
-		$('#modalComent').innerHTML = "描画領域[" +cWidth+"×"+cHeight+ "]" ;
+			dbMsg += ",compColor="+ compColor;
+		if(	orgColor != compColor){
+			// $('body').addClass('modal-open');
+			// $("#progressFleam").css("display", "block");
+//			$('#modal_box').modal();
+			dialogReset();
+			document.getElementById("progressBase").style.display="block";
+			document.getElementById("modalComent").style.display="block";
+			$('#modalComent').innerHTML = "描画領域[" +cWidth+"×"+cHeight+ "]" ;
 
-	// dispLoading("元データを確認しています");
-		// showProg();
-		// document.getElementById("modal_box").modal();//modal is not a function
-		// document.getElementById("progress").style.display="block";
-		// $('#progress').progressbar({
-		//    value: 0,
-		//    max: cWidth,
-		//    disabled: false
-		//  });
+		// dispLoading("元データを確認しています");
+			// showProg();
+			// document.getElementById("modal_box").modal();//modal is not a function
+			// document.getElementById("progress").style.display="block";
+			// $('#progress').progressbar({
+			//    value: 0,
+			//    max: cWidth,
+			//    disabled: false
+			//  });
+		}
+
 		for (var yPos = 0;yPos < cHeight;yPos++) {
 			var pVar = Math.round(yPos/cHeight*100);
-			document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
-			// $(".progress-bar").css("width", String(pVar) + "%");		// $('.progressBs').css("width", String(pVar) + "%")では反映されない
-			document.getElementById("progressBs").style.width =  String(pVar) + "%";
+//			document.getElementById("progressBs").innerHTML =  String(pVar) + "%";
+//			// $(".progress-bar").css("width", String(pVar) + "%");		// $('.progressBs').css("width", String(pVar) + "%")では反映されない
+//			document.getElementById("progressBs").style.width =  String(pVar) + "%";
 			for (var xPos = 0;xPos < cWidth;xPos++) {
 				var carentPos =	(yPos*(cWidth*4)) + (xPos*4);
 				// var carentPos =(xPos * 4) + ((canvas.height - 1 - yPos) * canvas.width * 4);
@@ -2260,30 +2285,32 @@
 				if(cColor!='#000000' && cColor!='#ffffff' ){	//真っ白はもしくは真っ黒もしk儒はデータ無し							&& cAlpha == 1
 					checkCount++;
 					if(orgColor == cColor){
-						dbMsg += "("+ xPos + ","+ yPos + ")"+cColor;
-						dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
+//						dbMsg += "("+ xPos + ","+ yPos + ")"+cColor;
+//						dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
 						dCount++;
 					} else if(compColor == cColor){													//トレース線のピクセル数
-						dbMsg += "("+ xPos + ","+ yPos + ")"+cColor;
-						dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
+//						dbMsg += "("+ xPos + ","+ yPos + ")"+cColor;
+//						dbMsg += ",r="+ cRed+",g="+ cGreen+",b="+ cBule+",a="+ cAlpha;
 						tCount++;
 					}
 				}
 			}
 		}
-		// $('body').removeClass('modal-open'); // 1； body に自動的に付与されるクラスを削除する。このクラスがついたままだと、 画面スクロールが効かなくなる
-		// $('.modal-backdrop').remove();       // 2；モーダルの背景（黒い部分）を削除する処理。この処理を行わないとモーダルは消えても、背景が残ったままになり、 クリックが効かないままになる
-//		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
-		// document.getElementById("progressBs").style.display="none";
-		// removeLoading();
-//			document.getElementById("progressFleam").style.display="none";			 // ここでstyleは無効
+		if(	orgColor != compColor){
+			// $('body').removeClass('modal-open'); // 1； body に自動的に付与されるクラスを削除する。このクラスがついたままだと、 画面スクロールが効かなくなる
+			// $('.modal-backdrop').remove();       // 2；モーダルの背景（黒い部分）を削除する処理。この処理を行わないとモーダルは消えても、背景が残ったままになり、 クリックが効かないままになる
+	 //		$('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
+			// document.getElementById("progressBs").style.display="none";
+			// removeLoading();
+ //			document.getElementById("progressFleam").style.display="none";			 // ここでstyleは無効
+			// if(0 < originPixcel.length){
+				document.getElementById("makeAfter").style.display="inline-block";			 //トレース元画像の表示方向
+				jobSelect.options[4].disabled = false;										//もう一度
+				document.getElementById("again_bt").style.display="inline-block";
+			// }
+		}
 		dbMsg += ">>残=" + dCount +"/トレース=" + tCount +"/" + checkCount;
-		// if(0 < originPixcel.length){
-			document.getElementById("makeAfter").style.display="inline-block";			 //トレース元画像の表示方向
-			jobSelect.options[4].disabled = false;										//もう一度
-			document.getElementById("again_bt").style.display="inline-block";
-		// }
-//		myLog(dbMsg);
+		myLog(dbMsg);
 		return dCount;
 		// return onSuccess(dCount);
     // });
