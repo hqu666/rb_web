@@ -41,10 +41,10 @@
 		width:'1',
 		lineCap:"round"										//butt, round, square
 	};
+	var isPreparation = true;                    //トレーススタート前の準備中
 	var isMirror=false;				//上下鏡面動作
 	var is_h_Mirror=false;				//左右鏡面動作
-	var
-	isAutoJudge=true;				//トレース後に自動判定
+	var	isAutoJudge=true;				//トレース後に自動判定
 	var isComp=false;				//比較中	;scoreStartRadyでtrueに設定
 	var orgCount=0;
 	var compCount=0;
@@ -74,6 +74,7 @@
 	var canvasHeight = canvasRect.height;
 	var originalCanvas;
 	var originPixcel;															//読込み、作成確定直後の;scoreStartRadyで初期化
+	var canvasRGBA ;   															//スコアを準備したピクセル配列
 	var startX =0;
 	var startY =0;
 	var currentX = 0;
@@ -601,14 +602,14 @@
 //		  $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 //	  }
 
-	    document.getElementById("urlQR").onclick = function() {
+	document.getElementById("urlQR").onclick = function() {
 	  	  var dbMsg = "[urlQR]";
 	  	  var optionVal = 'location=no,toolbar=no,menubar=no';
 	  	  window.open(urlStr + '?reciver=pad', "操作画面", optionVal);
 	  	  $('#modal_box').modal('hide');        // 3；モーダル自体を閉じている
 	    }
 
-	  document.getElementById("about_bt").onclick = function() {
+	 document.getElementById("about_bt").onclick = function() {
 	  	var dbMsg = "[about_bt]";
 	  	var optionVal = 'location=no,toolbar=no,menubar=no';
 	  	window.open('/about', "このページの説明");
@@ -821,7 +822,9 @@
 		socket.emit('scre_dlog_modolu', {
 			room : "/" + roomVal
 		});
-   		myLog(dbMsg);
+ 		isPreparation = true;                    //トレーススタート前の準備中
+  		isComp = false;
+ 		myLog(dbMsg);
    	}
 
    	document.getElementById("judg_next").onclick = function() {
@@ -829,8 +832,9 @@
 		socket.emit('scre_dlog_next', {
 			room : "/" + roomVal
 		});
-
-   		myLog(dbMsg);
+ 		isPreparation = true;                    //トレーススタート前の準備中
+ 		isComp = false;
+  		myLog(dbMsg);
    	}
 
 //socket.ioイベント受信////////////////////////////////////////////////////////////////////////////
@@ -958,6 +962,9 @@
 		myLog(dbMsg);
         drowAgain();
 		$('#modal_box').modal('hide');
+		isPreparation = true;                    //トレーススタート前の準備中
+		isComp = false;
+
 	});
 
 	socket.on('scre_dlog_next', function(data) {
@@ -968,6 +975,8 @@
 			sendNextStereoType();
 			$('#modal_box').modal('hide');
 		}
+		isPreparation = true;                    //トレーススタート前の準備中
+		isComp = false;
 	});
 
 //イベント反映
@@ -1300,17 +1309,9 @@
 				break;
 		}
 
-
 	}
-
-	// canvas.addEventListener('touchstart', touchHandler, false);
-	// canvas.addEventListener('touchmove', touchHandler, false);
-	// canvas.addEventListener('touchend', touchHandler, false);		//true を指定すると、listener は一度実行された時に自動的に削除
-
 	//drawingで受信したデータを書き込む/////////////////////////////////////イベント反映
 	function onDrawingEvent(data) {
-		var w = canvas.width;
-		var h = canvas.height;
 		var dbMsg = "[onDrawingEvent]受信(" + data.x0 + " , " + data.y0 + ")";
 		dbMsg += "～(" + data.x1 + " , " + data.y1 + ")";
 		if ( data.x0 != data.x1 ) {
@@ -1326,14 +1327,46 @@
 		context.lineCap= data.lineCap;
 		currentLineCap= data.lineCap;
 		isAutoJudge= data.autojudge;
-		// drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, current.color , currentWidth , currentLineCap, data.action , false);
-		drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color , data.width , data.lineCap , data.action , false);
+		var cWidth = canvas.width;
+		var cHight = canvas.height;
+		dbMsg += "canvas[" + cWidth + " , " + cHight + ")";
+		drawLine(data.x0 * cWidth, data.y0 * cHight, data.x1 * cWidth, data.y1 * cHight, data.color , data.width , data.lineCap , data.action , false);
+		dbMsg += ",トレーススタート前の準備中=" + isPreparation +  ",isComp=" + isComp;
+		if ( isPreparation && canvasRGBA != null ) {            //開始前判定 isPreparation
+			isComp = false;
+			dbMsg += ",canvasRGBA=" + canvasRGBA.length;
+			var nowX = Math.round(data.x1 * cWidth);
+			var nowY = Math.round(data.y1 * cHight);
+			dbMsg += ",(" + nowX + "," + nowY +")";
+			var bIndex =(nowY *(cWidth *4)) + (nowX *4);
+			dbMsg += ",bIndex=" + bIndex;
+			var cRed = canvasRGBA[bIndex];					//canvasRGBA[carentPos];
+			var cGreen = canvasRGBA[bIndex + 1];					//canvasRGBA[1 + carentPos];
+			var cBule = canvasRGBA[bIndex + 2];					//canvasRGBA[2 + carentPos];
+			var cAlpha =  canvasRGBA[bIndex + 3]/255;					//canvasRGBA[3 + carentPos];
+			dbMsg += ",r=" + cRed  + "g=" + cGreen + "b=" + cBule + "a=" + cAlpha ;
+			var cColor = rgb2hex("rgb("+ cRed + ", " + cGreen + ", " + cBule +")");
+			dbMsg += ",cColor=" + cColor ;
+			if(cColor!='#000000' && cColor!='#ffffff' ){	//真っ白はもしくは真っ黒もしk儒はデータ無し
+				dbMsg += ":orgColor=" + orgColor;
+				if ( cColor == orgColor ) {
+					isPreparation = false;                    //トレーススタート前の準備中
+					isComp = true;
+					context.clearRect(0, 0, cWidth, cHight);			//全て消して
+					context.putImageData(originalCanvas, 0, 0);					//ピクセル配列を書き戻す
+//					redrowOrigin();
+					myLog(dbMsg);
+				}
+			}
+		} else{
+			drawLine(data.x0 * cWidth, data.y0 * cHight, data.x1 * cWidth, data.y1 * cHight, data.color , data.width , data.lineCap , data.action , false);
+		 }
 		// if( data.action==1){
 		// 	scoreStart();
 		// }
-		if(data.action != 2){
-			myLog(dbMsg);
-		}
+//		if(data.action != 2){
+//			myLog(dbMsg);
+//		}
 	}
 
 	///実働部///////////////////////////////////////////////////////////////////////
@@ -1371,7 +1404,6 @@
 			// orgCount++;
 			// dbMsg +="；orgCount=" + orgCount;
 		}
-		;
 		context.beginPath();													//パスを切ってこれ以降の設定とする
 		context.moveTo(x0, y0); //サブパスの開始点
 		context.lineTo(x1, y1); //直前の座標と指定座標を結ぶ直線を引く
@@ -1532,13 +1564,12 @@
 */
  	function sendNextStereoType() {
  		var dbMsg = "[sendNextStereoType]";
- 		dbMsg += "現在=" + srcName;
+		dbMsg += "現在=" + srcName;
  		dbMsg += ",stereoTypeListは";
  		stereoTypeList = setStereoTypeList() ;
 		var fileLen = stereoTypeList.length;
 		dbMsg += fileLen+ "件";
- 		if
- 		(0<fileLen){
+ 		if(0<fileLen){
 			dbMsg += "=" + stereoTypeList.length + "件";
 			var sName = srcName.replace("/stereotype/" , "");
 			sName = sName.replace(".png" , "");
@@ -1991,7 +2022,7 @@
 			// img.src = srcName;
 			bitmapRead(srcName);
 		}else if(0 < originPixcel.length){
-			 scoreStartRady();
+			scoreStartRady();
 	 		orgCount=0;
 	 		$('#modalTitol').innerHTML = "元データを書き直しています";
 	 		// orgCount =setTimeout(scoreCount,1000);
@@ -2010,6 +2041,8 @@
 	function scoreStartRady() {
 		var dbMsg = "[scoreStartRady]";
 		isComp=true;				//比較中
+		isPreparation = true;		 //比較準備
+
 		// originPixcel = new Array();				//
 		editerAria.style.display="none";
 		scoreBrock.style.display="inline-block";
@@ -2191,7 +2224,7 @@
 		myLog(dbMsg);
 	}
 
-		function scoreStart() {
+	function scoreStart() {
 		var dbMsg = "[scoreStart]";
 		scoreStartRady();
 		orgCount=0;
@@ -2229,9 +2262,9 @@
 		var cWidth = canvas.width;
 		var cHeight = canvas.height;
 		dbMsg += "["+ cWidth + "×"+ cHeight + "]";
-		var context = canvas.getContext('2d');
+		context = canvas.getContext('2d');
 		var canvasImageData = context.getImageData(0, 0, cWidth, cHeight);
-		var canvasRGBA = canvasImageData.data;
+		canvasRGBA = canvasImageData.data;
 		if(originPixcel){
 			dbMsg += ",originPixcel="+originPixcel.length;
 			if(0==originPixcel.length){
