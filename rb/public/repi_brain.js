@@ -827,7 +827,7 @@
 			room : "/" + roomVal
 		});
  		isPreparation = true;                    //トレーススタート前の準備中
-			isComp = true;
+		isComp = true;
  		myLog(dbMsg);
    	}
 
@@ -837,7 +837,7 @@
 			room : "/" + roomVal
 		});
  		isPreparation = true;                    //トレーススタート前の準備中
-			isComp = true;
+		isComp = true;
   		myLog(dbMsg);
    	}
 
@@ -967,7 +967,7 @@
         drowAgain();
 		$('#modal_box').modal('hide');
 		isPreparation = true;                    //トレーススタート前の準備中
-			isComp = true;
+		isComp = true;
 	});
 
 	socket.on('scre_dlog_next', function(data) {
@@ -979,7 +979,7 @@
 			$('#modal_box').modal('hide');
 		}
 		isPreparation = true;                    //トレーススタート前の準備中
-			isComp = true;
+		isComp = true;
 	});
 
 //イベント反映
@@ -1109,7 +1109,7 @@
 			dbMsg += ",isComp=" + isComp + ",isAutoJudge=" + isAutoJudge;
 			if(isComp && isAutoJudge){			//比較中
 				dbMsg += ",room=" + roomVal;
-				socket.emit('drawend', {
+				socket.emit('drawend', {                //判定表示
 					room:"/"+roomVal
 				});
 			}
@@ -1324,8 +1324,10 @@
 			dbMsg += "," + (data.y0 - data.y1) + ")";
 		}
 		dbMsg += ",color=" + data.color+ ",width=" + data.width+ ",lineCap=" + data.lineCap+ ",action=" + data.action+ ",autojudge=" + data.autojudge;
-		current.color= data.color;
-		context.strokeStyle= data.color;
+//		if(!isPreparation){
+//			current.color= data.color;             //isPreparation=trueに時、受信信号で#FFFFFFに替えられてしまうので、ここでの逐次変更は廃止
+//			context.strokeStyle= data.color;
+//		}
 		currentWidth= data.width*1.0;
 		context.lineCap= data.lineCap;
 		currentLineCap= data.lineCap;
@@ -1333,7 +1335,7 @@
 		var cWidth = canvas.width;
 		var cHight = canvas.height;
 		dbMsg += ",canvas[" + cWidth + " , " + cHight + ")";
-		drawLine(data.x0 * cWidth, data.y0 * cHight, data.x1 * cWidth, data.y1 * cHight, data.color , data.width , data.lineCap , data.action , false);
+		drawLine(data.x0 * cWidth, data.y0 * cHight, data.x1 * cWidth, data.y1 * cHight, current.color , data.width , data.lineCap , data.action , false);
 		dbMsg += ",トレーススタート前の準備中=" + isPreparation +  ",isComp=" + isComp;
 		if ( isPreparation && canvasRGBA != null ) {            //開始前判定 isPreparation
 			if(! isReceiver ){				//レシーバー側は強制的に評価中(true)
@@ -1360,11 +1362,12 @@
 					context.clearRect(0, 0, cWidth, cHight);			//全て消して
 					context.putImageData(originalCanvas, 0, 0);					//ピクセル配列を書き戻す
 //					redrowOrigin();
-					myLog(dbMsg);
 				}
 			}
 		} else{
-			drawLine(data.x0 * cWidth, data.y0 * cHight, data.x1 * cWidth, data.y1 * cHight, data.color , data.width , data.lineCap , data.action , false);
+							myLog(dbMsg);
+
+//			drawLine(data.x0 * cWidth, data.y0 * cHight, data.x1 * cWidth, data.y1 * cHight, data.color , data.width , data.lineCap , data.action , false);
 		 }
 		// if( data.action==1){
 		// 	scoreStart();
