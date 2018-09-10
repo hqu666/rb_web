@@ -454,14 +454,18 @@
 		if(currentjob == "none"){
 
 		}else if(currentjob == "patranList"){									//パターンリスト表示</option>
-			isComp=false;				//比較中
+			if(! isReceiver ){				//レシーバー側は強制的に評価中(true)
+				isComp = false;
+			}
 			document.getElementById("allclear").click();
 			stereoTypeStart();
 		}else if(currentjob == "fileSel"){										//ファイルから読み込み
 			document.getElementById("jpbSelectAia").style.display="contents";
 			document.getElementById('files').style.display="inline-block";		//inline-block
 		}else if(currentjob == "make"){											//"手書きで作成の場合
-		 	isComp=false;														//比較中解除
+			if(! isReceiver ){				//レシーバー側は強制的に評価中(true)
+				isComp = false;
+			}
 			if(is_h_Mirror){														//鏡面動作になっていたら
 				document.getElementById('mirror_h_CB').click();					//解除
 				document.getElementById("mirror_v").src="mirror_v_t.png" ;
@@ -823,7 +827,7 @@
 			room : "/" + roomVal
 		});
  		isPreparation = true;                    //トレーススタート前の準備中
-  		isComp = false;
+			isComp = true;
  		myLog(dbMsg);
    	}
 
@@ -833,7 +837,7 @@
 			room : "/" + roomVal
 		});
  		isPreparation = true;                    //トレーススタート前の準備中
- 		isComp = false;
+			isComp = true;
   		myLog(dbMsg);
    	}
 
@@ -963,8 +967,7 @@
         drowAgain();
 		$('#modal_box').modal('hide');
 		isPreparation = true;                    //トレーススタート前の準備中
-		isComp = false;
-
+			isComp = true;
 	});
 
 	socket.on('scre_dlog_next', function(data) {
@@ -976,7 +979,7 @@
 			$('#modal_box').modal('hide');
 		}
 		isPreparation = true;                    //トレーススタート前の準備中
-		isComp = false;
+			isComp = true;
 	});
 
 //イベント反映
@@ -1295,9 +1298,9 @@
 					// }
 					moveEnd(currentX,currentY,toucheX,toucheY);
 				// }
-				// isSmaphoDebug =true;
+//				 isSmaphoDebug =true;
 				mobileLog(dbMsg);
-				// isSmaphoDebug =false;
+//				 isSmaphoDebug =false;
 				break;
 			case "touchcancel" :
 				break;
@@ -1329,11 +1332,13 @@
 		isAutoJudge= data.autojudge;
 		var cWidth = canvas.width;
 		var cHight = canvas.height;
-		dbMsg += "canvas[" + cWidth + " , " + cHight + ")";
+		dbMsg += ",canvas[" + cWidth + " , " + cHight + ")";
 		drawLine(data.x0 * cWidth, data.y0 * cHight, data.x1 * cWidth, data.y1 * cHight, data.color , data.width , data.lineCap , data.action , false);
 		dbMsg += ",トレーススタート前の準備中=" + isPreparation +  ",isComp=" + isComp;
 		if ( isPreparation && canvasRGBA != null ) {            //開始前判定 isPreparation
-			isComp = false;
+			if(! isReceiver ){				//レシーバー側は強制的に評価中(true)
+				isComp = false;
+			}
 			dbMsg += ",canvasRGBA=" + canvasRGBA.length;
 			var nowX = Math.round(data.x1 * cWidth);
 			var nowY = Math.round(data.y1 * cHight);
@@ -1350,8 +1355,8 @@
 			if(cColor!='#000000' && cColor!='#ffffff' ){	//真っ白はもしくは真っ黒もしk儒はデータ無し
 				dbMsg += ":orgColor=" + orgColor;
 				if ( cColor == orgColor ) {
-					isPreparation = false;                    //トレーススタート前の準備中
 					isComp = true;
+					isPreparation = false;                    //トレーススタート前の準備中
 					context.clearRect(0, 0, cWidth, cHight);			//全て消して
 					context.putImageData(originalCanvas, 0, 0);					//ピクセル配列を書き戻す
 //					redrowOrigin();
@@ -1364,9 +1369,10 @@
 		// if( data.action==1){
 		// 	scoreStart();
 		// }
-//		if(data.action != 2){
-//			myLog(dbMsg);
-//		}
+			dbMsg += ",action=" + data.action ;
+		if(data.action == 2){
+			myLog(dbMsg);
+		}
 	}
 
 	///実働部///////////////////////////////////////////////////////////////////////
@@ -2017,7 +2023,9 @@
 		var dbMsg = "[drowAgain]srcName="+srcName;
 		if(srcName !=""){
 			drawing = false;
-			isComp=false;				//比較中
+			if(! isReceiver ){				//レシーバー側は強制的に評価中(true)
+				isComp = false;
+			}
 			// var img = new Image();
 			// img.src = srcName;
 			bitmapRead(srcName);
@@ -2040,7 +2048,9 @@
 
 	function scoreStartRady() {
 		var dbMsg = "[scoreStartRady]";
-		isComp=true;				//比較中
+//		if(! isReceiver ){				//レシーバー側
+			isComp = true;
+//		}
 		isPreparation = true;		 //比較準備
 
 		// originPixcel = new Array();				//
